@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Sample bookstore app demonstrating Azure DocumentDB (the vCore-based, MongoDB wire-protocol-compatible service). Express + native `mongodb` driver on the backend, Vite/React on the frontend. Optional Azure AI Search integration powers full-text search.
+Sample bookstore app demonstrating Azure DocumentDB (the vCore-based, MongoDB wire-protocol-compatible service). Express + native `mongodb` driver on the backend, Vite/React on the frontend.
 
 ## Common commands
 
@@ -19,12 +19,11 @@ Run from repo root unless noted:
 
 ## Required environment variables
 
-Read by `server/server.js` and `server/src/db/searchBooks.js` (via `dotenv`):
+Read by `server/server.js` (via `dotenv`):
 
 - `BOOKSTORE_DB_CONNECTION_STRING` — Mongo connection string. Connects to the `bookstore` database (hard-coded in [db.js](server/src/db/db.js)).
 - `PORT` — server port, defaults to `8080`.
 - `NODE_ENV=production` — when set, server also serves the built React app from `../client/build`.
-- `SEARCH_API_ENDPOINT`, `SEARCH_API_KEY`, `SEARCH_INDEX_NAME` — only needed for the Azure Cognitive Search-backed `/search` route. See [azuresearchsetup.md](deployment/docs/azuresearchsetup.md).
 
 The seed script uses a separate env var `BOOKSTORE_SEED_DB_CONNECTION_STRING` (distinct from the server's `BOOKSTORE_DB_CONNECTION_STRING`).
 
@@ -35,17 +34,14 @@ The seed script uses a separate env var `BOOKSTORE_SEED_DB_CONNECTION_STRING` (d
 - [server.js](server/server.js) bootstraps Express, registers all routes by iterating the array exported from [routes/index.js](server/src/routes/index.js), connects to Mongo, then listens.
 - Routes are declarative objects of shape `{ method, path, handler }` (see e.g. [getAllBooksRoute.js](server/src/routes/getAllBooksRoute.js)). To add an endpoint: write a handler in `server/src/db/`, wrap it in a route object under `server/src/routes/`, then add it to the array in `routes/index.js`. There is no router middleware layer — handlers are bound directly via `app[method](path, handler)`.
 - [db.js](server/src/db/db.js) exports a singleton `db` with `connect(url)` and `getConnection()`. Every db-layer function calls `db.getConnection().collection('books' | 'genres')`. A single `MongoClient` with `poolSize: 10` is shared process-wide.
-- Two read paths intentionally exist side-by-side and are demoed by the app:
-  - **`/books`** ([getAllBooks.js](server/src/db/getAllBooks.js)) — direct Mongo `find` with paging/sort/filter. Used when there is no search text.
-  - **`/search`** ([searchBooks.js](server/src/db/searchBooks.js)) — Azure Cognitive Search using `@azure/search-documents`, with OData `$filter` / `$orderby`. Used when the user types into the search box.
-  The client switches between them in [useBooks.js](client/src/Home/useBooks.js) based on whether `searchText` is empty.
+- [getAllBooks.js](server/src/db/getAllBooks.js) handles direct Mongo `find` with paging/sort/filter for the `/books` route.
 - [searchGenres.js](server/src/db/searchGenres.js) demonstrates an aggregation pipeline (`$unwind` → `$match` → `$group`) for genre autocomplete.
 - Comments on a book are stored as an array on the `books` document and edited via `$push` / `$unset` + `$pull` ([updateComment.js](server/src/db/updateComment.js), [removeComment.js](server/src/db/removeComment.js)).
 
 ### Client (`client/`, CRA, React 16)
 
 - Three top-level feature folders: `App/` (shell, navbar, router, filter state), `Home/` (list page + infinite-scroll hook), `Book/` (detail page + comments).
-- Global filter state (`rating`, `format`, `genre`, `searchText`) lives in [useNavbarFilters.js](client/src/App/useNavbarFilters.js) and is threaded through `App` → `Routes` → page components as props.
+- Global filter state (`rating`, `format`, `genre`) lives in [useNavbarFilters.js](client/src/App/useNavbarFilters.js) and is threaded through `App` → `Routes` → page components as props.
 - Lists are paged via infinite scroll in [useBooks.js](client/src/Home/useBooks.js); changing any filter resets `page` and `sortby` back to `0`/`""`.
 - The dev server proxies API calls to `http://localhost:8080` (see `proxy` in [client/package.json](client/package.json)), so `fetch('/books?...')` Just Works in dev.
 

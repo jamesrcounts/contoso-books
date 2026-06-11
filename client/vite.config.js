@@ -14,7 +14,6 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/books': 'http://localhost:8080',
-      '/search': 'http://localhost:8080',
       '/genres': 'http://localhost:8080',
       '/comment': 'http://localhost:8080',
     },

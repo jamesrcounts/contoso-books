@@ -5,7 +5,7 @@ import { useNavbarFilters } from './useNavbarFilters';
 import { toggleListItem, toggleRating } from './filterHelpers';
 
 function App() {
-  const {rating, setRating, format, setFormat, searchText, setSearchText, genre, setGenre} = useNavbarFilters();
+  const {rating, setRating, format, setFormat, genre, setGenre} = useNavbarFilters();
 
   const handleRating = (ratinginput) => {
     setRating((old) => toggleRating(old, ratinginput));
@@ -19,14 +19,10 @@ function App() {
     setGenre((old) => toggleListItem(old, genreinput));
   }
 
-  const handleSearch = (searchTextInput) => {
-    setSearchText(searchTextInput);
-  }
-
   return (
     <main className="wrapper">
-      <NavBar rating={rating} format={format} genre={genre} handleRating={(input)=> handleRating(input)} handleFormat={(e)=>handleFormat(e)} handleSearch={(input)=>handleSearch(input)} handleGenre={(e)=>handleGenre(e)}/>
-      <Routes rating={rating} format={format} genre={genre} searchText={searchText}/>
+      <NavBar rating={rating} format={format} genre={genre} handleRating={(input)=> handleRating(input)} handleFormat={(e)=>handleFormat(e)} handleGenre={(e)=>handleGenre(e)}/>
+      <Routes rating={rating} format={format} genre={genre}/>
     </main>
   );
 }
