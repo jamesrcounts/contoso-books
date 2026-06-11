@@ -17,7 +17,7 @@ routes.forEach(route => {
     app[route.method](route.path, route.handler);
 });
 if (['production'].includes(process.env.NODE_ENV)) {
-    const root = path.join(__dirname,'..', 'client', 'build')
+    const root = path.join(__dirname,'..', 'client', 'dist')
     app.use(express.static(root));
     console.log(root);
     app.get("*", (req, res) => {
