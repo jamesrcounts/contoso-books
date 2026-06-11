@@ -31,10 +31,10 @@ Simply enter the Resource Group name in this template to deploy the resources.
 
 1. Navigate to folder ./deployment/seed using Git Bash.
 
-2. Update .env file in this path by specifying value for "COSMOS_DB_CONNECTION_STRING" of the Cosmos DB account created by the deployment template in the previous step.
+2. Update .env file in this path by specifying value for "BOOKSTORE_SEED_DB_CONNECTION_STRING" of the database account created by the deployment template in the previous step.
    You can get the connection string from Azure portal > Cosmos DB Account resource > Connection string blade > Primary connection string.
    Example of updated .env file:
-   COSMOS_DB_CONNECTION_STRING="mongodb://accountname:passwordendingin==@accountname.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@accountname@"
+   BOOKSTORE_SEED_DB_CONNECTION_STRING="mongodb://accountname:passwordendingin==@accountname.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@accountname@"
 
 3. Execute the seeding shell script with the command './seed_data.sh'. It may take a few minutes to seed the data into books and genres collections.\
    Item count of books collection is ~85k and genres collection has only 1 item. \

@@ -10,8 +10,8 @@
     #     echo "Getting connection string..."
 
     echo "Populating database..."
-    node ./populate_data.js --endpoint $COSMOS_DB_CONNECTION_STRING
+    node ./populate_data.js --endpoint $BOOKSTORE_SEED_DB_CONNECTION_STRING
 
-    echo "Finished! Seeding, $COSMOS_DB_ACCOUNT, is now ready to play around!"
+    echo "Finished! Seeding, $BOOKSTORE_SEED_DB_ACCOUNT, is now ready to play around!"
 
 # fi

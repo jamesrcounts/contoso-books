@@ -1,6 +1,6 @@
 import  MongoClient  from 'mongodb';
 
-const DB_NAME = 'cosmosbookstore';
+const DB_NAME = 'bookstore';
 
 const db = {
     _dbClient: null,

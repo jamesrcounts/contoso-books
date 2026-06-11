@@ -15,18 +15,18 @@ Run from repo root unless noted:
 - `npm run build` — builds the React client into `client/build/`.
 - `npm start` — runs `node server/server.js` (production-style; expects `client/build/` to exist if `NODE_ENV=production`).
 - `cd client && npm test` — CRA/Jest tests for the client. There are no server tests.
-- `cd deployment/seed && ./seed_data.sh` — seeds the `books` (~85k docs) and `genres` (1 doc) collections from a public blob. Requires `COSMOS_DB_CONNECTION_STRING` in `deployment/seed/.env`.
+- `cd deployment/seed && ./seed_data.sh` — seeds the `books` (~85k docs) and `genres` (1 doc) collections from a public blob. Requires `BOOKSTORE_SEED_DB_CONNECTION_STRING` in `deployment/seed/.env`.
 
 ## Required environment variables
 
 Read by `server/server.js` and `server/src/db/searchBooks.js` (via `dotenv`):
 
-- `COSMOS_BOOKSTORE_DB_CONNECTION_STRING` — Mongo connection string to Cosmos DB. Connects to the `cosmosbookstore` database (hard-coded in [db.js](server/src/db/db.js)).
+- `BOOKSTORE_DB_CONNECTION_STRING` — Mongo connection string. Connects to the `bookstore` database (hard-coded in [db.js](server/src/db/db.js)).
 - `PORT` — server port, defaults to `8080`.
 - `NODE_ENV=production` — when set, server also serves the built React app from `../client/build`.
 - `SEARCH_API_ENDPOINT`, `SEARCH_API_KEY`, `SEARCH_INDEX_NAME` — only needed for the Azure Cognitive Search-backed `/search` route. See [azuresearchsetup.md](deployment/docs/azuresearchsetup.md).
 
-The seed script uses a separate env var `COSMOS_DB_CONNECTION_STRING` (note: different name).
+The seed script uses a separate env var `BOOKSTORE_SEED_DB_CONNECTION_STRING` (distinct from the server's `BOOKSTORE_DB_CONNECTION_STRING`).
 
 ## Architecture
 
@@ -59,4 +59,4 @@ The seed script uses a separate env var `COSMOS_DB_CONNECTION_STRING` (note: dif
 
 - The server uses native ESM (`"type": "module"`), so every internal import needs the `.js` extension (e.g. `import db from './db.js'`). The seed script under `deployment/seed/` is CommonJS — don't mix patterns across that boundary.
 - Most db modules export both `export default x` and `export { x }`. New modules should follow the same pattern to stay consistent with existing imports.
-- Collection names (`books`, `genres`) and the database name (`cosmosbookstore`) are hard-coded; there is no schema/model layer.
+- Collection names (`books`, `genres`) and the database name (`bookstore`) are hard-coded; there is no schema/model layer.
