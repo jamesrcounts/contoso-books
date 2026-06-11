@@ -1,11 +1,9 @@
 import  db  from './db.js';
-import obj from 'bson';
-const {ObjectId} = obj;
+import { ObjectId } from 'mongodb';
 
 const getBook = async (bookId) => {
     const connection = db.getConnection();
-    // Query one document that matches the particular criteria
-    const book = await connection.collection('books').findOne({"_id": ObjectId(bookId)})
+    const book = await connection.collection('books').findOne({"_id": new ObjectId(bookId)})
     return book;
 }
 export default getBook
