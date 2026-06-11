@@ -1,5 +1,5 @@
 {
-    "name": "cosmos-books-migration",
+    "name": "bookstore-seed",
     "version": "1.0.0",
     "description": "",
     "main": "populate_data.js",

@@ -24,7 +24,7 @@ if (['production'].includes(process.env.NODE_ENV)) {
         res.sendFile('index.html', { root });
     })
 }
-const dBConnectionString = process.env.COSMOS_BOOKSTORE_DB_CONNECTION_STRING || "";
+const dBConnectionString = process.env.BOOKSTORE_DB_CONNECTION_STRING || "";
 const PORT = process.env.PORT || 8080;
 
 db.connect(dBConnectionString)

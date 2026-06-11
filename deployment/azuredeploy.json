@@ -82,7 +82,7 @@
     },
     "databaseName": {
       "type": "string",
-      "defaultValue": "cosmosbookstore",
+      "defaultValue": "bookstore",
       "metadata": {
         "description": "The name for the Mongo DB database"
       }
@@ -264,7 +264,7 @@
             "WEBSITE_NODE_DEFAULT_VERSION": "14.0.0",
             "LOG_LEVEL": "log",
             "LOG_ENABLED": true,
-            "COSMOS_BOOKSTORE_DB_CONNECTION_STRING": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('applicationName'))), '2019-12-12').connectionStrings[0].connectionString]",
+            "BOOKSTORE_DB_CONNECTION_STRING": "[listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('applicationName'))), '2019-12-12').connectionStrings[0].connectionString]",
             "SEARCH_API_KEY":"",
             "SEARCH_API_ENDPOINT":"",
             "SEARCH_INDEX_NAME":"",

@@ -67,7 +67,7 @@ async function populateDb(data, collectionName) {
       if (error) {
         throw error;
       } 
-      database = client.db("cosmosbookstore");
+      database = client.db("bookstore");
       collection = database.collection(collectionName);
       let batch = collection.initializeOrderedBulkOp();
 
