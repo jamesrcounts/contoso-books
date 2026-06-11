@@ -2,59 +2,21 @@ import React from 'react';
 import { Routes } from './Routes';
 import { NavBar } from './NavBar';
 import { useNavbarFilters } from './useNavbarFilters';
+import { toggleListItem, toggleRating } from './filterHelpers';
 
 function App() {
   const {rating, setRating, format, setFormat, searchText, setSearchText, genre, setGenre} = useNavbarFilters();
 
   const handleRating = (ratinginput) => {
-      setRating((oldrating) => {
-        if (oldrating === ratinginput) {
-          return "0";
-        }
-        else return ratinginput;
-      });
+    setRating((old) => toggleRating(old, ratinginput));
   }
 
   const handleFormat = (formatinput) => {
-      setFormat((oldFormatInput) => {
-        if (oldFormatInput === "") {
-          return formatinput;
-        } else  {
-            const oldFormatList = Array.isArray(oldFormatInput) ? oldFormatInput : oldFormatInput.split(",");
-            if (oldFormatList.includes(formatinput)) {
-              var index = oldFormatList.indexOf(formatinput);
-              if (index > -1) {
-                oldFormatList.splice(index, 1);
-              }
-              return oldFormatList === [] ? "" : oldFormatList.join();
-            }
-            else {
-              return oldFormatInput + "," + formatinput;
-            }
-          }
-        }
-      );
+    setFormat((old) => toggleListItem(old, formatinput));
   }
 
   const handleGenre = (genreinput) => {
-    setGenre((oldGenreInput) => {
-      if (oldGenreInput === "") {
-        return genreinput;
-      } else  {
-          const oldGenreList = Array.isArray(oldGenreInput) ? oldGenreInput : oldGenreInput.split(",");
-          if (oldGenreList.includes(genreinput)) {
-            var index = oldGenreList.indexOf(genreinput);
-            if (index > -1) {
-              oldGenreList.splice(index, 1);
-            }
-            return oldGenreList === [] ? "" : oldGenreList.join();
-          }
-          else {
-            return oldGenreInput + "," + genreinput;
-          }
-        }
-      }
-    );
+    setGenre((old) => toggleListItem(old, genreinput));
   }
 
   const handleSearch = (searchTextInput) => {
