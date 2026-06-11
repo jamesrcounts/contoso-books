@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-Sample bookstore app demonstrating Azure Cosmos DB's API for MongoDB. Express + native `mongodb` driver on the backend, Create React App (React 16) on the frontend. Optional Azure Cognitive Search integration powers full-text search.
+Sample bookstore app demonstrating Azure DocumentDB (the vCore-based, MongoDB wire-protocol-compatible service). Express + native `mongodb` driver on the backend, Vite/React on the frontend. Optional Azure AI Search integration powers full-text search.
 
 ## Common commands
 
@@ -39,7 +39,7 @@ The seed script uses a separate env var `BOOKSTORE_SEED_DB_CONNECTION_STRING` (d
   - **`/books`** ([getAllBooks.js](server/src/db/getAllBooks.js)) — direct Mongo `find` with paging/sort/filter. Used when there is no search text.
   - **`/search`** ([searchBooks.js](server/src/db/searchBooks.js)) — Azure Cognitive Search using `@azure/search-documents`, with OData `$filter` / `$orderby`. Used when the user types into the search box.
   The client switches between them in [useBooks.js](client/src/Home/useBooks.js) based on whether `searchText` is empty.
-- [searchGenres.js](server/src/db/searchGenres.js) demonstrates Cosmos's aggregation pipeline (`$unwind` → `$match` → `$group`) and logs the RU cost via `getLastRequestStatistics`.
+- [searchGenres.js](server/src/db/searchGenres.js) demonstrates an aggregation pipeline (`$unwind` → `$match` → `$group`) for genre autocomplete.
 - Comments on a book are stored as an array on the `books` document and edited via `$push` / `$unset` + `$pull` ([updateComment.js](server/src/db/updateComment.js), [removeComment.js](server/src/db/removeComment.js)).
 
 ### Client (`client/`, CRA, React 16)
@@ -51,7 +51,7 @@ The seed script uses a separate env var `BOOKSTORE_SEED_DB_CONNECTION_STRING` (d
 
 ### Deployment (`deployment/`)
 
-- [azuredeploy.json](deployment/azuredeploy.json) — ARM template provisioning App Service + Cosmos DB account.
+- [azuredeploy.json](deployment/azuredeploy.json) — ARM template provisioning App Service + DocumentDB vCore cluster (`Microsoft.DocumentDB/mongoClusters`).
 - [ecosystem.config.js](ecosystem.config.js) — PM2 config used by the App Service host; it `cd`s into `/home/site/wwwroot/server/` and runs `server.js`.
 - [deployment/seed/](deployment/seed/) — standalone Node script (CommonJS, separate `package.json`) that downloads `books.json`/`genres.json` from a public Azure Storage URL and bulk-inserts them.
 

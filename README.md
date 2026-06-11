@@ -1,6 +1,6 @@
-# CosmosDB Bookstore
+# Contoso Books
 
-CosmosDB Bookstore is a sample books catalog application that demonstrates the capabilities of Azure Cosmos DB API for MongoDB.
+Contoso Books is a sample books catalog application that demonstrates the capabilities of Azure DocumentDB (the vCore-based, MongoDB wire-protocol-compatible service).
 
 Some of the functionalities being demonstrated are:
 
@@ -9,7 +9,6 @@ Some of the functionalities being demonstrated are:
 - Sorting & Indexing
 - Updates
 - Using different operators
-- Checking RU cost of the previous operation
 - Regex queries
 - Aggregation pipelines
 - Azure Search integration
@@ -22,19 +21,16 @@ Follow the steps below to deploy the app with minimal effort and begin experimen
 
 ### Deploy the resources to Azure
 
-The template below deploys the application into an Azure App Service instance and creates an Azure Cosmos DB account.
-Simply enter the Resource Group name in this template to deploy the resources.
+The template at [deployment/azuredeploy.json](deployment/azuredeploy.json) provisions the application into an Azure App Service instance and creates an Azure DocumentDB cluster. Deploy it via the Azure portal's "Deploy a custom template" experience, the Azure CLI (`az deployment group create`), or your preferred IaC tooling.
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fnayakshweta%2FCosmosBookstore%2Fmaster%2Fdeployment%2Fazuredeploy.json)
-
-### Import the sample dataset into the Azure Cosmos DB API for MongoDB account
+### Import the sample dataset into the Azure DocumentDB account
 
 1. Navigate to folder ./deployment/seed using Git Bash.
 
 2. Update .env file in this path by specifying value for "BOOKSTORE_SEED_DB_CONNECTION_STRING" of the database account created by the deployment template in the previous step.
-   You can get the connection string from Azure portal > Cosmos DB Account resource > Connection string blade > Primary connection string.
+   You can get the connection string from Azure portal > DocumentDB cluster resource > Connection strings blade.
    Example of updated .env file:
-   BOOKSTORE_SEED_DB_CONNECTION_STRING="mongodb://accountname:passwordendingin==@accountname.mongo.cosmos.azure.com:10255/?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@accountname@"
+   BOOKSTORE_SEED_DB_CONNECTION_STRING="mongodb+srv://<user>:<password>@<cluster-name>.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
 
 3. Execute the seeding shell script with the command './seed_data.sh'. It may take a few minutes to seed the data into books and genres collections.\
    Item count of books collection is ~85k and genres collection has only 1 item. \
@@ -51,18 +47,25 @@ Seeding completed on genres Collection 9/30/2021, 10:29:10 AM
 Seeding completed on books Collection 9/30/2021, 10:39:40 AM
 ```
 
+> **Migration gotcha (intentional, for the lab):** DocumentDB (vCore) indexes only `_id` by default — unlike the older RU-based Cosmos DB for MongoDB API, which auto-indexes every field. The list page in this app filters on `rating`, `bookformat`, and `genre` and sorts on `rating`. Against a freshly-seeded cluster those queries will perform a full collection scan over ~85k documents. After seeding, run the following in `mongosh` to make them performant:
+>
+> ```js
+> use bookstore
+> db.books.createIndex({ rating: 1 })
+> db.books.createIndex({ bookformat: 1 })
+> db.books.createIndex({ genre: 1 })
+> ```
+
 ### Connect to the application
 
 Now you can try out the application by browsing to the app service URL.
 
 You can find the URL in the overview section of the App Service resource created by the deployment template.
-![Cosmos Bookstore Main page](deployment/docs/images/cosmosbookstoremainpage.png)
+![Contoso Books main page](deployment/docs/images/cosmosbookstoremainpage.png)
 
 ### Setup Azure Search Integration
 
 Optionally, you can [setup Azure Search integration](deployment/docs/azuresearchsetup.md) to try out the full text functionality in the app.
-
-> Azure Search support for Cosmos DB API for MongoDB is currently in preview, so the feature will explicitly need to be enabled for your subscription.
 
 ## Dataset Credits
 
@@ -70,10 +73,9 @@ The dataset used in this application is ["GoodReads 100k books"](https://www.kag
 
 ## References
 
-- [What is Azure Cosmos DB for MongoDB?](https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/introduction)
-- [Inserting Data into Cosmos DB for MongoDB](https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/tutorial-insert)
-- [supported features and syntax](https://learn.microsoft.com/en-us/azure/cosmos-db/mongodb/feature-support-42)
+- [What is Azure DocumentDB?](https://learn.microsoft.com/azure/documentdb/introduction)
+- [DocumentDB feature compatibility](https://learn.microsoft.com/azure/documentdb/compatibility-features)
 
 ## License
 
-**CosmosDB Bookstore** is licensed under the MIT license. See the [LICENSE](./LICENSE.txt) file for more details.
+**Contoso Books** is licensed under the MIT license. See the [LICENSE](./LICENSE.txt) file for more details.

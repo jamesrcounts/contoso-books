@@ -124,7 +124,7 @@ export const NavBar = ({rating, format, genre, handleRating, handleFormat, handl
                         {genre === "" ? <div></div> : <div className="genres-container"><ul>{selectedGenresMap}</ul></div>}
                     </ul>
                 </div>
-                <a className="logo" href="/"><span className="logo-text">Cosmos Books</span></a>
+                <a className="logo" href="/"><span className="logo-text">Contoso Books</span></a>
             </nav>
             
             <div className="search-box">

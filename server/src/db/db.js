@@ -11,7 +11,7 @@ const db = {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-        console.log("Cosmos DB's API for MongoDB connected")
+        console.log("DocumentDB connected")
         this._dbClient = client;
     },
     
