@@ -1,15 +1,12 @@
-import  MongoClient  from 'mongodb';
+import { MongoClient } from 'mongodb';
 
 const DB_NAME = 'bookstore';
 
 const db = {
     _dbClient: null,
     connect: async function(url) {
-        // Use connection pool size of 10 by default
         const client = await MongoClient.connect(url, {
-            poolSize: 10,
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+            maxPoolSize: 10,
         });
         console.log("DocumentDB connected")
         this._dbClient = client;
