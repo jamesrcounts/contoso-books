@@ -5,27 +5,13 @@ export default defineConfig({
   test: {
     environment: 'node',
   },
-  plugins: [
-    react({
-      include: /\.(jsx?|tsx?)$/,
-    }),
-  ],
+  plugins: [react()],
   server: {
     port: 3000,
     proxy: {
       '/books': 'http://localhost:8080',
       '/genres': 'http://localhost:8080',
       '/comment': 'http://localhost:8080',
-    },
-  },
-  esbuild: {
-    loader: 'jsx',
-    include: /src\/.*\.jsx?$/,
-    exclude: [],
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: { '.js': 'jsx' },
     },
   },
 })
