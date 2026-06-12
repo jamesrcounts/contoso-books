@@ -4,7 +4,7 @@
     "description": "",
     "main": "populate_data.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "vitest run"
     },
     "repository": {},
     "keywords": [],
@@ -14,6 +14,10 @@
     "dependencies": {
         "node-fetch": "^2.6.1",
         "yargs": "^15.1.0",
-        "mongodb": "^3.6.2"
+        "mongodb": "^6"
+    },
+    "devDependencies": {
+        "mongodb-memory-server": "^9.0.0",
+        "vitest": "^1.0.0"
     }
 }
