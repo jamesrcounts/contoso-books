@@ -12,7 +12,6 @@
     "license": "ISC",
     "bugs": {},
     "dependencies": {
-        "node-fetch": "^2.6.1",
         "yargs": "^15.1.0",
         "mongodb": "^6"
     },

@@ -1,20 +1,41 @@
 const { MongoClient } = require("mongodb");
-const fetch = require("node-fetch");
+const fs = require("fs");
+const path = require("path");
+const zlib = require("zlib");
 
-const BOOKS_URL = "https://cosmosbookstorestg.blob.core.windows.net/bookstore/books.json";
-const GENRES_URL = "https://cosmosbookstorestg.blob.core.windows.net/bookstore/genres.json";
+// Seed data is vendored into ./data (see data/README.md). It was previously fetched
+// from an Azure blob host that no longer exists, so the dataset now ships in-repo as a
+// single gzipped tarball holding books.json + genres.json.
+const ARCHIVE_FILE = path.join(__dirname, "data", "seed-data.tar.gz");
 
-async function fetchJson(target) {
-  const res = await fetch(target, {
-    method: "get",
-    headers: {
-      "content-type": "application/json;charset=UTF-8",
-    },
-  });
-  if (res.status !== 200) {
-    throw new Error(`Error fetching ${target}: status ${res.status}`);
+// Minimal USTAR reader: gunzip, then walk 512-byte tar blocks pulling out each regular
+// file as { name: Buffer }. The archive is produced by data/build_dataset.py in plain
+// USTAR format (no PAX headers), so this stays small and dependency-free.
+function readTarGz(file) {
+  const buf = zlib.gunzipSync(fs.readFileSync(file));
+  const files = {};
+  for (let off = 0; off + 512 <= buf.length; ) {
+    const name = buf.toString("utf8", off, off + 100).replace(/\0.*$/, "");
+    if (!name) break; // zero block marks end of archive
+    const size = parseInt(buf.toString("utf8", off + 124, off + 136).replace(/\0.*$/, "").trim(), 8) || 0;
+    const start = off + 512;
+    files[name] = buf.subarray(start, start + size);
+    off = start + Math.ceil(size / 512) * 512;
   }
-  return res.json();
+  return files;
+}
+
+// Extract + parse both documents once; getBooks/getGenres share the result.
+let _archive = null;
+function loadArchive() {
+  if (!_archive) {
+    const files = readTarGz(ARCHIVE_FILE);
+    _archive = {
+      books: JSON.parse(files["books.json"].toString("utf8")),
+      genres: JSON.parse(files["genres.json"].toString("utf8")),
+    };
+  }
+  return _archive;
 }
 
 // Pure transform: drop _id and stringify isbn fields. Does not mutate the input.
@@ -36,13 +57,13 @@ function prepareGenres(result) {
 }
 
 async function getBooks() {
-  console.log("Fetching books");
-  return prepareBooks(await fetchJson(BOOKS_URL));
+  console.log("Loading books from " + ARCHIVE_FILE);
+  return prepareBooks(loadArchive().books);
 }
 
 async function getGenres() {
-  console.log("Fetching genres");
-  return prepareGenres(await fetchJson(GENRES_URL));
+  console.log("Loading genres from " + ARCHIVE_FILE);
+  return prepareGenres(loadArchive().genres);
 }
 
 async function insertCollection(db, collectionName, docs) {
