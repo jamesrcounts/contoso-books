@@ -58,7 +58,7 @@ The app's npm workspace lives in `src/` (that's where the root `package.json` is
 - `npm run build` — builds the React client into `src/client/dist/`.
 - `npm start` — runs `node server/server.js` from `src/` (production-style; expects `src/client/dist/` to exist if `NODE_ENV=production`).
 - `cd src/client && npm test` — Vitest tests for the client.
-- `cd src/deployment/seed && ./seed_data.sh` — seeds the `books` (100,000 docs) and `genres` (1 doc) collections from a vendored dataset (`data/seed-data.tar.gz`). Requires `BOOKSTORE_SEED_DB_CONNECTION_STRING` in `src/deployment/seed/.env`.
+- `cd src/deployment/seed && npm install && npm run seed` — seeds the `books` (100,000 docs) and `genres` (1 doc) collections from a vendored dataset (`data/seed-data.tar.gz`). Requires `BOOKSTORE_SEED_DB_CONNECTION_STRING` in `src/deployment/seed/.env` (loaded via `dotenv`).
 
 ## Required environment variables
 

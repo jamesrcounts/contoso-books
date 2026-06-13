@@ -4,6 +4,7 @@
     "description": "",
     "main": "populate_data.js",
     "scripts": {
+        "seed": "node populate_data.js",
         "test": "vitest run"
     },
     "repository": {},
@@ -12,7 +13,7 @@
     "license": "ISC",
     "bugs": {},
     "dependencies": {
-        "yargs": "^15.1.0",
+        "dotenv": "^10.0.0",
         "mongodb": "^6"
     },
     "devDependencies": {

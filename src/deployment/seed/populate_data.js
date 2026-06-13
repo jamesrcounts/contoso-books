@@ -100,11 +100,11 @@ module.exports = {
 };
 
 if (require.main === module) {
-  const { endpoint } = require("yargs").argv;
-  // yargs gives a bare `--endpoint` (no value) the boolean `true`, and an empty
-  // BOOKSTORE_SEED_DB_CONNECTION_STRING comes through as "". Reject both up front
-  // so the run fails clearly instead of with MongoClient's opaque
-  // "connectionString.startsWith is not a function".
+  require("dotenv").config();
+  const endpoint = process.env.BOOKSTORE_SEED_DB_CONNECTION_STRING;
+  // A missing or empty BOOKSTORE_SEED_DB_CONNECTION_STRING comes through as
+  // undefined/"". Reject both up front so the run fails clearly instead of with
+  // MongoClient's opaque "connectionString.startsWith is not a function".
   if (typeof endpoint !== "string" || !endpoint.trim()) {
     console.error(
       "Error: no connection string. Set BOOKSTORE_SEED_DB_CONNECTION_STRING in src/deployment/seed/.env (see Task 04)."
