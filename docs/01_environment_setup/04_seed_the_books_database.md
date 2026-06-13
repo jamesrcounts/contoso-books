@@ -52,12 +52,12 @@ Populating database...
 $$$ Seeding data started 6/10/2026, 8:30:05 PM
 Loading books from .../src/deployment/seed/data/seed-data.tar.gz
 Loading genres from .../src/deployment/seed/data/seed-data.tar.gz
-Seeding completed on books Collection 6/10/2026, 8:40:35 PM
-Seeding completed on genres Collection 6/10/2026, 8:40:35 PM
+Seeding completed on books Collection 6/10/2026, 8:30:13 PM
+Seeding completed on genres Collection 6/10/2026, 8:30:13 PM
 Finished! Seeding, , is now ready to play around!
 ```
 
-Total time is roughly 10 minutes — the books collection is large.
+The whole run finishes in a few seconds — the dataset loads from the local repo rather than over the network.
 
 ## Verify the data
 
