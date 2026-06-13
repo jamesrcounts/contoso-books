@@ -46,8 +46,6 @@ The script installs its own Node dependencies (1–2 minutes), then reads the ve
 ```
 Preparing to import data...
 Installing Node modules...
-
-added 47 packages in 6s
 Populating database...
 $$$ Seeding data started 6/10/2026, 8:30:05 PM
 Loading books from .../src/deployment/seed/data/seed-data.tar.gz
@@ -67,11 +65,19 @@ In VS Code, open a new integrated terminal (`` Ctrl+Shift+` ``) and connect with
 mongosh
 ```
 
-Switch to the `bookstore` database and check the document counts:
+Switch to the `bookstore` database:
 
 ```javascript
 use bookstore
+```
+
+Then check the document counts, running each command on its own (enter one, then the next — don't paste them together, or `mongosh` treats the later lines as a continuation of the first):
+
+```javascript
 db.books.countDocuments()
+```
+
+```javascript
 db.genres.countDocuments()
 ```
 
