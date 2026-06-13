@@ -21,7 +21,7 @@ cd deployment/seed
 
 ## Configure the seed connection string
 
-The seed script reads its own `.env` file inside `src/deployment/seed/`. In the VS Code Explorer, open `src/deployment/seed/.env` (it already exists with an empty connection string). Replace its contents with:
+The seed script reads its own `.env` file inside `src/deployment/seed/`. This file is git-ignored (so your connection string never gets committed), so you create it yourself. In the VS Code Explorer, right-click the `src/deployment/seed` folder, select **New File**, name it `.env`, and paste:
 
 ```
 BOOKSTORE_SEED_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
@@ -102,7 +102,7 @@ Exit `mongosh`:
 exit
 ```
 
-> **Troubleshooting — `Error: no connection string`:** You skipped the "Configure the seed connection string" step above — `src/deployment/seed/.env` still has an empty `BOOKSTORE_SEED_DB_CONNECTION_STRING`. Set it and re-run.
+> **Troubleshooting — `Error: no connection string`:** You skipped the "Configure the seed connection string" step above — `src/deployment/seed/.env` is missing or its `BOOKSTORE_SEED_DB_CONNECTION_STRING` is unset. Create the file (or set the value) and re-run.
 >
 > **Troubleshooting — script reports a connection error:** Confirm the MongoDB container is still running (`docker ps` should list `mongodb` with status `Up`). If not, `docker start mongodb`. The replica set state is persisted, so you do not need to re-run `rs.initiate()`.
 >
