@@ -12,4 +12,4 @@ npm i --silent
 echo "Populating database..."
 node ./populate_data.js --endpoint "$BOOKSTORE_SEED_DB_CONNECTION_STRING"
 
-echo "Finished! Seeding, $BOOKSTORE_SEED_DB_ACCOUNT, is now ready to play around!"
+echo "Finished! Your database is now ready to play around!"
