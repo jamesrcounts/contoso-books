@@ -19,19 +19,37 @@ npm run develop
 
 The `develop` script uses `concurrently` to run two processes: the Express API server (via `nodemon`) on port `8080`, which reads `BOOKSTORE_DB_CONNECTION_STRING` from `.env` and connects to MongoDB; and the Vite dev server on port `3000`, which serves the React UI and proxies API calls (`/books`, `/genres`, `/comment`) to the server on 8080. You browse the app on port 3000.
 
-> **Don't use `npm start` here.** It runs the API server alone and does not serve the web UI, so opening it in a browser returns `Cannot GET /`. The single-port `npm start` flow is what the App Service host uses in production (it serves the prebuilt client); for local development, `npm run develop` is the right command.
-
 ### Expected output
 
-`concurrently` interleaves both processes' logs, prefixing each line with `[0]` (server) or `[1]` (client). The two lines that matter:
+`concurrently` interleaves both processes' logs, prefixing each line with `[0]` (server) or `[1]` (client). The exact ordering varies from run to run:
 
 ```
+> bookstore@1.0.0 develop
+> concurrently "cd server && npm run watch" "cd client && npm run dev"
+
+[0]
+[0] > server@1.0.0 watch
+[0] > nodemon server.js
+[0]
+[1]
+[1] > bookstore-front-end@0.1.0 dev
+[1] > vite
+[1]
+[0] [nodemon] 3.1.14
+[0] [nodemon] to restart at any time, enter `rs`
+[0] [nodemon] watching path(s): *.*
+[0] [nodemon] watching extensions: js,mjs,cjs,json
+[0] [nodemon] starting `node server.js`
+[1]
+[1]   VITE v8.0.16  ready in 633 ms
+[1]
+[1]   ➜  Local:   http://localhost:3000/
+[1]   ➜  Network: use --host to expose
 [0] Server is running on port 8080
 [0] DocumentDB connected
-[1]   ➜  Local:   http://localhost:3000/
 ```
 
-The `DocumentDB connected` line is logged by the db layer once the MongoDB driver finishes connecting. (The app uses "DocumentDB" in its log even against the local container — the same code path connects to Azure DocumentDB later in the lab.)
+The two lines that confirm the app is ready: `[1] ➜ Local: http://localhost:3000/` (the URL you open) and `[0] DocumentDB connected`. That last line is logged by the db layer once the MongoDB driver finishes connecting. (The app uses "DocumentDB" in its log even against the local container — the same code path connects to Azure DocumentDB later in the lab.)
 
 Leave the terminal running — both servers stay in the foreground.
 
@@ -49,17 +67,25 @@ You should see the Contoso Books home page with a paginated list of books render
 
 Confirm reads and writes work against the MongoDB container:
 
-1. **Browse** — paginate through the catalog; confirm books load
-2. **Search** — search for a book title (e.g. "Harry Potter"); confirm matching books appear
-3. **View detail** — click into a book; confirm the detail page renders with full fields
-4. **Write** — on a book detail page, add a comment; confirm it persists by reloading the page
+1. **Browse** — scroll down the home page; confirm more books load as you reach the bottom (the catalog uses infinite scroll, not paged navigation)
+2. **View detail** — click into a book; confirm the detail page renders with full fields
+3. **Write** — on a book detail page, add a comment; confirm it persists by reloading the page
 
-You can also spot-check writes from `mongosh` in a separate VS Code terminal (`` Ctrl+Shift+` ``):
+You can also confirm the write directly against the data from `mongosh` in a separate VS Code terminal (`` Ctrl+Shift+` ``). Switch to the `bookstore` database:
 
 ```javascript
 use bookstore
-db.books.findOne({ title: /harry potter/i })
 ```
+
+Then run the query on its own (don't paste it together with the `use` line, or `mongosh` treats it as a continuation):
+
+```javascript
+db.books.findOne({ "reviewcomments.0": { $exists: true } })
+```
+
+The returned book includes your comment in its `reviewcomments` array (each entry is `{ name, comment }`).
+
+> The Azure DocumentDB VS Code extension is the richer tool for browsing data, but it expects connection credentials, and the local container runs without authentication — so `mongosh` is the simpler choice here. You will use the extension against the authenticated Azure cluster in Exercise 06.
 
 ## Stop the application
 
