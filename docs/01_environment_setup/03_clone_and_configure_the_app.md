@@ -7,7 +7,7 @@ parent: "Exercise 01 - Environment Setup — Containerized MongoDB & Client App"
 
 # Task 03 — Clone the Contoso Books App and Configure the Connection String
 
-You will now clone the Contoso Books application — a Node.js + Express + React books catalog that uses the MongoDB driver — and configure it to connect to your local MongoDB container. The connection string is supplied via an environment variable so the **same application binary** can target either the local MongoDB container or Azure DocumentDB later, with no code changes.
+You will now clone the lab repository — it contains both these instructions and the **Contoso Books** application (a Node.js + Express + React books catalog that uses the MongoDB driver, under `src/`) — and configure the app to connect to your local MongoDB container. The connection string is supplied via an environment variable so the **same application binary** can target either the local MongoDB container or Azure DocumentDB later, with no code changes.
 
 ## Clone the repository
 
@@ -17,7 +17,7 @@ Open a PowerShell terminal in a working directory of your choice and run:
 git clone https://github.com/jamesrcounts/contoso-books.git
 ```
 
-> The repository contains three workspaces: `server/` (Express + MongoDB driver), `client/` (React UI), and `deployment/seed/` (data seeding scripts used in Task 04).
+> This is the same repository the lab site is published from. The sample application lives under `src/`, organized as three workspaces: `src/server/` (Express + MongoDB driver), `src/client/` (React UI), and `src/deployment/seed/` (data seeding scripts used in Task 04).
 
 ## Open the project in VS Code
 
@@ -33,13 +33,14 @@ VS Code launches with the project loaded. You will use the **integrated terminal
 
 ## Install dependencies
 
-In the VS Code integrated terminal (Git Bash), run:
+The application lives under `src/`, so change into that directory first. In the VS Code integrated terminal (Git Bash), run:
 
 ```bash
+cd src
 npm install
 ```
 
-The root `package.json` has an `install` hook that cascades into `server/` and `client/` and installs both workspaces in one step. Expect roughly 2 minutes total.
+The `src/package.json` has an `install` hook that cascades into `server/` and `client/` and installs both workspaces in one step. Expect roughly 2 minutes total.
 
 ### Expected output
 
@@ -48,7 +49,7 @@ You will see three install blocks (root, server, client). The middle block — t
 Abbreviated output:
 
 ```
-> cosmosbookstore@1.0.0 install
+> bookstore@1.0.0 install
 > cd server && npm i && cd ../client && npm i
 
 added 39 packages, removed 130 packages, changed 82 packages, and audited 315 packages in 12s
@@ -69,10 +70,10 @@ found 0 vulnerabilities
 
 ## Configure the connection string
 
-In the VS Code Explorer (left sidebar), right-click on the repository root and select **New File**. Name it `.env`. With the file open in the editor, paste:
+In the VS Code Explorer (left sidebar), right-click on the `src` folder and select **New File**. Name it `.env` (so the file is `src/.env`, alongside the app's `package.json`). With the file open in the editor, paste:
 
 ```
-COSMOS_BOOKSTORE_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
+BOOKSTORE_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
 PORT=8080
 ```
 

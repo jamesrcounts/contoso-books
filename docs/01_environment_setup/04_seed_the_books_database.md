@@ -13,7 +13,7 @@ The app needs data to be useful. The repository ships with a seed script that do
 
 The integrated terminal in VS Code is already running Git Bash (configured as the default in Task 00), so the seed script will run directly without switching shells.
 
-From the repository root in the integrated terminal:
+From the `src/` directory (where you ran `npm install` in Task 03), in the integrated terminal:
 
 ```bash
 cd deployment/seed
@@ -21,15 +21,15 @@ cd deployment/seed
 
 ## Configure the seed connection string
 
-The seed script reads its own `.env` file inside `deployment/seed/`. In the VS Code Explorer, open `deployment/seed/.env` (it already exists with an empty connection string). Replace its contents with:
+The seed script reads its own `.env` file inside `src/deployment/seed/`. In the VS Code Explorer, open `src/deployment/seed/.env` (it already exists with an empty connection string). Replace its contents with:
 
 ```
-COSMOS_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
+BOOKSTORE_SEED_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
 ```
 
 Save with `Ctrl+S`.
 
-> The seed script uses a different variable name (`COSMOS_DB_CONNECTION_STRING`) than the app server (`COSMOS_BOOKSTORE_DB_CONNECTION_STRING`). Both point at the same MongoDB container — they are independent scripts that happen to use different names internally.
+> The seed script uses a different variable name (`BOOKSTORE_SEED_DB_CONNECTION_STRING`) than the app server (`BOOKSTORE_DB_CONNECTION_STRING`). Both point at the same MongoDB container — they are independent scripts that happen to use different names internally.
 
 ## Run the seed
 
@@ -39,7 +39,7 @@ In the Git Bash terminal:
 ./seed_data.sh
 ```
 
-The script installs its own Node dependencies (1–2 minutes), then fetches `books.json` and `genres.json` from a public Azure blob storage URL and bulk-inserts them into the `cosmosbookstore` database in your local MongoDB container.
+The script installs its own Node dependencies (1–2 minutes), then fetches `books.json` and `genres.json` from a public Azure blob storage URL and bulk-inserts them into the `bookstore` database in your local MongoDB container.
 
 ### Expected output
 
@@ -67,10 +67,10 @@ In VS Code, open a new integrated terminal (`` Ctrl+Shift+` ``) and connect with
 mongosh
 ```
 
-Switch to the `cosmosbookstore` database and check the document counts:
+Switch to the `bookstore` database and check the document counts:
 
 ```javascript
-use cosmosbookstore
+use bookstore
 db.books.countDocuments()
 db.genres.countDocuments()
 ```

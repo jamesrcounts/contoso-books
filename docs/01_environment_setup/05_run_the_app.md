@@ -11,13 +11,13 @@ You have a running MongoDB container with seeded data and a configured client ap
 
 ## Start the application
 
-In the VS Code integrated terminal (Git Bash) at the repository root, run:
+In the VS Code integrated terminal (Git Bash), ensure you are in the `src/` directory (as in Task 03), then run:
 
 ```bash
 npm start
 ```
 
-The `start` script runs `node server/server.js`. The server reads `COSMOS_BOOKSTORE_DB_CONNECTION_STRING` from `.env`, connects to MongoDB, and listens on the port from `PORT` (default `8080`).
+The `start` script runs `node server/server.js`. The server reads `BOOKSTORE_DB_CONNECTION_STRING` from `.env`, connects to MongoDB, and listens on the port from `PORT` (default `8080`).
 
 ### Expected output
 
@@ -51,7 +51,7 @@ Confirm reads and writes work against the MongoDB container:
 You can also spot-check writes from `mongosh` in a separate VS Code terminal (`` Ctrl+Shift+` ``):
 
 ```javascript
-use cosmosbookstore
+use bookstore
 db.books.findOne({ title: /harry potter/i })
 ```
 
