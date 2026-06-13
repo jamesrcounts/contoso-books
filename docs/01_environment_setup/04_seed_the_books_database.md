@@ -96,6 +96,8 @@ Exit `mongosh`:
 exit
 ```
 
+> **Troubleshooting — `Error: no connection string`:** You skipped the "Configure the seed connection string" step above — `src/deployment/seed/.env` still has an empty `BOOKSTORE_SEED_DB_CONNECTION_STRING`. Set it and re-run.
+>
 > **Troubleshooting — script reports a connection error:** Confirm the MongoDB container is still running (`docker ps` should list `mongodb` with status `Up`). If not, `docker start mongodb`. The replica set state is persisted, so you do not need to re-run `rs.initiate()`.
 >
 > **Troubleshooting — `seed_data.sh: Permission denied`:** Mark the script as executable: `chmod +x seed_data.sh`, then re-run.

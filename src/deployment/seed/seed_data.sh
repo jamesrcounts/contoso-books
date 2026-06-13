@@ -1,17 +1,15 @@
- 
- #!/bin/sh
-    . .env
+#!/bin/sh
+set -e
 
-    echo "Preparing to import data..." 
+. ./.env
 
-    echo "Installing Node modules..."
+echo "Preparing to import data..."
 
-    npm i --silent
-    #     echo "Getting connection string..."
+echo "Installing Node modules..."
 
-    echo "Populating database..."
-    node ./populate_data.js --endpoint $BOOKSTORE_SEED_DB_CONNECTION_STRING
+npm i --silent
 
-    echo "Finished! Seeding, $BOOKSTORE_SEED_DB_ACCOUNT, is now ready to play around!"
+echo "Populating database..."
+node ./populate_data.js --endpoint "$BOOKSTORE_SEED_DB_CONNECTION_STRING"
 
-# fi
+echo "Finished! Seeding, $BOOKSTORE_SEED_DB_ACCOUNT, is now ready to play around!"
