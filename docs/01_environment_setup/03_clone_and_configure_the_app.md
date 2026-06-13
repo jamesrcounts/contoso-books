@@ -44,7 +44,7 @@ The `src/package.json` has an `install` hook that cascades into `server/` and `c
 
 ### Expected output
 
-You will see three install blocks (root, server, client). The middle block — the React client — produces a long stream of deprecation warnings and an audit note about moderate-severity vulnerabilities. **This is expected** — the upstream sample pins older versions of common Node packages and the warnings are inherited from those dependencies. The install itself succeeded if each block ends with an `added X packages` line and no `npm ERR!` lines.
+You will see three install blocks (root, server, client). Each finishes cleanly with `found 0 vulnerabilities`; the only notes are informational "looking for funding" lines. The install succeeded if each block ends with an `added X packages` / `audited X packages` line and no `npm ERR!` lines.
 
 Abbreviated output:
 
@@ -52,21 +52,20 @@ Abbreviated output:
 > bookstore@1.0.0 install
 > cd server && npm i && cd ../client && npm i
 
-added 39 packages, removed 130 packages, changed 82 packages, and audited 315 packages in 12s
+added 63 packages, and audited 64 packages in 1m
+
+4 packages are looking for funding
+  run `npm fund` for details
+
 found 0 vulnerabilities
 
-npm warn deprecated rollup-plugin-terser@7.0.2: ...
-npm warn deprecated @humanwhocodes/config-array@0.13.0: ...
-... (many deprecation warnings) ...
+added 63 packages, and audited 64 packages in 1m
 
-added 447 packages, removed 1046 packages, changed 708 packages, and audited 1335 packages in 1m
-4 moderate severity vulnerabilities
+17 packages are looking for funding
+  run `npm fund` for details
 
-added 2 packages, removed 2 packages, changed 1 package, and audited 64 packages in 1m
 found 0 vulnerabilities
 ```
-
-> **Do not run `npm audit fix --force`.** The lab works with the dependency versions as-pinned by the upstream sample. Forcing breaking changes risks introducing app-level errors that have nothing to do with the migration story.
 
 ## Configure the connection string
 
