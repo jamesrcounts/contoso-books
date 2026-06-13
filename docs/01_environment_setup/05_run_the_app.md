@@ -77,4 +77,4 @@ You now have the known-good baseline needed for the rest of the lab. In Exercise
 >
 > **Troubleshooting — `Cannot GET /` in the browser:** You opened the API server (port 8080) instead of the UI. Browse to `http://localhost:3000`, and make sure you started the app with `npm run develop` (not `npm start`).
 >
-> **Troubleshooting — a port is already in use:** The server uses `8080` and the Vite dev server uses `3000`. For 8080, change `PORT=8080` in `src/.env` to another value (e.g. `PORT=8081`) — but then also update the proxy targets in `src/client/vite.config.js` to match. For 3000, change `server.port` in `src/client/vite.config.js`.
+> **Troubleshooting — a port is already in use:** The server uses `8080` and the Vite dev server uses `3000`. For 8080, change `PORT=8080` in `src/server/.env` to another value (e.g. `PORT=8081`) — but then also update the proxy targets in `src/client/vite.config.js` to match. For 3000, change `server.port` in `src/client/vite.config.js`.

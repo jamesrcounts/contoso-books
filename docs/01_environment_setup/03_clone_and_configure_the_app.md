@@ -69,7 +69,7 @@ found 0 vulnerabilities
 
 ## Configure the connection string
 
-In the VS Code Explorer (left sidebar), right-click on the `src` folder and select **New File**. Name it `.env` (so the file is `src/.env`, alongside the app's `package.json`). With the file open in the editor, paste:
+In the VS Code Explorer (left sidebar), right-click on the `src/server` folder and select **New File**. Name it `.env` (so the file is `src/server/.env`, alongside the server's `package.json`). With the file open in the editor, paste:
 
 ```
 BOOKSTORE_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
