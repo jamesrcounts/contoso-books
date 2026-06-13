@@ -8,6 +8,47 @@ This repository is a Jekyll-based training lab (just-the-docs theme, published t
 
 The sample app (`src/`) is a bookstore demonstrating Azure DocumentDB (the vCore-based, MongoDB wire-protocol-compatible service). Express + native `mongodb` driver on the backend, Vite/React on the frontend.
 
+## Repo structure & taxonomy
+
+A workshop/training repository published as a GitHub Pages site (Jekyll + just-the-docs). Content is organized as a sequence of numbered exercises, each containing numbered tasks, alongside the companion sample application. `docs/` and `media/` currently hold only `.gitkeep` placeholders, so the scheme below describes the structure that authored content follows.
+
+### Top-level layout
+
+| Path | Role |
+| --- | --- |
+| `_config.yml` | Jekyll site config: theme (just-the-docs), `aux_links`, callouts. |
+| `Gemfile` / `Gemfile.lock` | Jekyll/Ruby dependencies for local build. |
+| `index.md` | Site landing page (`layout: home`, `nav_order: 1`) — lab introduction, exercise list, prerequisites. |
+| `README.md` | GitHub-facing readme (distinct from the site landing). |
+| `LICENSE`, `SECURITY.md`, `SUPPORT.md` | Standard Microsoft OSS repo files (when present). |
+| `.devcontainer/devcontainer.json` | Codespaces / dev container definition (when present). |
+| `.github/workflows/` | CI workflows, including the Pages build/deploy (`pages.yml`). |
+| `docs/` | All instructional content (prose). |
+| `media/` | Image assets referenced by `docs/`. |
+| `src/` | The companion sample application the exercises operate on. |
+
+### `docs/` — exercises and tasks
+
+Two-level hierarchy: **exercises** at the top, **tasks** within each. An exercise is a major topic or chapter; a task is a single step or sub-topic within an exercise. The count of each varies freely from lab to lab. Sequence is conveyed through a shared numeric prefix scheme, so order is inferable from filenames alone.
+
+Each exercise folder typically contains an **exercise landing page** (introduces the topic — scenario, objectives, estimated duration — and acts as the parent navigation node) plus **one file per task** (each a self-contained walkthrough). Task pages tend to follow a predictable rhythm — context, what the learner will do, success criteria, external resources, then the actual steps (often in collapsible detail sections) — but the exact section set is a stylistic choice, not a structural requirement.
+
+### `media/` — assets keyed to content
+
+Image assets live separately from the prose that references them. Here they sit in a single flat `media/` directory, with the filename encoding the exercise + task the image belongs to (e.g. a `0202_` prefix means exercise 02, task 02). Flat-with-prefixed-names vs. nested subfolders is a style decision; the underlying principle is that assets stay out of the prose tree and are discoverably linked to the content that uses them.
+
+### `src/` — companion sample application
+
+The application being taught on lives entirely under `src/`, scoped to its own directory so it never interleaves with documentation. Its internal structure is whatever is idiomatic for its stack (see [Architecture](#architecture) for this repo's). The important property is the separation: `docs/` and `src/` are siblings, never mixed.
+
+### Cross-cutting conventions
+
+- **Numbering is the spine of navigation.** Folder names, filenames, asset names, and `nav_order` values share a common ordinal scheme, so any artifact's place in the lab is inferable from its name.
+- **Two parallel content trees.** `docs/` (instructional prose) and `src/` (the artifact being taught on) sit side-by-side and stay separate.
+- **Assets are kept out of the prose tree** and linked by name.
+- **Site navigation is declarative,** driven entirely by front matter (an exercise page declares itself a parent; task pages reference their parent by title; `nav_order` controls sort order) — no manually maintained sidebar or TOC.
+- **Build and deploy are automated** via a GitHub Actions workflow that publishes the Jekyll site to Pages.
+
 ## Common commands
 
 The app's npm workspace lives in `src/` (that's where the root `package.json` is), so run these from `src/` unless noted:
