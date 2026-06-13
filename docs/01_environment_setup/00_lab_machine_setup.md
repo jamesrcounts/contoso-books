@@ -1,0 +1,121 @@
+---
+title: "Exercise 01 - Task 00 — Lab Machine Setup"
+layout: default
+nav_order: 1
+parent: "Exercise 01 - Environment Setup — Containerized MongoDB & Client App"
+---
+
+# Task 00 — Lab Machine Setup
+
+Complete this task before starting Exercise 01. You need a Windows 11 machine with Docker Desktop and the required tools installed.
+
+## Provision the Lab Machine
+
+### Option A: Azure VM (Recommended)
+
+Provision a Windows 11 VM in Azure to use as your lab machine. Run these commands from your local terminal with the Azure CLI installed.
+
+```bash
+az login
+
+az group create \
+  --name rg-documentdb-lab \
+  --location westus3
+
+az vm create \
+  --resource-group rg-documentdb-lab \
+  --name vm-docdb-lab \
+  --image MicrosoftWindowsDesktop:windows-11:win11-24h2-pro:latest \
+  --size Standard_D4s_v3 \
+  --admin-username labuser \
+  --public-ip-sku Standard
+```
+
+Once the VM is provisioned, connect via RDP and continue to Install Prerequisites below.
+
+### Option B: Your own Windows 11 machine
+
+Continue directly to Install Prerequisites below.
+
+---
+
+## Install Prerequisites
+
+If your machine does not already have the required tools installed, use the script below to install everything in one step.
+
+### Option: Automated install via winget (Windows 11)
+
+1. Open **Windows PowerShell ISE** as Administrator
+   - Press `Win`, search for **PowerShell ISE**, right-click → **Run as administrator**
+2. Paste the following script into the script pane and click **Run** (▶)
+
+```powershell
+# MongoDB to Azure DocumentDB Migration Lab — Prereqs Install
+# Run as Administrator in PowerShell ISE
+
+# Update WSL before installing Docker Desktop
+wsl --update
+
+# Core tooling
+winget install --id Git.Git -e --silent --accept-source-agreements
+winget install --id OpenJS.NodeJS.LTS -e --silent --accept-source-agreements
+winget install --id Microsoft.AzureCLI -e --silent --accept-source-agreements
+winget install --id MongoDB.Shell -e --silent --accept-source-agreements
+winget install --id Docker.DockerDesktop -e --silent --accept-source-agreements
+winget install --id Microsoft.VisualStudioCode -e --silent --accept-source-agreements
+
+# Reload PATH so `code` is available in this session
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+
+# VS Code extensions
+code --install-extension ms-azuretools.vscode-documentdb
+code --install-extension ms-azurecosmosdbtools.vscode-mongo-migration
+
+# Configure VS Code: default the integrated terminal to Git Bash so the
+# seed script in Exercise 01 Task 04 and all subsequent commands run from a
+# single, consistent shell. Git Bash is auto-detected by VS Code from the
+# Git installation above; this just promotes it to the default profile.
+$vscodeUserDir = "$env:APPDATA\Code\User"
+New-Item -ItemType Directory -Force -Path $vscodeUserDir | Out-Null
+@'
+{
+  "terminal.integrated.defaultProfile.windows": "Git Bash"
+}
+'@ | Set-Content -Path "$vscodeUserDir\settings.json" -Encoding utf8
+```
+
+3. **Reboot** after the script completes — Docker Desktop requires a restart to finish setup
+
+> **Docker Desktop first launch:** Docker Desktop will open automatically after reboot. On the "Welcome to Docker" screen, click **Skip**.
+
+### Configure Docker Desktop to start automatically
+
+Docker Desktop opens on the first post-install reboot, but will not start automatically on subsequent sign-ins unless you configure it. Do this now so it is ready whenever you return to the lab:
+
+1. Click the **gear icon** (Settings) in the top-right corner of Docker Desktop
+2. Check **Start Docker Desktop when you sign in to your computer**
+3. Click **Apply**
+
+### Verify the install
+
+After rebooting, open PowerShell and run:
+
+```powershell
+git --version
+node --version
+az --version
+mongosh --version
+docker --version
+code --version
+```
+
+All commands should return a version number without errors. Expected versions (lab was validated against):
+
+| Tool | Version |
+|------|---------|
+| Git | 2.54.0 |
+| Node.js | v24.16.0 |
+| Azure CLI | 2.86.0 |
+| mongosh | 2.8.3 |
+| Docker | 29.4.3 |
+| VS Code | 1.122.0 |
