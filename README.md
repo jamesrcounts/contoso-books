@@ -20,11 +20,11 @@ Follow the steps below to deploy the app with minimal effort and begin experimen
 
 ### Deploy the resources to Azure
 
-The template at [deployment/azuredeploy.json](deployment/azuredeploy.json) provisions the application into an Azure App Service instance and creates an Azure DocumentDB cluster. Deploy it via the Azure portal's "Deploy a custom template" experience, the Azure CLI (`az deployment group create`), or your preferred IaC tooling.
+The template at [src/deployment/azuredeploy.json](src/deployment/azuredeploy.json) provisions the application into an Azure App Service instance and creates an Azure DocumentDB cluster. Deploy it via the Azure portal's "Deploy a custom template" experience, the Azure CLI (`az deployment group create`), or your preferred IaC tooling.
 
 ### Import the sample dataset into the Azure DocumentDB account
 
-1. Navigate to folder ./deployment/seed using Git Bash.
+1. Navigate to folder ./src/deployment/seed using Git Bash.
 
 2. Update .env file in this path by specifying value for "BOOKSTORE_SEED_DB_CONNECTION_STRING" of the database account created by the deployment template in the previous step.
    You can get the connection string from Azure portal > DocumentDB cluster resource > Connection strings blade.
@@ -60,7 +60,7 @@ Seeding completed on books Collection 9/30/2021, 10:39:40 AM
 Now you can try out the application by browsing to the app service URL.
 
 You can find the URL in the overview section of the App Service resource created by the deployment template.
-![Contoso Books main page](deployment/docs/images/cosmosbookstoremainpage.png)
+![Contoso Books main page](src/deployment/docs/images/cosmosbookstoremainpage.png)
 
 ## Dataset Credits
 

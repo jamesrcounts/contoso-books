@@ -4,17 +4,25 @@
 /node_modules
 /.pnp
 .pnp.js
-/deployment/seed/node_modules/
-/client/node_modules
-/server/node_modules
+/src/node_modules
+/src/deployment/seed/node_modules/
+/src/client/node_modules
+/src/server/node_modules
 
 # testing
 /coverage
+/src/coverage
 
 # production
 /build
-/client/build
-/client/dist
+/src/client/build
+/src/client/dist
+
+# Jekyll site (built locally)
+_site/
+.jekyll-cache/
+.jekyll-metadata
+Gemfile.lock
 
 # misc
 .DS_Store
