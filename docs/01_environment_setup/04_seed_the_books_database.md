@@ -7,7 +7,7 @@ parent: "Exercise 01 - Environment Setup — Containerized MongoDB & Client App"
 
 # Task 04 — Seed the Books Database
 
-The app needs data to be useful. The repository ships with a seed script that downloads the GoodReads books dataset (~85k books and a small genres collection) and loads it into your local MongoDB container. The script is a shell script, so on Windows you will run it from **Git Bash** (installed in Task 00 as part of the Git install).
+The app needs data to be useful. The repository ships with a seed script **and** a vendored copy of the GoodReads books dataset (~85k books and a small genres collection), so the script loads the data into your local MongoDB container straight from the cloned repo — no network download is required. The script is a shell script, so on Windows you will run it from **Git Bash** (installed in Task 00 as part of the Git install).
 
 ## Navigate to the seed directory
 
@@ -39,7 +39,7 @@ In the Git Bash terminal:
 ./seed_data.sh
 ```
 
-The script installs its own Node dependencies (1–2 minutes), then fetches `books.json` and `genres.json` from a public Azure blob storage URL and bulk-inserts them into the `bookstore` database in your local MongoDB container.
+The script installs its own Node dependencies (1–2 minutes), then reads the vendored dataset (`data/seed-data.tar.gz`, which holds `books.json` and `genres.json`) and bulk-inserts the documents into the `bookstore` database in your local MongoDB container.
 
 ### Expected output
 
@@ -50,10 +50,10 @@ Installing Node modules...
 added 47 packages in 6s
 Populating database...
 $$$ Seeding data started 6/10/2026, 8:30:05 PM
-Fetching books
-Fetching genres
-Seeding completed on genres Collection 6/10/2026, 8:30:10 PM
-Seeding completed on books Collection 6/10/2026, 8:40:40 PM
+Loading books from .../src/deployment/seed/data/seed-data.tar.gz
+Loading genres from .../src/deployment/seed/data/seed-data.tar.gz
+Seeding completed on books Collection 6/10/2026, 8:40:35 PM
+Seeding completed on genres Collection 6/10/2026, 8:40:35 PM
 Finished! Seeding, , is now ready to play around!
 ```
 
