@@ -16,7 +16,7 @@ param adminPassword string
 @description('Public IP address of the lab client, allowed through the firewall.')
 param clientIpAddress string
 
-@description('Compute tier. The lab uses M40 so the database-level request metrics in Exercise 06 are available.')
+@description('Compute tier. This production-grade POC uses M40 so the database-level request metrics Contoso relies on (used in Exercise 06) are emitted.')
 param tier string = 'M40'
 
 @description('Storage size per shard, in GB.')

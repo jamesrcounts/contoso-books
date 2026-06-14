@@ -35,8 +35,8 @@ az group create --name rg-documentdb-lab --location westus3
 
 Open [src/deployment/main.bicep](../../src/deployment/main.bicep) and review it before deploying. It is intentionally small — a cluster and its firewall rule, nothing else:
 
-- **Parameters** — `adminUsername` and the `@secure()` `adminPassword` for the cluster administrator; `clientIpAddress` for the firewall rule (Task 03); and the sizing knobs with lab defaults: `tier = 'M40'`, `storageSizeGb = 128`, `serverVersion = '7.0'`. `clusterName` defaults to a globally-unique lowercase name derived from the resource group, and `location` defaults to the resource group's region.
-- **`Microsoft.DocumentDB/mongoClusters`** — the cluster itself: the administrator credentials, server version 7.0, `compute.tier` from the `tier` parameter, `storage.sizeGb` from `storageSizeGb`, a single shard (`sharding.shardCount = 1`), high availability disabled (`highAvailability.targetMode = 'Disabled'` — a single-region lab does not need a hot standby), and `publicNetworkAccess: 'Enabled'` so the firewall rule below governs who can connect.
+- **Parameters** — `adminUsername` and the `@secure()` `adminPassword` for the cluster administrator; `clientIpAddress` for the firewall rule (Task 03); and the sizing knobs with defaults for this production-grade POC: `tier = 'M40'`, `storageSizeGb = 128`, `serverVersion = '7.0'`. `clusterName` defaults to a globally-unique lowercase name derived from the resource group, and `location` defaults to the resource group's region.
+- **`Microsoft.DocumentDB/mongoClusters`** — the cluster itself: the administrator credentials, server version 7.0, `compute.tier` from the `tier` parameter, `storage.sizeGb` from `storageSizeGb`, a single shard (`sharding.shardCount = 1`), high availability disabled (`highAvailability.targetMode = 'Disabled'` — this single-region POC skips the hot standby to keep cost down; a full production rollout would enable it), and `publicNetworkAccess: 'Enabled'` so the firewall rule below governs who can connect.
 - **`Microsoft.DocumentDB/mongoClusters/firewallRules`** — a child rule named `lab-client` that allows your `clientIpAddress` through (covered in Task 03).
 - **Outputs** — `clusterName` and a `connectionString` assembled from the cluster name, with a literal `<password>` placeholder where the admin password goes (the secret is never emitted by the deployment — you substitute it yourself in Task 04).
 
@@ -60,7 +60,9 @@ az deployment group create `
   --parameters adminUsername=bookadmin clientIpAddress=<your-ip>
 ```
 
-Replace `<your-ip>` with the address from the previous step. You did **not** pass `adminPassword` on the command line — because it is a `@secure()` parameter with no default, the CLI prompts you for it interactively so the secret never lands in your shell history. Choose a strong password and record it; you will need it in Tasks 04 and 05.
+Replace `<your-ip>` with the address from the previous step. You did **not** pass `adminPassword` on the command line — because it is a `@secure()` parameter with no default, the CLI prompts you for it interactively so the secret never lands in your shell history.
+
+The password must satisfy the DocumentDB policy: **8–256 characters, and at least 3 of these 4 character types — lowercase, uppercase, numeric, and symbol.** A password that fails the policy makes the deployment fail with a `bad_request` schema error; just re-run with a compliant one. Record the password — you will need it in Tasks 04 and 05.
 
 > **Naming the deployment `main`:** the `--name main` flag names the deployment (not the cluster). Tasks 03 and 04 reference this deployment by that name (`-n main`) to read its outputs, so keep it as written.
 
@@ -72,11 +74,12 @@ The command returns a JSON object whose `properties.provisioningState` is `Succe
 
 ```json
 {
+  "name": "main",
   "properties": {
     "provisioningState": "Succeeded",
     "outputs": {
-      "clusterName": { "type": "String", "value": "contosobooks..." },
-      "connectionString": { "type": "String", "value": "mongodb+srv://bookadmin:<password>@contosobooks....global.mongocluster.cosmos.azure.com/..." }
+      "clusterName": { "type": "String", "value": "contosobooks4jbkwyzo2quf2" },
+      "connectionString": { "type": "String", "value": "mongodb+srv://bookadmin:<password>@contosobooks4jbkwyzo2quf2.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000" }
     }
   }
 }
