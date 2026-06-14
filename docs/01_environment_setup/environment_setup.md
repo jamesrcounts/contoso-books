@@ -15,6 +15,7 @@ Before you can migrate anything, you need a working source. In this exercise you
 
 - Run MongoDB as a Docker container configured as a single-node replica set
 - Understand why replica set mode is required to support online (zero-downtime) migration
+- Enable access control (SCRAM username/password authentication) on the container so it is a valid connection target for the DocumentDB VS Code extension
 - Connect the Contoso client application to the containerized MongoDB
 - Seed sample data into the database
 - Verify end-to-end application functionality against the MongoDB container
@@ -43,4 +44,4 @@ Before you can migrate anything, you need a working source. In this exercise you
 - Task 05 — [Run the App and Verify End-to-End](05_run_the_app.md)
 - Task 06 — Exercise the app's legacy "reading insights" report — an aggregation built with server-side JavaScript (`$function`) — and the slow catalog-statistics query; both work against MongoDB and resurface later (assessment finding in Exercise 03, runtime comparison in Exercise 05)
 
-> **Production note:** This lab keeps the connection string in `.env` for simplicity. Production deployments should source it from Azure Key Vault or use Microsoft Entra ID authentication.
+> **Production note:** This lab enables username/password (SCRAM) authentication and keeps the connection string — credentials included — in `.env` for simplicity. Production deployments should use strong, unique credentials, source the connection string from Azure Key Vault, and prefer Microsoft Entra ID authentication where the target supports it (Azure DocumentDB does; a local MongoDB container does not).

@@ -54,7 +54,11 @@ Confirm reads and writes work against the MongoDB container:
 3. **View detail** — click into a book; confirm the detail page renders with full fields
 4. **Write** — on a book detail page, add a comment; confirm it persists by reloading the page
 
-You can also spot-check writes from `mongosh` in a separate VS Code terminal (`` Ctrl+Shift+` ``):
+You can also spot-check writes from `mongosh` in a separate VS Code terminal (`` Ctrl+Shift+` ``), authenticating as the `bookadmin` user:
+
+```bash
+mongosh -u bookadmin -p bookpass123 --authenticationDatabase admin
+```
 
 ```javascript
 use bookstore
@@ -73,7 +77,7 @@ When you have verified the app is working end-to-end, click into the VS Code ter
 
 You now have the known-good baseline needed for the rest of the lab. In Exercise 02 you will provision the Azure DocumentDB target.
 
-> **Troubleshooting — app fails with `MongoNetworkError`:** Confirm the container is running (`docker ps`) and the connection string in `.env` matches `mongodb://localhost:27017/?replicaSet=rs0`. If the container was restarted, the replica set state is persisted; you do not need to re-initialize.
+> **Troubleshooting — app fails with `MongoNetworkError` or an authentication error:** Confirm the container is running (`docker ps`) and the connection string in `.env` matches `mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin` — including the credentials and `authSource=admin`. If the container was restarted, both the replica set state and the `bookadmin` user are persisted; you do not need to re-initialize or recreate them.
 >
 > **Troubleshooting — `Cannot GET /` in the browser:** You opened the API server (port 8080) instead of the UI. Browse to `http://localhost:3000`, and make sure you started the app with `npm run develop` (not `npm start`).
 >

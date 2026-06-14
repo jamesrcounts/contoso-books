@@ -11,7 +11,15 @@ The container is running with `--replSet rs0` but the replica set has not been a
 
 ## Initialize
 
-In your open `mongosh` session, run the initiation command with an explicit config so the replica set member is registered as `localhost:27017`:
+Use the authenticated `mongosh` session you opened in Task 01. If you closed it, reconnect as the root user:
+
+```powershell
+mongosh -u bookadmin -p bookpass123 --authenticationDatabase admin
+```
+
+> **Why authentication works before the replica set is initialized:** the container's entrypoint created the `bookadmin` root user (in the `admin` database) on first boot, before `rs.initiate()` runs. The built-in `root` role includes `clusterAdmin`, so this user is allowed to configure the replica set.
+
+In your `mongosh` session, run the initiation command with an explicit config so the replica set member is registered as `localhost:27017`:
 
 ```javascript
 rs.initiate({
@@ -72,3 +80,25 @@ Exit `mongosh`:
 ```javascript
 exit
 ```
+
+## Connect the DocumentDB VS Code extension to the local container
+
+The container is now a running, authenticated replica set — a valid target for the **DocumentDB for VS Code** extension you installed in Task 00. You will use the extension against this local instance in Exercise 03; the connection details are:
+
+| Setting | Value |
+|---------|-------|
+| Authentication method | **Username and Password** (not Microsoft Entra ID — that applies only to Azure DocumentDB clusters) |
+| Host | `localhost` |
+| Port | `27017` |
+| Username | `bookadmin` |
+| Password | `bookpass123` |
+| Authentication database (`authSource`) | `admin` |
+| TLS / SSL | **Disabled** — the local container uses no TLS |
+
+If you prefer to add the connection by connection string, use:
+
+```
+mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+```
+
+> **Why Username and Password (and not Entra ID)?** The DocumentDB extension supports two authentication methods: native username/password (SCRAM) and Microsoft Entra ID. Entra ID is only available for Azure DocumentDB clusters — it cannot authenticate against a local MongoDB container. Username and password is the mechanism that works locally, which is why Task 01 enables access control with the `bookadmin` credentials.
