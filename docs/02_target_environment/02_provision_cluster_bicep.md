@@ -1,0 +1,89 @@
+---
+title: "Exercise 02 - Task 02 — Provision the Cluster with Bicep"
+layout: default
+nav_order: 2
+parent: "Exercise 02 - Target Environment Setup — Azure DocumentDB"
+---
+
+# Task 02 — Provision the Cluster with Bicep
+
+In this task you will deploy the Azure DocumentDB cluster using the Bicep template at [src/deployment/main.bicep](../../src/deployment/main.bicep). The template provisions the cluster and a firewall rule for your lab client in a single deployment, at the **M40** tier reasoned through in Task 01.
+
+Run all commands in **PowerShell** from the root of the cloned repository.
+
+## Sign in and select your subscription
+
+```powershell
+az login
+```
+
+If your account has more than one subscription, set the one you want to deploy into:
+
+```powershell
+az account set --subscription "<your-subscription-name-or-id>"
+```
+
+## Create the resource group
+
+The whole lab uses a single resource group, `rg-documentdb-lab`. If you created it in Exercise 01 (Task 00, when provisioning the lab VM), this command is idempotent — it simply confirms the group exists and changes nothing. If you are running the app on your own machine and never created it, this creates it now.
+
+```powershell
+az group create --name rg-documentdb-lab --location westus3
+```
+
+## What the template deploys
+
+Open [src/deployment/main.bicep](../../src/deployment/main.bicep) and review it before deploying. It is intentionally small — a cluster and its firewall rule, nothing else:
+
+- **Parameters** — `adminUsername` and the `@secure()` `adminPassword` for the cluster administrator; `clientIpAddress` for the firewall rule (Task 03); and the sizing knobs with lab defaults: `tier = 'M40'`, `storageSizeGb = 128`, `serverVersion = '7.0'`. `clusterName` defaults to a globally-unique lowercase name derived from the resource group, and `location` defaults to the resource group's region.
+- **`Microsoft.DocumentDB/mongoClusters`** — the cluster itself: the administrator credentials, server version 7.0, `compute.tier` from the `tier` parameter, `storage.sizeGb` from `storageSizeGb`, a single shard (`sharding.shardCount = 1`), high availability disabled (`highAvailability.targetMode = 'Disabled'` — a single-region lab does not need a hot standby), and `publicNetworkAccess: 'Enabled'` so the firewall rule below governs who can connect.
+- **`Microsoft.DocumentDB/mongoClusters/firewallRules`** — a child rule named `lab-client` that allows your `clientIpAddress` through (covered in Task 03).
+- **Outputs** — `clusterName` and a `connectionString` assembled from the cluster name, with a literal `<password>` placeholder where the admin password goes (the secret is never emitted by the deployment — you substitute it yourself in Task 04).
+
+## Find your public IP
+
+The firewall rule needs the public IP your machine presents to Azure:
+
+```powershell
+(Invoke-RestMethod https://api.ipify.org)
+```
+
+Note the value — you will pass it as `clientIpAddress` below. (Task 03 covers this rule in detail.)
+
+## Deploy
+
+```powershell
+az deployment group create `
+  --resource-group rg-documentdb-lab `
+  --name main `
+  --template-file src/deployment/main.bicep `
+  --parameters adminUsername=bookadmin clientIpAddress=<your-ip>
+```
+
+Replace `<your-ip>` with the address from the previous step. You did **not** pass `adminPassword` on the command line — because it is a `@secure()` parameter with no default, the CLI prompts you for it interactively so the secret never lands in your shell history. Choose a strong password and record it; you will need it in Tasks 04 and 05.
+
+> **Naming the deployment `main`:** the `--name main` flag names the deployment (not the cluster). Tasks 03 and 04 reference this deployment by that name (`-n main`) to read its outputs, so keep it as written.
+
+Provisioning a DocumentDB cluster takes **several minutes**. The command blocks until it finishes.
+
+## Success criteria
+
+The command returns a JSON object whose `properties.provisioningState` is `Succeeded`:
+
+```json
+{
+  "properties": {
+    "provisioningState": "Succeeded",
+    "outputs": {
+      "clusterName": { "type": "String", "value": "contosobooks..." },
+      "connectionString": { "type": "String", "value": "mongodb+srv://bookadmin:<password>@contosobooks....global.mongocluster.cosmos.azure.com/..." }
+    }
+  }
+}
+```
+
+You can also confirm in the Azure portal: open the `rg-documentdb-lab` resource group and you should see a **mongoClusters** resource in the **Succeeded** state.
+
+> **If the deployment fails on the cluster name:** `clusterName` must be globally unique. The default derives a unique name from the resource group, so this is rare — but if you passed an explicit `clusterName` that is already taken, re-run with a different value.
+
+With the cluster deployed, continue to **Task 03** to verify the firewall rule.

@@ -20,7 +20,19 @@ Follow the steps below to deploy the app with minimal effort and begin experimen
 
 ### Deploy the resources to Azure
 
-The template at [src/deployment/azuredeploy.json](src/deployment/azuredeploy.json) provisions the application into an Azure App Service instance and creates an Azure DocumentDB cluster. Deploy it via the Azure portal's "Deploy a custom template" experience, the Azure CLI (`az deployment group create`), or your preferred IaC tooling.
+The Bicep template at [src/deployment/main.bicep](src/deployment/main.bicep) provisions an Azure DocumentDB cluster (and a firewall rule for your client IP). Deploy it with the Azure CLI into a resource group:
+
+```powershell
+az group create --name rg-documentdb-lab --location westus3
+
+az deployment group create `
+  --resource-group rg-documentdb-lab `
+  --name main `
+  --template-file src/deployment/main.bicep `
+  --parameters adminUsername=bookadmin clientIpAddress=<your-public-ip>
+```
+
+You will be prompted for the cluster administrator password (a `@secure()` parameter). The application itself runs locally — see [Connect to the application](#connect-to-the-application) below.
 
 ### Import the sample dataset into the Azure DocumentDB account
 
@@ -54,9 +66,15 @@ Seeding completed on books Collection 9/30/2021, 10:39:40 AM
 
 ### Connect to the application
 
-Now you can try out the application by browsing to the app service URL.
+The application runs locally. From `src/`, install dependencies and start both tiers:
 
-You can find the URL in the overview section of the App Service resource created by the deployment template.
+```powershell
+npm install
+npm run develop
+```
+
+This runs the API server (port 8080) and the Vite dev server (port 3000); open `http://localhost:3000` to browse the catalog. Point the app at your cluster by setting `BOOKSTORE_DB_CONNECTION_STRING` to the connection string from the previous section.
+
 ![Contoso Books main page](src/deployment/docs/images/cosmosbookstoremainpage.png)
 
 ## Dataset Credits
