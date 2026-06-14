@@ -11,9 +11,10 @@ You have a running MongoDB container with seeded data and a configured client ap
 
 ## Start the application
 
-In the VS Code integrated terminal (Git Bash), ensure you are in the `src/` directory (as in Task 03), then start both tiers together:
+In the VS Code integrated terminal, return to the `src/` directory — Task 04 left you in `src/deployment/seed`, so go up two levels — then start both tiers together:
 
-```bash
+```
+cd ../..
 npm run develop
 ```
 
@@ -61,7 +62,7 @@ Open a browser and navigate to:
 http://localhost:3000
 ```
 
-You should see the Contoso Books home page with a paginated list of books rendered from the `books` collection in MongoDB. The page's API requests are proxied to the server on port 8080.
+You should see the Contoso Books home page with a list of books rendered from the `books` collection in MongoDB (more load as you scroll). The page's API requests are proxied to the server on port 8080.
 
 ## Exercise the app
 
@@ -71,27 +72,20 @@ Confirm reads and writes work against the MongoDB container:
 2. **View detail** — click into a book; confirm the detail page renders with full fields
 3. **Write** — on a book detail page, add a comment; confirm it persists by reloading the page
 
-You can also confirm the write directly against the data from `mongosh` in a separate VS Code terminal (`` Ctrl+Shift+` ``), authenticating as the `bookadmin` user:
+You can also confirm the write directly against the data using the **Azure DocumentDB VS Code extension**, reusing the local container connection you registered in Task 02:
 
-```bash
-mongosh -u bookadmin -p bookpass123 --authenticationDatabase admin
-```
+1. In the Activity Bar (the far-left icon strip), select the **DocumentDB** icon to open the **DocumentDB Connections** pane.
+2. Expand the local container connection (`localhost`) you added in Task 02 → the **bookstore** database.
+3. Right-click the **books** collection and select **Open Collection** to open its **Collection View** (the query/results tab).
+4. In the find (query) editor at the top of the Collection View, enter the following filter and run it with the **Find Query** button (or `Ctrl+Enter`):
 
-Switch to the `bookstore` database:
+   ```json
+   { "reviewcomments.0": { "$exists": true } }
+   ```
 
-```javascript
-use bookstore
-```
+   The books that have a comment appear in the results grid — switch between **Table**, **Tree**, and **JSON** layouts to inspect them. The book you just commented on includes your comment in its `reviewcomments` array (each entry is `{ name, comment }`).
 
-Then run the query on its own (don't paste it together with the `use` line, or `mongosh` treats it as a continuation):
-
-```javascript
-db.books.findOne({ "reviewcomments.0": { $exists: true } })
-```
-
-The returned book includes your comment in its `reviewcomments` array (each entry is `{ name, comment }`).
-
-> The Azure DocumentDB VS Code extension is the richer tool for browsing data, but it expects connection credentials, and the local container runs without authentication — so `mongosh` is the simpler choice here. You will use the extension against the authenticated Azure cluster in Exercise 06.
+> If you prefer a scripting surface, the extension also provides a **Query Playground** (a `.documentdb.js` file with per-block **Run** / **Run All**) and an **Interactive Shell**. You will use this same extension against the authenticated Azure DocumentDB cluster in Exercise 06.
 
 ## Stop the application
 
