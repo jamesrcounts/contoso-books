@@ -18,6 +18,6 @@
     },
     "devDependencies": {
         "mongodb-memory-server": "^9.0.0",
-        "vitest": "^1.0.0"
+        "vitest": "^4.1.8"
     }
 }
