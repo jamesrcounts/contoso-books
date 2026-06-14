@@ -35,8 +35,9 @@ Save with `Ctrl+S`.
 
 In the integrated terminal:
 
-```bash
-npm install && npm run seed
+```
+npm install
+npm run seed
 ```
 
 `npm install` installs the seed script's Node dependencies (1–2 minutes), then `npm run seed` reads the vendored dataset (`data/seed-data.tar.gz`, which holds `books.json` and `genres.json`) and bulk-inserts the documents into the `bookstore` database in your local MongoDB container.
