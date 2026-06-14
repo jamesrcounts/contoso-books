@@ -37,6 +37,39 @@ csv.field_size_limit(10 * 1024 * 1024)
 _ISBN10_RE = re.compile(r"\d{9}[\dXx]")
 _ISBN13_RE = re.compile(r"\d{13}")
 
+# Content filter: this is Microsoft-branded training content, so the seeded catalog must not
+# contain sexually explicit / pornographic titles. A book is dropped if any of its genres is
+# in EXPLICIT_GENRES, or if its TITLE matches EXPLICIT_TITLE_RE. Descriptions are intentionally
+# NOT scanned (literary/historical works often mention these words without being explicit).
+# Deliberately narrow: broad genres like "Romance", "LGBT", "Adult Fiction", and "Sexuality"
+# are preserved — only explicitly erotic/pornographic material is removed.
+EXPLICIT_GENRES = frozenset(
+    {
+        "erotica",
+        "erotic romance",
+        "erotic horror",
+        "erotic paranormal romance",
+        "erotic historical romance",
+        "gay erotica",
+        "bdsm",
+        "pornography",
+        "sex work",
+    }
+)
+EXPLICIT_TITLE_RE = re.compile(
+    r"\berotic|\bpornograph|\bporn\b|\bbdsm\b|\bxxx\b|sex slave|\bkinky\b", re.IGNORECASE
+)
+
+
+def is_inappropriate(title, genre_list):
+    """True if a book is sexually explicit / pornographic and should be excluded.
+
+    Matches on an explicit genre tag OR an explicit term in the title (see notes above).
+    """
+    if any(g.lower() in EXPLICIT_GENRES for g in genre_list):
+        return True
+    return bool(EXPLICIT_TITLE_RE.search(title or ""))
+
 
 def normalize_isbn13(raw_isbn13, isbn10):
     """Return a clean ISBN-13 string, or '' when one can't be trusted.
@@ -103,6 +136,7 @@ def build(csv_path, out_dir):
     books = []
     genres_seen = set()
     skipped = 0
+    filtered = 0
 
     with open(csv_path, "r", encoding="utf-8-sig", newline="") as fh:
         reader = csv.DictReader(fh)
@@ -113,6 +147,13 @@ def build(csv_path, out_dir):
                 continue
 
             genre_list = split_genres(row.get("genre"))
+
+            # Drop sexually explicit / pornographic titles (see is_inappropriate). Done before
+            # collecting genres so excluded genres (e.g. "Erotica") don't leak into genres.json.
+            if is_inappropriate(title, genre_list):
+                filtered += 1
+                continue
+
             genres_seen.update(genre_list)
 
             books.append(
@@ -147,6 +188,7 @@ def build(csv_path, out_dir):
     print(f"books written:  {len(books):>7} docs")
     print(f"genres written: {len(genres_doc['genresList']):>7} unique")
     print(f"rows skipped (empty title): {skipped}")
+    print(f"rows filtered (explicit content): {filtered}")
     print(f"archive -> {archive_path}")
 
 

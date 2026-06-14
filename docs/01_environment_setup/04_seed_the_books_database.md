@@ -7,7 +7,7 @@ parent: "Exercise 01 - Environment Setup — Containerized MongoDB & Client App"
 
 # Task 04 — Seed the Books Database
 
-The app needs data to be useful. The repository ships with a seed script **and** a vendored copy of the GoodReads books dataset (100,000 books and a small genres collection), so the script loads the data into your local MongoDB container straight from the cloned repo — no network download is required. The seed script is run via npm (`npm run seed`), so it works from any terminal.
+The app needs data to be useful. The repository ships with a seed script **and** a vendored copy of the GoodReads books dataset (96,419 books and a small genres collection), so the script loads the data into your local MongoDB container straight from the cloned repo — no network download is required. The seed script is run via npm (`npm run seed`), so it works from any terminal.
 
 ## Navigate to the seed directory
 
@@ -82,7 +82,7 @@ Expected counts:
 
 | Collection | Documents |
 |------------|-----------|
-| `books`    | 100,000   |
+| `books`    | 96,419    |
 | `genres`   | 1         |
 
 Take a quick look at a sample book to confirm the data shape:

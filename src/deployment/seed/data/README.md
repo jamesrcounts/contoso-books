@@ -6,7 +6,7 @@ These files are the dataset that `populate_data.js` loads into the `bookstore` d
 | File | What it is |
 | --- | --- |
 | `seed-data.tar.gz` | gzipped tarball bundling both JSON documents (see below) |
-| &nbsp;&nbsp;↳ `books.json` | JSON array of 100,000 book documents |
+| &nbsp;&nbsp;↳ `books.json` | JSON array of 96,419 book documents |
 | &nbsp;&nbsp;↳ `genres.json` | single document `{ "genresList": [...] }` — the de-duped, sorted list of every genre |
 | `build_dataset.py` | the generator that produced the tarball above |
 
@@ -25,6 +25,16 @@ The data is the **GoodReads 100k books** dataset by *mdhamani* on Kaggle:
 with no attribution requirement. (Credit to the original author is kept here as a courtesy.)
 
 The fields are reshaped to match what the app expects (see below).
+
+## Content filtering
+
+Because this is Microsoft-branded training content, sexually explicit / pornographic titles
+are excluded from the seed data. `build_dataset.py` drops any book tagged with an explicit
+genre (`Erotica`, `Erotic Romance`, `Pornography`, `BDSM`, `Gay Erotica`, `Sex Work`, …) or
+whose **title** contains an explicit term. The filter is intentionally narrow — mainstream
+`Romance`, `LGBT`, Young Adult, and literary `Adult Fiction` titles are preserved. This drops
+the source dataset from 100,000 to **96,419** books (and removes the corresponding genres from
+`genres.json`).
 
 ## Document shape
 
