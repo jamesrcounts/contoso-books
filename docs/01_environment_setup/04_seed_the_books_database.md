@@ -24,7 +24,7 @@ cd deployment/seed
 The seed script reads its own `.env` file inside `src/deployment/seed/`. This file is git-ignored (so your connection string never gets committed), so you create it yourself. In the VS Code Explorer, right-click the `src/deployment/seed` folder, select **New File**, name it `.env`, and paste:
 
 ```
-BOOKSTORE_SEED_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
+BOOKSTORE_SEED_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
 ```
 
 Save with `Ctrl+S`.
@@ -55,10 +55,10 @@ The whole run finishes in a few seconds — the dataset loads from the local rep
 
 ## Verify the data
 
-In VS Code, open a new integrated terminal (`` Ctrl+Shift+` ``) and connect with `mongosh`:
+In VS Code, open a new integrated terminal (`` Ctrl+Shift+` ``) and connect with `mongosh`, authenticating as the `bookadmin` user:
 
 ```bash
-mongosh
+mongosh -u bookadmin -p bookpass123 --authenticationDatabase admin
 ```
 
 Switch to the `bookstore` database:
