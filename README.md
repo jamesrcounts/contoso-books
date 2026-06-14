@@ -31,14 +31,11 @@ The template at [src/deployment/azuredeploy.json](src/deployment/azuredeploy.jso
    Example of updated .env file:
    BOOKSTORE_SEED_DB_CONNECTION_STRING="mongodb+srv://<user>:<password>@<cluster-name>.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
 
-3. Execute the seeding shell script with the command './seed_data.sh'. It may take a few minutes to seed the data into books and genres collections.\
+3. Install dependencies and run the seed script with `npm install && npm run seed`. It may take a few minutes to seed the data into books and genres collections.\
    Item count of books collection is 100,000 and genres collection has only 1 item. \
    Successful run result looks like this:
 
 ```
-Preparing to import data...
-Installing Node modules...
-Populating database...
 $$$ Seeding data started 9/30/2021, 10:29:05 AM
 Fetching books
 Fetching genres

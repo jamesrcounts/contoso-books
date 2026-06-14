@@ -7,7 +7,7 @@ parent: "Exercise 01 - Environment Setup — Containerized MongoDB & Client App"
 
 # Task 04 — Seed the Books Database
 
-The app needs data to be useful. The repository ships with a seed script **and** a vendored copy of the GoodReads books dataset (100,000 books and a small genres collection), so the script loads the data into your local MongoDB container straight from the cloned repo — no network download is required. The script is a shell script, so on Windows you will run it from **Git Bash** (installed in Task 00 as part of the Git install).
+The app needs data to be useful. The repository ships with a seed script **and** a vendored copy of the GoodReads books dataset (100,000 books and a small genres collection), so the script loads the data into your local MongoDB container straight from the cloned repo — no network download is required. The seed script is run via npm (`npm run seed`), so it works from any terminal.
 
 ## Navigate to the seed directory
 
@@ -33,26 +33,22 @@ Save with `Ctrl+S`.
 
 ## Run the seed
 
-In the Git Bash terminal:
+In the integrated terminal:
 
 ```bash
-./seed_data.sh
+npm install && npm run seed
 ```
 
-The script installs its own Node dependencies (1–2 minutes), then reads the vendored dataset (`data/seed-data.tar.gz`, which holds `books.json` and `genres.json`) and bulk-inserts the documents into the `bookstore` database in your local MongoDB container.
+`npm install` installs the seed script's Node dependencies (1–2 minutes), then `npm run seed` reads the vendored dataset (`data/seed-data.tar.gz`, which holds `books.json` and `genres.json`) and bulk-inserts the documents into the `bookstore` database in your local MongoDB container.
 
 ### Expected output
 
 ```
-Preparing to import data...
-Installing Node modules...
-Populating database...
 $$$ Seeding data started 6/10/2026, 8:30:05 PM
 Loading books from .../src/deployment/seed/data/seed-data.tar.gz
 Loading genres from .../src/deployment/seed/data/seed-data.tar.gz
 Seeding completed on books Collection 6/10/2026, 8:30:13 PM
 Seeding completed on genres Collection 6/10/2026, 8:30:13 PM
-Finished! Your database is now ready to play around!
 ```
 
 The whole run finishes in a few seconds — the dataset loads from the local repo rather than over the network.
@@ -105,5 +101,3 @@ exit
 > **Troubleshooting — `Error: no connection string`:** You skipped the "Configure the seed connection string" step above — `src/deployment/seed/.env` is missing or its `BOOKSTORE_SEED_DB_CONNECTION_STRING` is unset. Create the file (or set the value) and re-run.
 >
 > **Troubleshooting — script reports a connection error:** Confirm the MongoDB container is still running (`docker ps` should list `mongodb` with status `Up`). If not, `docker start mongodb`. The replica set state is persisted, so you do not need to re-run `rs.initiate()`.
->
-> **Troubleshooting — `seed_data.sh: Permission denied`:** Mark the script as executable: `chmod +x seed_data.sh`, then re-run.
