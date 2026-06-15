@@ -35,10 +35,10 @@ az group create --name rg-documentdb-lab --location westus3
 
 Open [src/deployment/main.bicep](../../src/deployment/main.bicep) and review it before deploying. It is intentionally small — a cluster and its firewall rule, nothing else:
 
-- **Parameters** — `adminUsername` and the `@secure()` `adminPassword` for the cluster administrator; `clientIpAddress` for the firewall rule (Task 03); and the sizing knobs with defaults for this production-grade POC: `tier = 'M40'`, `storageSizeGb = 128`, `serverVersion = '7.0'`. `clusterName` defaults to a globally-unique lowercase name derived from the resource group, and `location` defaults to the resource group's region.
+- **Parameters** — `adminUsername` and the `@secure()` `adminPassword` for the cluster administrator; `clientIpAddress` for the firewall rule; and the sizing knobs with defaults for this production-grade POC: `tier = 'M40'`, `storageSizeGb = 128`, `serverVersion = '7.0'`. `clusterName` defaults to a globally-unique lowercase name derived from the resource group, and `location` defaults to the resource group's region.
 - **`Microsoft.DocumentDB/mongoClusters`** — the cluster itself: the administrator credentials, server version 7.0, `compute.tier` from the `tier` parameter, `storage.sizeGb` from `storageSizeGb`, a single shard (`sharding.shardCount = 1`), high availability disabled (`highAvailability.targetMode = 'Disabled'` — this single-region POC skips the hot standby to keep cost down; a full production rollout would enable it), and `publicNetworkAccess: 'Enabled'` so the firewall rule below governs who can connect.
-- **`Microsoft.DocumentDB/mongoClusters/firewallRules`** — a child rule named `lab-client` that allows your `clientIpAddress` through (covered in Task 03).
-- **Outputs** — `clusterName` and a `connectionString` assembled from the cluster name, with a literal `<password>` placeholder where the admin password goes (the secret is never emitted by the deployment — you substitute it yourself in Task 04).
+- **`Microsoft.DocumentDB/mongoClusters/firewallRules`** — a child rule named `lab-client` that allows your `clientIpAddress` through (you verify this rule at the end of this task).
+- **Outputs** — `clusterName` and a `connectionString` assembled from the cluster name, with a literal `<password>` placeholder where the admin password goes (the secret is never emitted by the deployment — you substitute it yourself in Task 03).
 
 ## Find your public IP
 
@@ -48,7 +48,7 @@ The firewall rule needs the public IP your machine presents to Azure:
 (Invoke-RestMethod https://api.ipify.org)
 ```
 
-Note the value — you will pass it as `clientIpAddress` below. (Task 03 covers this rule in detail.)
+Note the value — you will pass it as `clientIpAddress` below.
 
 ## Deploy
 
@@ -62,9 +62,9 @@ az deployment group create `
 
 Replace `<your-ip>` with the address from the previous step. You did **not** pass `adminPassword` on the command line — because it is a `@secure()` parameter with no default, the CLI prompts you for it interactively so the secret never lands in your shell history.
 
-The password must satisfy the DocumentDB policy: **8–256 characters, and at least 3 of these 4 character types — lowercase, uppercase, numeric, and symbol.** A password that fails the policy makes the deployment fail with a `bad_request` schema error; just re-run with a compliant one. Record the password — you will need it in Tasks 04 and 05.
+The password must satisfy the DocumentDB policy: **8–256 characters, and at least 3 of these 4 character types — lowercase, uppercase, numeric, and symbol.** A password that fails the policy makes the deployment fail with a `bad_request` schema error; just re-run with a compliant one. Record the password — you will need it in Tasks 03 and 04.
 
-> **Naming the deployment `main`:** the `--name main` flag names the deployment (not the cluster). Tasks 03 and 04 reference this deployment by that name (`-n main`) to read its outputs, so keep it as written.
+> **Naming the deployment `main`:** the `--name main` flag names the deployment (not the cluster). Task 03 reads this deployment's outputs by that name (`-n main`), so keep it as written.
 
 Provisioning a DocumentDB cluster takes **several minutes**. The command blocks until it finishes.
 
@@ -89,4 +89,14 @@ You can also confirm in the Azure portal: open the `rg-documentdb-lab` resource 
 
 > **If the deployment fails on the cluster name:** `clusterName` must be globally unique. The default derives a unique name from the resource group, so this is rare — but if you passed an explicit `clusterName` that is already taken, re-run with a different value.
 
-With the cluster deployed, continue to **Task 03** to verify the firewall rule.
+## Verify the firewall rule
+
+A new DocumentDB cluster **denies all connections by default** — public access is governed by an allow-list of IP ranges, and an empty list times out every connection (including `mongosh` in Task 04 and the app later). Because you passed `clientIpAddress` at deployment time, the `lab-client` rule already allows the machine you deployed from. Confirm it in the portal:
+
+1. Open the `rg-documentdb-lab` resource group and select your **mongoClusters** resource.
+2. In the left menu, under **Settings**, select **Networking**.
+3. Under **Firewall rules**, confirm a rule named **lab-client** is listed, with its start and end address both equal to the IP you passed.
+
+> **Production note:** allowing a single client IP keeps this POC simple. A production cluster would typically use a tighter network design — private endpoints or virtual-network integration — rather than a public IP allow-list.
+
+With the cluster deployed and reachable, continue to **Task 03** to retrieve the connection string.

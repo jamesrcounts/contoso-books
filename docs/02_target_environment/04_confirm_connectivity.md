@@ -1,19 +1,19 @@
 ---
-title: "Exercise 02 - Task 05 — Confirm Connectivity"
+title: "Exercise 02 - Task 04 — Confirm Connectivity"
 layout: default
-nav_order: 5
+nav_order: 4
 parent: "Exercise 02 - Target Environment Setup — Azure DocumentDB"
 ---
 
-# Task 05 — Confirm Connectivity
+# Task 04 — Confirm Connectivity
 
-The final step of setting up the target environment is to prove you can actually reach the cluster and authenticate against it. You will connect with `mongosh` using the connection string from Task 04 and run a couple of commands to confirm the session is healthy.
+The final step of setting up the target environment is to prove you can actually reach the cluster and authenticate against it. You will connect with `mongosh` using the connection string from Task 03 and run a couple of commands to confirm the session is healthy.
 
-Run these from **PowerShell** on the same machine whose IP you allowed in Task 03.
+Run these from **PowerShell** on the same machine whose IP you allowed in Task 02.
 
 ## Connect with mongosh
 
-Use the full SRV string you assembled in Task 04 (admin password substituted in). Quote it so PowerShell does not try to interpret the `&` characters:
+Use the full SRV string you assembled in Task 03 (admin password substituted in). Quote it so PowerShell does not try to interpret the `&` characters:
 
 ```powershell
 mongosh "mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
@@ -65,7 +65,7 @@ exit
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Connection hangs, then a **timeout** error | Your client IP is not allowed (or it changed since you deployed) | Revisit **Task 03** — confirm `(Invoke-RestMethod https://api.ipify.org)` matches the `lab-client` firewall rule, and update it if not. |
+| Connection hangs, then a **timeout** error | Your client IP is not allowed by the firewall | Confirm `(Invoke-RestMethod https://api.ipify.org)` matches the `lab-client` firewall rule you verified in **Task 02** (Networking → Firewall rules in the portal). |
 | **Authentication failed** | Wrong username or password in the connection string | Confirm the username is `bookadmin` and that you substituted the exact admin password you set in **Task 02**. |
 | `mongosh: command not found` | `mongosh` is not installed / not on PATH | Install it (Exercise 01 Task 00 lists the prereqs) and reopen PowerShell. |
 

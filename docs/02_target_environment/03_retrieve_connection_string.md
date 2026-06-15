@@ -1,13 +1,13 @@
 ---
-title: "Exercise 02 - Task 04 — Retrieve the Connection String"
+title: "Exercise 02 - Task 03 — Retrieve the Connection String"
 layout: default
-nav_order: 4
+nav_order: 3
 parent: "Exercise 02 - Target Environment Setup — Azure DocumentDB"
 ---
 
-# Task 04 — Retrieve the Connection String
+# Task 03 — Retrieve the Connection String
 
-With the cluster provisioned and reachable, you need its connection string. You will use it to confirm connectivity in Task 05, and later as the value of the app's `BOOKSTORE_DB_CONNECTION_STRING` (and the seed script's `BOOKSTORE_SEED_DB_CONNECTION_STRING`) when you point the application at Azure.
+With the cluster provisioned and reachable, you need its connection string. You will use it to confirm connectivity in Task 04, and later as the value of the app's `BOOKSTORE_DB_CONNECTION_STRING` (and the seed script's `BOOKSTORE_SEED_DB_CONNECTION_STRING`) when you point the application at Azure.
 
 There are two ways to get it: the Bicep deployment output, or the portal.
 
@@ -49,9 +49,9 @@ mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster
 
 Store the completed string somewhere you can retrieve it for the rest of the lab — you will need it:
 
-- in **Task 05**, to connect with `mongosh` and confirm connectivity;
+- in **Task 04**, to connect with `mongosh` and confirm connectivity;
 - later, as `BOOKSTORE_DB_CONNECTION_STRING` when the application is pointed at the Azure cluster, and as `BOOKSTORE_SEED_DB_CONNECTION_STRING` when seeding data into Azure.
 
 ## Success criteria
 
-You have the full SRV connection string, with the real admin password substituted for `<password>`, saved for use in the next task. Continue to **Task 05** to confirm connectivity.
+You have the full SRV connection string, with the real admin password substituted for `<password>`, saved for use in the next task. Continue to **Task 04** to confirm connectivity.
