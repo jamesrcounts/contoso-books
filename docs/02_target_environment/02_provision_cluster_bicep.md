@@ -64,7 +64,7 @@ Replace `<your-ip>` with the address from the previous step. You did **not** pas
 
 The password must satisfy the DocumentDB policy: **8–256 characters, and at least 3 of these 4 character types — lowercase, uppercase, numeric, and symbol.** A password that fails the policy makes the deployment fail with a `bad_request` schema error; just re-run with a compliant one. Record the password — you will need it in Tasks 03 and 04.
 
-> **Naming the deployment `main`:** the `--name main` flag names the deployment (not the cluster). Task 03 reads this deployment's outputs by that name (`-n main`), so keep it as written.
+> **Naming the deployment `main`:** the `--name main` flag names the deployment (not the cluster) — it is what appears as `"name": "main"` in the output below and in the portal's **Deployments** list. Any name works; the lab uses `main` for consistency.
 
 Provisioning a DocumentDB cluster takes **several minutes**. The command blocks until it finishes.
 
