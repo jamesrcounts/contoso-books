@@ -2,6 +2,25 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⛔ RESPECT THE WORKTREE SETTING — CHECK BEFORE THE FIRST EDIT
+
+This overrides convenience, momentum, and whatever the current working directory happens to be.
+
+- **Before the first edit or write/commit command in ANY session, check the session's
+  worktree setting.** Do not start editing just because the CWD is the main checkout.
+- **Setting ENABLED:** do ALL edits, commands, commits, and pushes in THIS session's own
+  worktree. If not in it yet, enter it FIRST (EnterWorktree) before touching any file.
+  Never edit, commit, or push on `main`.
+- **Setting DISABLED:** work in the main checkout.
+- **Never write into or clean up another session's worktree.** A worktree that merely
+  appears in `git worktree list` is not mine. Never run destructive git commands
+  (`git checkout HEAD -- <file>`, `git restore`, `git clean`, `git worktree remove`) in a
+  worktree that isn't this session's.
+- If unsure whether the setting is on, STOP and ask before editing — do not guess, do not
+  default to `main`.
+
+See the project memory `always-edit-in-worktree`.
+
 ## Project overview
 
 This repository is a Jekyll-based training lab (just-the-docs theme, published to GitHub Pages). The instructional content lives under `docs/` and its image assets under `media/`; the companion sample application the exercises operate on lives entirely under `src/`. The two trees are siblings and never interleave.
