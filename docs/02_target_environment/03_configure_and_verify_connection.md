@@ -63,6 +63,6 @@ If the node expands without an authentication or timeout error, you have proven 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | The connection hangs, then fails with a **timeout** | Your client IP is not allowed by the firewall | Confirm `(Invoke-RestMethod https://api.ipify.org)` matches the `lab-client` firewall rule you verified in **Task 02** (Networking → Firewall rules in the portal). |
-| An **`invalid key`** error | Wrong username or password in the connection string | Confirm the username is `bookadmin` and that you pasted the exact admin password you set in **Task 02**. If you are unsure of the password, reset it on the cluster's **Connection strings** / overview page in the Azure portal, then reconnect with the new password. |
+| An **`invalid key`** error | Wrong username or password in the connection string | Confirm the username is `bookadmin` and that you pasted the exact admin password you set in **Task 02**. If you are unsure of the password, reset it on the cluster's **Overview** page in the Azure portal (the reset control is not on the Connection strings page), then reconnect with the new password. |
 
 This completes Exercise 02. The cluster is provisioned, reachable, and ready to receive Contoso's catalog in the migration exercises that follow.
