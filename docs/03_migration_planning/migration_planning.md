@@ -2,6 +2,7 @@
 title: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code"
 layout: default
 nav_order: 4
+has_children: true
 ---
 
 # Exercise 03 - Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code
@@ -36,8 +37,8 @@ A successful migration starts with a complete picture of the source. In this exe
 
 ## Tasks
 
-- Task 01 — Connect the extension to the local MongoDB instance
-- Task 02 — Run the pre-migration assessment and review the report
-- Task 03 — Review Critical and Warning findings — the legacy reading-insights aggregation (server-side JavaScript, `$function`) is flagged as Critical
-- Task 04 — Remediate: rewrite the `$function` stage using standard aggregation operators, then re-run the assessment to confirm a clean report
-- Task 05 — Choose migration mode using the comparison above
+- Task 01 — [Connect the Extension to the Local MongoDB Instance](01_connect_extension_to_local_mongodb.md)
+- Task 02 — [Run the Pre-Migration Assessment and Review the Report](02_run_assessment.md)
+- Task 03 — [Review Critical and Warning Findings](03_review_findings.md) — the legacy reading-insights aggregation (server-side JavaScript, `$function`) is flagged as Critical
+- Task 04 — [Remediate and Re-Assess](04_remediate_and_reassess.md) — rewrite the `$function` stage using standard aggregation operators, then re-run the assessment to confirm a clean report
+- Task 05 — [Choose the Migration Mode](05_choose_migration_mode.md) using the comparison above

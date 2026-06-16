@@ -42,6 +42,6 @@ Before you can migrate anything, you need a working source. In this exercise you
 - Task 03 — [Clone the Contoso Books App and Configure the Connection String](03_clone_and_configure_the_app.md)
 - Task 04 — [Seed the Books Database](04_seed_the_books_database.md)
 - Task 05 — [Run the App and Verify End-to-End](05_run_the_app.md)
-- Task 06 — Exercise the app's legacy "reading insights" report — an aggregation built with server-side JavaScript (`$function`) — and the slow catalog-statistics query; both work against MongoDB and resurface later (assessment finding in Exercise 03, runtime comparison in Exercise 05)
+- Task 06 — [Exercise the Legacy "Reading Insights" Report](06_exercise_legacy_report.md) — an aggregation built with server-side JavaScript (`$function`) that works against MongoDB and resurfaces as the Critical assessment finding you remediate in Exercise 03
 
 > **Production note:** This lab enables username/password (SCRAM) authentication and keeps the connection string — credentials included — in `.env` for simplicity. Production deployments should use strong, unique credentials, source the connection string from Azure Key Vault, and prefer Microsoft Entra ID authentication where the target supports it (Azure DocumentDB does; a local MongoDB container does not).
