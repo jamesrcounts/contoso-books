@@ -27,5 +27,4 @@ In this exercise you will provision the Azure DocumentDB cluster that will becom
 
 - Task 01 — Review the sizing mapping for Contoso's workload
 - Task 02 — Provision the resource group, cluster, and firewall rule via Bicep
-- Task 03 — Retrieve the DocumentDB connection string and store it for later use
-- Task 04 — Confirm connectivity from `mongosh`
+- Task 03 — Configure the connection string and confirm connectivity with the DocumentDB extension

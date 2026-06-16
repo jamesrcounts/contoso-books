@@ -91,7 +91,7 @@ You can also confirm in the Azure portal: open the `rg-documentdb-lab` resource 
 
 ## Verify the firewall rule
 
-A new DocumentDB cluster **denies all connections by default** — public access is governed by an allow-list of IP ranges, and an empty list times out every connection (including `mongosh` in Task 04 and the app later). Because you passed `clientIpAddress` at deployment time, the `lab-client` rule already allows the machine you deployed from. Confirm it in the portal:
+A new DocumentDB cluster **denies all connections by default** — public access is governed by an allow-list of IP ranges, and an empty list times out every connection (the DocumentDB extension in Task 03 and the app later included). Because you passed `clientIpAddress` at deployment time, the `lab-client` rule already allows the machine you deployed from. Confirm it in the portal:
 
 1. Open the `rg-documentdb-lab` resource group and select your **mongoClusters** resource.
 2. In the left menu, under **Settings**, select **Networking**.
@@ -99,4 +99,4 @@ A new DocumentDB cluster **denies all connections by default** — public access
 
 > **Production note:** allowing a single client IP keeps this POC simple. A production cluster would typically use a tighter network design — private endpoints or virtual-network integration — rather than a public IP allow-list.
 
-With the cluster deployed and reachable, continue to **Task 03** to retrieve the connection string.
+With the cluster deployed and reachable, continue to **Task 03** to configure the connection string and confirm connectivity.
