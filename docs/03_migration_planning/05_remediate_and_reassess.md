@@ -1,11 +1,11 @@
 ---
-title: "Exercise 03 - Task 04 — Remediate and Re-Assess"
+title: "Exercise 03 - Task 05 — Remediate and Re-Assess"
 layout: default
-nav_order: 4
+nav_order: 5
 parent: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code"
 ---
 
-# Task 04 — Remediate and Re-Assess
+# Task 05 — Remediate and Re-Assess
 
 Now you fix the Critical finding. You will rewrite the `$function` stage in the reading-insights report using standard aggregation operators that Azure DocumentDB supports, confirm the report returns identical results, and re-run the assessment to prove the finding is gone. This is remediation done right: the migration blocker disappears **without changing what the feature does**.
 
@@ -57,7 +57,7 @@ Leave the `$group` and `$sort` stages unchanged. The branches are evaluated in o
 
 ## Confirm the report still works — and clear the old usage signal
 
-The assessment learns feature usage from `serverStatus`, which accumulates **since the last `mongod` restart**. The old `$function` calls from Exercise 01 are still counted in the current server session, so a re-assessment right now would still report them. Restart the container to reset those counters, then exercise only the **rewritten** report:
+The assessment learns feature usage from `serverStatus`, which accumulates **since the last `mongod` restart**. The `$function` calls you made in Task 03 are still counted in the current server session, so a re-assessment right now would still report them. Restart the container to reset those counters, then exercise only the **rewritten** report:
 
 1. Restart the source so `serverStatus` starts fresh:
 
@@ -68,10 +68,10 @@ The assessment learns feature usage from `serverStatus`, which accumulates **sin
 2. With the app running (`npm run develop` from `src/`), call the rewritten report:
 
    ```powershell
-   Invoke-RestMethod http://localhost:8080/reading-insights | ConvertTo-Json
+   Invoke-RestMethod http://localhost:8080/reading-insights | Select-Object _id, count, avgRating | ConvertTo-Json
    ```
 
-3. Compare the output to what you saw in Exercise 01, Task 06. The tiers, counts, and average ratings should be **identical** — proof that the `$switch` rewrite preserves behavior. The only difference is that this run used no server-side JavaScript, so `serverStatus` now records no `$function` usage.
+3. Compare the output to what you saw in Task 03. The tiers, counts, and average ratings should be **identical** — proof that the `$switch` rewrite preserves behavior. The only difference is that this run used no server-side JavaScript, so `serverStatus` now records no `$function` usage.
 
 ## Re-run the assessment
 
@@ -91,4 +91,4 @@ When the new report opens, confirm the **Features** category no longer lists the
 | Re-assessment still shows `$function` | `serverStatus` still holds the old usage | Make sure you ran `docker restart mongodb` **before** re-running the report, and did not call the old code path afterward. |
 | The endpoint 404s after editing | Syntax error in `readingInsights.js` | Check the server terminal — `nodemon` prints the parse error; fix it and save to reload. |
 
-With a clean assessment in hand, the only decision left is *how* to migrate. You make that call in Task 05.
+With a clean assessment in hand, the only decision left is *how* to migrate. You make that call in Task 06.

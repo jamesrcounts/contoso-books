@@ -10,6 +10,8 @@ nav_order: 5
 
 Contoso schedules a maintenance window and stops writes to the source. In this exercise you will run an offline (snapshot) migration — a point-in-time copy of the source database into DocumentDB. This is the simplest migration path and the baseline for understanding the migration tooling.
 
+The application is still pointed at the **local** source (it has been since Exercise 01). Repointing its `src/server/.env` to the Azure connection string you assembled in Exercise 02 is the **cutover** step you perform here, once the copy is complete and verified.
+
 ## Learning Objectives
 
 - Execute an offline snapshot migration using the Azure DocumentDB Migration Extension for VS Code

@@ -32,7 +32,7 @@ Before you can migrate anything, you need a working source. In this exercise you
 >
 > A single-node replica set gives you the oplog and change stream support with no added complexity. It is the standard pattern for local development and single-server deployments that need to be migration-ready.
 >
-> **Offline migration** (Exercise 05 — Part A) takes a point-in-time snapshot and does not need change streams, so it would work with a standalone MongoDB instance. But because we want to demonstrate both migration modes in this lab, we configure the replica set from the start.
+> **Offline migration** (Exercise 04) takes a point-in-time snapshot and does not need change streams, so it would work with a standalone MongoDB instance. But because we want to demonstrate both migration modes in this lab, we configure the replica set from the start.
 
 ## Tasks
 
@@ -42,6 +42,5 @@ Before you can migrate anything, you need a working source. In this exercise you
 - Task 03 — [Clone the Contoso Books App and Configure the Connection String](03_clone_and_configure_the_app.md)
 - Task 04 — [Seed the Books Database](04_seed_the_books_database.md)
 - Task 05 — [Run the App and Verify End-to-End](05_run_the_app.md)
-- Task 06 — [Exercise the Legacy "Reading Insights" Report](06_exercise_legacy_report.md) — an aggregation built with server-side JavaScript (`$function`) that works against MongoDB and resurfaces as the Critical assessment finding you remediate in Exercise 03
 
 > **Production note:** This lab enables username/password (SCRAM) authentication and keeps the connection string — credentials included — in `.env` for simplicity. Production deployments should use strong, unique credentials, source the connection string from Azure Key Vault, and prefer Microsoft Entra ID authentication where the target supports it (Azure DocumentDB does; a local MongoDB container does not).

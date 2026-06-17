@@ -10,6 +10,8 @@ nav_order: 6
 
 Contoso can no longer tolerate a maintenance window — the books catalog needs to stay live throughout the migration. In this exercise you will run an online (change stream) migration, which performs an initial copy and then tails the source oplog to keep the target in sync until cutover. The application continues accepting writes the entire time.
 
+Throughout the sync, the application stays pointed at the **local** source (as it has been since Exercise 01). Only at **cutover** — once the replication gap reaches zero — do you repoint its `src/server/.env` to the Azure connection string you assembled in Exercise 02.
+
 ## Learning Objectives
 
 - Reset the target environment to prepare for a fresh migration run

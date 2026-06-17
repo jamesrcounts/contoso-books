@@ -7,7 +7,7 @@ parent: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Mig
 
 # Task 01 — Connect the Extension to the Local MongoDB Instance
 
-Before you can assess anything, the assessment tooling needs to see your source. The **Azure DocumentDB Migration extension** runs entirely inside VS Code, but it does not manage its own connections — it rides on top of the **DocumentDB for VS Code** extension and assesses whatever source you have connected there. In this task you point that extension at the containerized MongoDB instance from Exercise 01, the same source you will migrate.
+Before you can assess anything, the assessment tooling needs to see your source. The **Azure DocumentDB Migration extension** runs entirely inside VS Code, but it does not manage its own connections — it rides on top of the **DocumentDB for VS Code** extension and assesses whatever source you have connected there. In this task you point that extension at the containerized MongoDB instance from Exercise 01, the same source you will migrate — and the same source the Contoso app is still running against, since you have not yet repointed it to Azure (that happens at cutover, in Exercise 04 / 05).
 
 ## About the two extensions
 

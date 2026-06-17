@@ -9,11 +9,12 @@ has_children: true
 
 ## Scenario Overview
 
-A successful migration starts with a complete picture of the source. In this exercise you will use the Azure DocumentDB Migration Extension for VS Code to assess the local MongoDB instance for compatibility with Azure DocumentDB. The extension generates a structured report categorizing findings as Critical, Warning, or Informational — this is the planning gate before any data moves. Because the Contoso app ships with legacy patterns (the server-side JavaScript reading-insights report exercised in Exercise 01), the assessment returns real findings — not a clean pass.
+A successful migration starts with a complete picture of the source. In this exercise you will use the Azure DocumentDB Migration Extension for VS Code to assess the local MongoDB instance for compatibility with Azure DocumentDB. The extension generates a structured report categorizing findings as Critical, Warning, or Informational — this is the planning gate before any data moves. You will run a **clean baseline** assessment first, then exercise the app's legacy server-side JavaScript (`$function`) reading-insights report and re-assess — watching a real **Critical** finding appear — before remediating it. That contrast shows how the assessment detects feature usage and what a clean report does (and does not) prove.
 
 ## Learning Objectives
 
 - Run a compatibility assessment against the local MongoDB instance using the Azure DocumentDB Migration Extension for VS Code
+- Understand how the assessment detects operator usage from the source's runtime metrics — by exercising a legacy feature and watching a finding surface on re-assessment
 - Interpret the multi-level report (source instance, database, and collection levels)
 - Identify unsupported MongoDB features, commands, or indexes that require remediation before migration
 - Remediate a Critical finding — rewrite the server-side JavaScript (`$function`) aggregation with standard pipeline operators and confirm the assessment clears
@@ -38,7 +39,8 @@ A successful migration starts with a complete picture of the source. In this exe
 ## Tasks
 
 - Task 01 — [Connect the Extension to the Local MongoDB Instance](01_connect_extension_to_local_mongodb.md)
-- Task 02 — [Run the Pre-Migration Assessment and Review the Report](02_run_assessment.md)
-- Task 03 — [Review Critical and Warning Findings](03_review_findings.md) — the legacy reading-insights aggregation (server-side JavaScript, `$function`) is flagged as Critical
-- Task 04 — [Remediate and Re-Assess](04_remediate_and_reassess.md) — rewrite the `$function` stage using standard aggregation operators, then re-run the assessment to confirm a clean report
-- Task 05 — [Choose the Migration Mode](05_choose_migration_mode.md) using the comparison above
+- Task 02 — [Run the Baseline Pre-Migration Assessment](02_run_assessment.md) — a clean first pass
+- Task 03 — [Exercise the Legacy "Reading Insights" Report](03_exercise_legacy_report.md) — run the server-side JavaScript (`$function`) report, then re-assess and watch the Critical finding appear
+- Task 04 — [Review Critical and Warning Findings](04_review_findings.md) — the legacy reading-insights aggregation (server-side JavaScript, `$function`) is flagged as Critical
+- Task 05 — [Remediate and Re-Assess](05_remediate_and_reassess.md) — rewrite the `$function` stage using standard aggregation operators, then re-run the assessment to confirm a clean report
+- Task 06 — [Choose the Migration Mode](06_choose_migration_mode.md) using the comparison above
