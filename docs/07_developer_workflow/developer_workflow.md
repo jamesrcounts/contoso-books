@@ -2,6 +2,7 @@
 title: "Exercise 07 - Developer Workflow — Local Container, Driver Compatibility, Environment Targeting"
 layout: default
 nav_order: 8
+has_children: true
 ---
 
 # Exercise 07 - Developer Workflow — Local Container, Driver Compatibility, Environment Targeting

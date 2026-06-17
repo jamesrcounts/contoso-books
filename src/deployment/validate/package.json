@@ -1,0 +1,23 @@
+{
+    "name": "bookstore-validate",
+    "version": "1.0.0",
+    "description": "Compare document counts and content checksums for the bookstore collections across a source and target cluster.",
+    "main": "compare.js",
+    "scripts": {
+        "validate": "node compare.js",
+        "test": "vitest run"
+    },
+    "repository": {},
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {},
+    "dependencies": {
+        "dotenv": "^10.0.0",
+        "mongodb": "^6"
+    },
+    "devDependencies": {
+        "mongodb-memory-server": "^9.0.0",
+        "vitest": "^4.1.8"
+    }
+}
