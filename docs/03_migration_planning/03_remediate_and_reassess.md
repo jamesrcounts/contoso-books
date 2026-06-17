@@ -53,6 +53,8 @@ Open [readingInsights.js](src/server/src/db/readingInsights.js) and replace the 
 
 Leave the `$group` and `$sort` stages unchanged. The branches are evaluated in order, so the same boundaries (`null` → `Unknown`, `< 250` → `Quick Read`, `< 500` → `Standard`, else `Epic`) produce the same tier for every book.
 
+Save the file. The server runs under `nodemon`, so it reloads the change automatically — there is no need to restart it by hand.
+
 > **Operator mapping.** Server-side `if`/`else` maps cleanly to aggregation expressions: a multi-way ladder → **`$switch`**; a single two-way choice → **`$cond`**. For pure numeric range bucketing you could also use the **`$bucket`** stage. `$switch` is the closest one-to-one translation of this ladder and keeps the `Unknown` (null) case explicit.
 
 ## Confirm the report still works — and clear the old usage signal
@@ -64,6 +66,8 @@ The assessment learns feature usage from `serverStatus`, which accumulates **sin
    ```powershell
    docker restart mongodb
    ```
+
+   The running app reconnects to the container automatically once it is back up — you don't need to restart the app.
 
 2. With the app running (`npm run develop` from `src/`), call the rewritten report:
 
