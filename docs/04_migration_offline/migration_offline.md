@@ -9,7 +9,7 @@ has_children: true
 
 ## Scenario Overview
 
-Contoso schedules a maintenance window and stops writes to the source. In this exercise you will run an offline (snapshot) migration — a point-in-time copy of the source database into DocumentDB. This is the simplest migration path and the baseline for understanding the migration tooling.
+In this exercise you will run an offline (snapshot) migration — a point-in-time copy of the source database into DocumentDB. Because the copy captures a single moment, the source must stop accepting writes while it runs, so Contoso performs it inside a scheduled maintenance window. It is the simplest migration path and the baseline for understanding the migration tooling.
 
 The application is still pointed at the **local** source (it has been since Exercise 01). Repointing its `src/server/.env` to the Azure connection string you assembled in Exercise 02 is the **cutover** step you perform here, once the copy is complete and verified.
 

@@ -17,16 +17,22 @@ The offline path has no continuous synchronization — it is a one-shot copy, no
 
 ## Stop the app
 
-Click into the VS Code integrated terminal that is running `npm run develop` (started in [Exercise 01 Task 05](../01_environment_setup/05_run_the_app.md)) and press `Ctrl+C`. `concurrently` shuts down both tiers — the Express API server on port 8080 and the Vite dev server on port 3000.
+Click into the VS Code integrated terminal that is running `npm run develop` (started in [Exercise 01 Task 05](../01_environment_setup/05_run_the_app.md)) and press `Ctrl+C`. On PowerShell, each tier prompts `Terminate batch job (Y/N)?` — answer `Y`. Both tiers (`concurrently` is running the Express API server on port 8080 and the Vite dev server on port 3000) exit and you are returned to the PowerShell prompt.
 
 ### Example output
 
 ```
+[0] [nodemon] starting `node server.js`
+[1]
+[1]   VITE v8.0.16  ready in 779 ms
+[1]   ➜  Local:   http://localhost:3000/
 [0] Server is running on port 8080
-[1] ➜  Local:   http://localhost:3000/
-^C
-[0] cd server && npm run watch exited with code SIGINT
-[1] cd client && npm run dev exited with code SIGINT
+[0] DocumentDB connected
+[1] Terminate batch job (Y/N)?
+[0] Terminate batch job (Y/N)?
+PS C:\Users\labuser\contoso-books\src>
+[1] cd client && npm run dev exited with code 1
+[0] cd server && npm run watch exited with code 1
 ```
 
 Once you are returned to the shell prompt, no client is writing to the catalog. The maintenance window has begun.
@@ -42,8 +48,8 @@ docker ps
 ### Example output
 
 ```
-CONTAINER ID   IMAGE       COMMAND                  STATUS         PORTS                      NAMES
-cc9d04ee609c   mongo:7.0   "docker-entrypoint.s…"   Up 2 hours     0.0.0.0:27017->27017/tcp   mongodb
+CONTAINER ID   IMAGE       COMMAND                  CREATED       STATUS          PORTS                                             NAMES
+9d92681c74c9   mongo:7.0   "docker-entrypoint.s…"   9 hours ago   Up 53 minutes   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   mongodb
 ```
 
 The `mongodb` container shows `Up`, and `http://localhost:3000` / `http://localhost:8080` no longer respond. Source data is intact and frozen; nothing is mutating it.
@@ -53,5 +59,3 @@ The `mongodb` container shows `Up`, and `http://localhost:3000` / `http://localh
 - The `npm run develop` process is stopped — neither port 3000 nor 8080 is serving.
 - The `mongodb` container (`mongo:7.0`) is still `Up` in `docker ps`.
 - No application or client is writing to the `bookstore` database — the snapshot you take next will be a clean, consistent point in time.
-
-> **Note:** You are *not* repointing `.env` or cutting traffic over to Azure yet. The real cutover — updating the app to use the Azure connection string and resuming writes there — happens in **Task 06** of this exercise, after the copy is verified. Here you only freeze the source so the snapshot is consistent.
