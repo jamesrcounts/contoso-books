@@ -1,13 +1,13 @@
 ---
-title: "Exercise 03 - Task 04 — Review Critical and Warning Findings"
+title: "Exercise 03 - Task 03 — Review Critical and Warning Findings"
 layout: default
-nav_order: 4
+nav_order: 3
 parent: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code"
 ---
 
-# Task 04 — Review Critical and Warning Findings
+# Task 03 — Review Critical and Warning Findings
 
-A report is only useful if you can read it. In this task you interpret the assessment output from the re-run in Task 03, locate the **Critical** finding that blocks migration, and understand *why* it is unsupported — which is what tells you how to fix it in Task 05.
+A report is only useful if you can read it. In this task you interpret the assessment output from the re-run in Task 02, locate the **Critical** finding that blocks migration, and understand *why* it is unsupported — which is what tells you how to fix it in Task 04.
 
 ## How to read the severities
 
@@ -21,7 +21,7 @@ Work top-down: clear every **Critical** finding first, then decide what to do ab
 
 ## The Critical finding: server-side JavaScript (`$function`)
 
-Under the **Features** category you will find a **Critical** finding for an unsupported aggregation operator: **`$function`**. The finding includes the operator name, an actionable recommendation, and a **usage-frequency** value — the count comes from the reading-insights report you exercised in Task 03.
+Under the **Features** category you will find a **Critical** finding for an unsupported aggregation operator: **`$function`**. The finding includes the operator name, an actionable recommendation, and a **usage-frequency** value — the count comes from the reading-insights report you exercised in Task 02.
 
 `$function` lets an aggregation pipeline run arbitrary **server-side JavaScript** inside the database engine. In the Contoso app it powers the effort-tier classification in [readingInsights.js](src/server/src/db/readingInsights.js):
 
@@ -53,7 +53,7 @@ Azure DocumentDB is a fully managed, multi-tenant PaaS. Executing arbitrary, use
 | **`$where`** | JS predicate in a query filter. |
 | **`mapReduce`** | JS-based map/reduce command. |
 
-The good news: server-side JS is almost always a convenience, not a necessity. Anything `$function` computes with `if`/`else` and arithmetic can be expressed with standard aggregation operators that **do** run on DocumentDB — which is exactly the remediation in Task 05.
+The good news: server-side JS is almost always a convenience, not a necessity. Anything `$function` computes with `if`/`else` and arithmetic can be expressed with standard aggregation operators that **do** run on DocumentDB — which is exactly the remediation in Task 04.
 
 ## What about Warnings and Informational findings?
 
@@ -68,4 +68,4 @@ For this lab, the single blocker is the `$function` Critical finding. Everything
 
 You can locate the **Critical** `$function` finding in the report, explain that it represents unsupported server-side JavaScript, and state the remediation direction: replace the `$function` stage with standard aggregation operators.
 
-In Task 05 you make that change, confirm the report behaves identically, and re-run the assessment to prove the finding is gone.
+In Task 04 you make that change, confirm the report behaves identically, and re-run the assessment to prove the finding is gone.

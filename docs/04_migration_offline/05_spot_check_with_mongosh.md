@@ -92,4 +92,4 @@ db.genres.findOne()
 
 ---
 
-This completes the offline (snapshot) migration: Contoso's catalog is copied into Azure DocumentDB, the counts reconcile, and the data is verified faithful. Offline traded a maintenance window for simplicity. In **Exercise 05** you'll run the **online (change-stream)** path that avoids that downtime, and in **Exercise 06** you'll cut the application over to the migrated data on Azure.
+Contoso's catalog is now copied into Azure DocumentDB, the counts reconcile, and the data is verified faithful. One step remains: cut the application over to DocumentDB, which you do in **Task 06**. Offline traded a maintenance window for simplicity; in **Exercise 05** you'll run the **online (change-stream)** path that avoids that downtime.

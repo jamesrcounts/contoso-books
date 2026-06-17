@@ -1,13 +1,13 @@
 ---
-title: "Exercise 03 - Task 03 — Exercise the Legacy \"Reading Insights\" Report"
+title: "Exercise 03 - Task 02 — Exercise the Legacy \"Reading Insights\" Report"
 layout: default
-nav_order: 3
+nav_order: 2
 parent: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code"
 ---
 
-# Task 03 — Exercise the Legacy "Reading Insights" Report
+# Task 02 — Exercise the Legacy "Reading Insights" Report
 
-The baseline assessment in Task 02 came back clean — not because the Contoso app is free of
+The baseline assessment in Task 01 came back clean — not because the Contoso app is free of
 migration blockers, but because the assessment's **Features** check only sees the operators
 your workload has actually *used* since the source started. The everyday read/write paths the
 app exercised in Exercise 01 use only supported operators, so nothing surfaced.
@@ -104,7 +104,7 @@ source's `serverStatus` metrics — and that is the signal the assessment reads.
 
 ## Re-run the assessment
 
-Run the pre-migration assessment again, exactly as in **Task 02** (right-click the connected
+Run the pre-migration assessment again, exactly as in **Task 01** (right-click the connected
 local connection → **Data Migration...** → **Migration to Azure DocumentDB** → **Pre-Migration
 Assessment for Azure DocumentDB**). Give it a distinct **Assessment name** (e.g.
 `contoso-books-source-with-function`) so you can tell it apart from the clean baseline — the
@@ -114,7 +114,7 @@ This time the report is **not** clean. Under the **Features** category you will 
 **Critical** finding for the unsupported `$function` operator, with a usage-frequency count
 that comes from the call you just made. The only thing that changed between the two runs is
 that you exercised the legacy report — which is precisely how the assessment surfaces
-feature usage. You dig into that finding in Task 04.
+feature usage. You dig into that finding in Task 03.
 
 ## Success criteria
 
@@ -132,4 +132,4 @@ baseline run did not.
 | The browser shows nothing at `http://localhost:3000/reading-insights` | The Vite dev server only proxies `/books`, `/genres`, and `/comment` to the API | Call the API server directly on port `8080` as shown above, not the UI on `3000`. |
 
 With the `$function` usage now recorded and flagged, you are ready to read the finding in
-Task 04.
+Task 03.

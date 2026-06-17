@@ -13,7 +13,7 @@ An offline migration takes a **point-in-time snapshot** of the source and bulk-c
 
 The offline path has no continuous synchronization — it is a one-shot copy, not a replicating stream. Review the comparison in [Exercise 03 — Migration Planning](../03_migration_planning/migration_planning.md): the offline mode requires downtime because the cutover trigger is simply "copy complete," with no mechanism to reconcile changes that land mid-copy. Online migration (Exercise 05) solves this with a change stream, but at the cost of more setup. For Contoso's scheduled window, offline is the simpler, predictable choice.
 
-> **The source of truth is still the local container.** Although you repointed the app's `BOOKSTORE_DB_CONNECTION_STRING` to Azure in Exercise 02 Task 03 (to verify connectivity), Contoso's catalog still lives in the **local MongoDB container** — that is what you will migrate. Stopping the app here represents freezing writes against that source.
+> **The source of truth is still the local container.** The app has been running against the **local MongoDB container** since Exercise 01. You assembled the Azure connection string in Exercise 02 Task 03 but deliberately left the app pointed at local, so Contoso's catalog still lives in the container — that is what you will migrate. Stopping the app here freezes writes against that source; you repoint the app to Azure at the **cutover in Task 06**.
 
 ## Stop the app
 
@@ -54,4 +54,4 @@ The `mongodb` container shows `Up`, and `http://localhost:3000` / `http://localh
 - The `mongodb` container (`mongo:7.0`) is still `Up` in `docker ps`.
 - No application or client is writing to the `bookstore` database — the snapshot you take next will be a clean, consistent point in time.
 
-> **Note:** You are *not* repointing `.env` or cutting traffic over to Azure in this exercise. The real cutover — updating the app to use the Azure connection string and resuming writes there — happens in **Exercise 06 (Post-Migration)**. Here you only freeze the source so the snapshot is consistent.
+> **Note:** You are *not* repointing `.env` or cutting traffic over to Azure yet. The real cutover — updating the app to use the Azure connection string and resuming writes there — happens in **Task 06** of this exercise, after the copy is verified. Here you only freeze the source so the snapshot is consistent.

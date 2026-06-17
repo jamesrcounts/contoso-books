@@ -19,10 +19,11 @@ The application is still pointed at the **local** source (it has been since Exer
 - Observe the downtime requirement implicit in the offline approach
 - Monitor the snapshot copy phase to completion
 - Verify document counts and spot-check data fidelity after the migration
+- Cut the application over to DocumentDB by repointing its connection string and restarting
 
 ## Estimated Duration
 
-20 minutes
+25 minutes
 
 ## Tasks
 
@@ -31,3 +32,4 @@ The application is still pointed at the **local** source (it has been since Exer
 - Task 03 — Monitor the snapshot copy phase and confirm completion
 - Task 04 — Verify document counts match between source and target
 - Task 05 — Spot-check migrated data using `mongosh` against the DocumentDB endpoint
+- Task 06 — Perform the cutover: repoint the app's `.env` to the Azure connection string and restart, confirming it serves from DocumentDB
