@@ -2,6 +2,7 @@
 title: "Exercise 06 - Post-Migration — DocumentDB VS Code Extension & Azure Portal"
 layout: default
 nav_order: 7
+has_children: true
 ---
 
 # Exercise 06 - Post-Migration — DocumentDB VS Code Extension & Azure Portal
