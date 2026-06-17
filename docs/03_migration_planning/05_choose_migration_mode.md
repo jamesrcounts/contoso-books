@@ -46,4 +46,4 @@ This lab demonstrates **both** paths so you can see the mechanics of each:
 
 You can justify a migration mode for the Contoso workload (online, enabled by the replica-set source and a low downtime tolerance) and you understand the cutover trigger for each mode. You are ready to execute the migration.
 
-This completes Exercise 03. The source is assessed, the one Critical finding is remediated, and the migration mode is chosen. In **Exercise 04** you perform the offline migration; in **Exercise 05**, the online migration.
+This completes Exercise 03. The source is assessed, the `$function` finding is remediated, and the migration mode is chosen. In **Exercise 04** you perform the offline migration; in **Exercise 05**, the online migration.

@@ -7,7 +7,7 @@ parent: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Mig
 
 # Task 04 — Remediate and Re-Assess
 
-Now you fix the Critical finding. You will rewrite the `$function` stage in the reading-insights report using standard aggregation operators that Azure DocumentDB supports, confirm the report returns identical results, and re-run the assessment to prove the finding is gone. This is remediation done right: the migration blocker disappears **without changing what the feature does**.
+Now you remediate the `$function` finding to keep the reading-insights report working on DocumentDB. You will rewrite the `$function` stage using standard aggregation operators that Azure DocumentDB supports, confirm the report returns identical results, and re-run the assessment to prove the finding is gone. This is remediation done right: the unsupported feature disappears from the report **without changing what the report does**.
 
 ## The remediation: `$function` → `$switch`
 
@@ -68,7 +68,7 @@ The assessment learns feature usage from `serverStatus`, which accumulates **sin
 2. With the app running (`npm run develop` from `src/`), call the rewritten report:
 
    ```powershell
-   Invoke-RestMethod http://localhost:8080/reading-insights | Select-Object _id, count, avgRating | ConvertTo-Json
+   Invoke-RestMethod http://localhost:8080/reading-insights | ForEach-Object { $_ } | ConvertTo-Json
    ```
 
 3. Compare the output to what you saw in Task 02. The tiers, counts, and average ratings should be **identical** — proof that the `$switch` rewrite preserves behavior. The only difference is that this run used no server-side JavaScript, so `serverStatus` now records no `$function` usage.
@@ -77,11 +77,11 @@ The assessment learns feature usage from `serverStatus`, which accumulates **sin
 
 Run the pre-migration assessment again exactly as in **Task 01** (right-click the connection → **Data Migration...** → **Migration to Azure DocumentDB** → **Pre-Migration Assessment for Azure DocumentDB**). Give it a new **Assessment name** (e.g. `contoso-books-source-remediated`) so you can tell the runs apart — the **View Past Assessments** tab keeps both.
 
-When the new report opens, confirm the **Features** category no longer lists the `$function` Critical finding. The server-side-JavaScript blocker is gone, and the reading-insights report is now migration-ready.
+When the new report opens, confirm the **Features** category no longer lists the `$function` finding. The server-side JavaScript is gone, and the reading-insights report is now migration-ready.
 
 ## Success criteria
 
-`readingInsights.js` uses `$switch` instead of `$function`; the endpoint returns the same per-tier results it did before the change; and a fresh assessment (after restarting the container and re-running the report) shows the `$function` Critical finding cleared.
+`readingInsights.js` uses `$switch` instead of `$function`; the endpoint returns the same per-tier results it did before the change; and a fresh assessment (after restarting the container and re-running the report) shows the `$function` finding cleared.
 
 ## Troubleshooting
 

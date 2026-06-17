@@ -7,8 +7,8 @@ parent: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Mig
 
 # Task 02 — Exercise the Legacy "Reading Insights" Report
 
-The baseline assessment in Task 01 came back clean — not because the Contoso app is free of
-migration blockers, but because the assessment's **Features** check only sees the operators
+The baseline assessment in Task 01 came back clean — not because the Contoso app uses only
+supported features, but because the assessment's **Features** check only sees the operators
 your workload has actually *used* since the source started. The everyday read/write paths the
 app exercised in Exercise 01 use only supported operators, so nothing surfaced.
 
@@ -17,14 +17,13 @@ The app does ship one incompatible pattern, though: a legacy analytics endpoint 
 reports how many books fall in each tier along with their average rating. It is built on a
 `$function` aggregation stage, which runs **server-side JavaScript** inside MongoDB — exactly
 the kind of thing Azure DocumentDB does not support. In this task you will run that report
-against the local source, then re-run the assessment and watch the Critical finding appear.
+against the local source, then re-run the assessment and watch that unsupported feature surface.
 
-## Make sure the app is running — against the local source
+## Make sure the app is running
 
-The report is served by the Express API on port `8080`, and that API must be pointed at the
-**local container** for this to register on the source you are assessing. You have not
-repointed it yet — the switch to Azure is deferred to cutover (Exercise 04 / 05) — so it is
-still targeting local. If you stopped the app, start it again from the `src/` directory:
+The report is served by the Express API on port `8080`, running against the local container —
+the same source you just assessed. If you stopped the app, start it again from the `src/`
+directory:
 
 ```
 npm run develop
@@ -40,7 +39,7 @@ The report is exposed at `GET /reading-insights` on the API server. Open a **sec
 (leave the app running in the first) and call it with PowerShell:
 
 ```powershell
-Invoke-RestMethod http://localhost:8080/reading-insights | Select-Object _id, count, avgRating | ConvertTo-Json
+Invoke-RestMethod http://localhost:8080/reading-insights | ForEach-Object { $_ } | ConvertTo-Json
 ```
 
 ### Example output
@@ -52,18 +51,18 @@ it (`count`), and the tier's average rating (`avgRating`), sorted by count:
 [
   {
     "_id": "Quick Read",
-    "count": 52834,
-    "avgRating": 3.784002536245599
+    "count": 50356,
+    "avgRating": 3.7871248709190564
   },
   {
     "_id": "Standard",
-    "count": 40272,
-    "avgRating": 3.8667734406038936
+    "count": 39247,
+    "avgRating": 3.86547685173389
   },
   {
     "_id": "Epic",
-    "count": 6894,
-    "avgRating": 4.012014795474326
+    "count": 6816,
+    "avgRating": 4.010899354460094
   }
 ]
 ```
@@ -110,26 +109,38 @@ Assessment for Azure DocumentDB**). Give it a distinct **Assessment name** (e.g.
 `contoso-books-source-with-function`) so you can tell it apart from the clean baseline — the
 **View Past Assessments** tab keeps both.
 
-This time the report is **not** clean. Under the **Features** category you will see a
-**Critical** finding for the unsupported `$function` operator, with a usage-frequency count
-that comes from the call you just made. The only thing that changed between the two runs is
-that you exercised the legacy report — which is precisely how the assessment surfaces
-feature usage. You dig into that finding in Task 03.
+This time the **Assessment Summary** has a new row the baseline did not: a **Warning** —
+`$function is not supported in Azure DocumentDB.` Don't be misled by the "Warning" label. It
+does **not** block the migration — Contoso could move to DocumentDB as-is — but `$function`
+will not run there, so the reading-insights report would break the moment the catalog lands on
+DocumentDB. That report is a feature Contoso wants to keep, so the migration team treats
+fixing it as a **product requirement** for the bookstore and remediates it — not because
+DocumentDB demands the change, but to preserve the app's behavior. That is the opportunity this
+finding represents: update the app, and still move forward onto DocumentDB.
+
+Contrast it with the `$changeStream` **Warning** from the baseline — that one is only
+*partially* supported and matters only during the migration itself, so it needs no action — and
+with the **Informational** notes about replication and RBAC commands the platform handles for
+you. The only thing that changed between the two assessment runs is that you exercised the
+legacy report; that is precisely how the assessment surfaces feature usage — it reports only the
+features your workload has actually run. The practical lesson: an assessment is only as complete
+as the source is **exercised**. Run it against a well-exercised source — one where the app's full
+range of features has executed — or a clean-looking report may simply be hiding incompatibilities,
+like this one, that were never triggered. You dig into the `$function` finding in Task 03.
 
 ## Success criteria
 
 The `GET /reading-insights` endpoint returns the per-tier book counts and average ratings, and
-a fresh assessment now shows a **Critical** `$function` finding under **Features** that the
-baseline run did not.
+a fresh assessment now lists `$function` as an **unsupported-feature Warning** that the baseline
+run did not — a feature Contoso chooses to remediate to preserve the report, not a migration
+blocker.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | `Invoke-RestMethod` fails to connect | The app (API server on 8080) is not running | Confirm `npm run develop` is running in the first terminal and you saw `Server is running on port 8080`. |
-| Empty array, or the re-assessment still shows no `$function` | The app is pointed at the wrong database (e.g. the empty Azure cluster) instead of the seeded local source | Confirm `BOOKSTORE_DB_CONNECTION_STRING` in `src/server/.env` is still the **local** string (`mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin`); restart `npm run develop` if you changed it, then call the endpoint again. |
-| Empty array even against local | The `books` collection is not seeded | Re-run the seed step from **Exercise 01, Task 04** and confirm the catalog loads in the app. |
-| The browser shows nothing at `http://localhost:3000/reading-insights` | The Vite dev server only proxies `/books`, `/genres`, and `/comment` to the API | Call the API server directly on port `8080` as shown above, not the UI on `3000`. |
+| Empty array (`[]`) | The `books` collection is not seeded | Re-run the seed step from **Exercise 01, Task 04** and confirm the catalog loads in the app. |
 
 With the `$function` usage now recorded and flagged, you are ready to read the finding in
 Task 03.

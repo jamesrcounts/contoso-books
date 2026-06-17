@@ -9,7 +9,7 @@ has_children: true
 
 ## Scenario Overview
 
-A successful migration starts with a complete picture of the source. In this exercise you will use the Azure DocumentDB Migration Extension for VS Code to assess the local MongoDB instance for compatibility with Azure DocumentDB. The extension generates a structured report categorizing findings as Critical, Warning, or Informational — this is the planning gate before any data moves. You will run a **clean baseline** assessment first, then exercise the app's legacy server-side JavaScript (`$function`) reading-insights report and re-assess — watching a real **Critical** finding appear — before remediating it. That contrast shows how the assessment detects feature usage and what a clean report does (and does not) prove.
+A successful migration starts with a complete picture of the source. In this exercise you will use the Azure DocumentDB Migration Extension for VS Code to assess the local MongoDB instance for compatibility with Azure DocumentDB. The extension generates a structured report categorizing findings as Critical, Warning, or Informational — this is the planning gate before any data moves. You will run a **clean baseline** assessment first, then exercise the app's legacy server-side JavaScript (`$function`) reading-insights report and re-assess — watching the assessment flag that unsupported feature — before remediating it. That contrast shows how the assessment detects feature usage and what a clean report does (and does not) prove.
 
 ## Learning Objectives
 
@@ -17,7 +17,7 @@ A successful migration starts with a complete picture of the source. In this exe
 - Understand how the assessment detects operator usage from the source's runtime metrics — by exercising a legacy feature and watching a finding surface on re-assessment
 - Interpret the multi-level report (source instance, database, and collection levels)
 - Identify unsupported MongoDB features, commands, or indexes that require remediation before migration
-- Remediate a Critical finding — rewrite the server-side JavaScript (`$function`) aggregation with standard pipeline operators and confirm the assessment clears
+- Remediate an unsupported feature — rewrite the server-side JavaScript (`$function`) aggregation with standard pipeline operators to keep the report working on DocumentDB, and confirm the assessment clears
 - Select the appropriate migration mode (online vs offline) based on downtime tolerance
 
 ## Estimated Duration
@@ -39,7 +39,7 @@ A successful migration starts with a complete picture of the source. In this exe
 ## Tasks
 
 - Task 01 — [Run the Baseline Pre-Migration Assessment](01_run_assessment.md) — connect the extension to the local source and run a clean first pass
-- Task 02 — [Exercise the Legacy "Reading Insights" Report](02_exercise_legacy_report.md) — run the server-side JavaScript (`$function`) report, then re-assess and watch the Critical finding appear
-- Task 03 — [Review Critical and Warning Findings](03_review_findings.md) — the legacy reading-insights aggregation (server-side JavaScript, `$function`) is flagged as Critical
+- Task 02 — [Exercise the Legacy "Reading Insights" Report](02_exercise_legacy_report.md) — run the server-side JavaScript (`$function`) report, then re-assess and watch the assessment flag it as unsupported
+- Task 03 — [Review the Assessment Findings](03_review_findings.md) — the legacy reading-insights aggregation (server-side JavaScript, `$function`) is flagged as unsupported
 - Task 04 — [Remediate and Re-Assess](04_remediate_and_reassess.md) — rewrite the `$function` stage using standard aggregation operators, then re-run the assessment to confirm a clean report
 - Task 05 — [Choose the Migration Mode](05_choose_migration_mode.md) using the comparison above
