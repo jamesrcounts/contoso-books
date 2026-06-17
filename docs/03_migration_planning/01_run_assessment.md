@@ -11,7 +11,7 @@ Before you can assess anything, the tooling needs to see your source. The **Azur
 
 So you point the extension at your source, then run the scan. It produces a structured report that categorizes every compatibility issue as **Critical**, **Warning**, or **Informational**, at the **account**, **database**, and **collection** levels. This is the planning gate: you do not move data until you understand what the report says.
 
-This first run establishes a **baseline**. As you will see, it comes back clean — and Task 02 then shows you why a clean baseline does *not* mean a clean source.
+This first run establishes a **baseline** of the source as it stands today.
 
 ## Point the extension at your source
 
@@ -39,35 +39,33 @@ Select **Run Validation**. The extension verifies credentials, prerequisites, an
 
 ### Step 2 — Fill in assessment details
 
-Provide the inputs:
+The wizard asks for four inputs. Enter them exactly as follows:
 
-- **Assessment name** — a label for this run, e.g. `contoso-books-source`.
-- **Offering** — select **vCore** (Azure DocumentDB is the vCore-based service this lab targets).
-- **Log Folder Path** *(optional but recommended)* — the path to your MongoDB logs. Supplying logs lets the tool report findings down to the **collection** level. Without it, the tool falls back to `serverStatus`, which reflects only feature usage since the last restart and cannot attribute findings to specific collections.
-
-> **`serverStatus` vs. logs — and why this run is clean.** The Features check learns which operators your workload uses from `serverStatus`, which reflects only feature usage **since the last `mongod` restart**. A feature the app has not exercised in the current session is invisible to the scan. That is exactly why this baseline comes back clean: the app's everyday read/write paths use only supported operators. In **Task 02** you exercise a legacy feature and watch the assessment pick it up. (Supplying a log path lets the tool attribute findings down to the collection level; without it, findings are reported at the instance level.)
+- **Assessment name** — `contoso-books-source`.
+- **Offering** — select **vCore** (Azure DocumentDB is the vCore-based service being targeted).
+- **MongoDB Log Folder Path** — **leave this empty.** The MongoDB instance runs in a container that writes its log to the container's stdout (viewable with `docker logs mongodb`), not to a host folder you could point at. With no path supplied, the assessment reads feature usage from the source's `serverStatus` and reports Features findings at the **instance level**, which is all that is necessary at this point.
+- **Data Assessment Logs** — **leave this empty.** This field ingests JSON produced by the separate Data Assessment CLI, which is not used here.
 
 ### Step 3 — Get your report
 
-Select **Start Assessment** and wait for it to complete (duration scales with the size of the source). When it finishes, select **Download Report** to save the **HTML** report.
+Select **Start Assessment**. Against this dataset it finishes in **a few seconds**. When it completes, select **Download Report** and save the **HTML** file (the save dialog defaults to your `Documents` folder).
 
-## Review the report structure
+## Review the report
 
-Open the downloaded report. It begins with an **environment overview** — the source MongoDB version, license, and instance type, plus the assessed databases and collections and their migration-readiness summaries. Findings are then grouped by severity and by category:
+Open the downloaded HTML report. It opens with several summary sections describing the source:
 
-| Category | What it flags |
-|----------|---------------|
-| **Features** | Unsupported database commands, query syntax, and operators (including aggregation stages), with a usage-frequency column. |
-| **Indexes** | Unsupported index types and properties. |
-| **Collection Options** | Unsupported collection settings (e.g., time-series configs, collations). |
-| **Limits and Quotas** | Azure DocumentDB quotas and platform limits your workload may hit. |
-| **Shard Keys** | Unsupported shard-key configurations (for sharded sources). |
+- **General Information** — the assessment name, host, ID, start/end time, and the **Log Folder Path** (shows `NA` because you left it empty).
+- **Instance Summary** — source version (MongoDB `7.0.x`), license (`community`), and instance type (`mongod`).
+- **RBAC Summary** — the source users and roles (your `bookadmin` / `root`).
+- **Database** and **Collection Summary** — the `bookstore` database with its two collections (`books` ≈ 96,419 docs, `genres` = 1).
 
-This baseline run comes back **clean** — no **Critical** findings under **Features**. Do not mistake that for "nothing to fix": it only means no unsupported feature has been *exercised* in this server session yet. In Task 02 you run the app's legacy reading-insights report and re-assess, and a **Critical** finding appears.
+The findings are in the **Assessment Summary** table at the end, with columns **Database · Collection · Category · Severity · Message**. For this baseline run there are **no Critical findings** — but the table is not empty. You will see a **Warning** that `$changeStream` is only partially supported, plus several **Informational** notes about things a managed platform handles for you (the replication commands, and the `rolesInfo` / `usersInfo` RBAC commands, that you no longer need to run). None of these block migration. The Database and Collection columns are blank because, with no log path supplied, findings are reported at the instance level rather than per collection.
+
+There is a catch, though: this report only reflects the features your workload has actually *exercised* so far — and you may not have exercised them all yet, so a clean-looking baseline isn't the whole story. You explore exactly that in the next task.
 
 ## Success criteria
 
-The pre-migration assessment completes and you have downloaded the HTML report. The report shows the source environment overview and **no Critical findings** — a clean baseline you will deliberately disturb in Task 02.
+The pre-migration assessment completes and you have downloaded the HTML report. It shows the source summary sections and a findings table with **no Critical findings** — a Warning and a couple of Informational entries are expected and do not block migration.
 
 ## Troubleshooting
 
@@ -77,5 +75,3 @@ The pre-migration assessment completes and you have downloaded the HTML report. 
 | An authentication error on expand | Wrong credentials or missing `authSource` | Confirm the string is exactly `mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin`, including `authSource=admin`. |
 | You don't see the **Data Migration** option | The Migration extension is not installed | Confirm both extensions are present (Extensions view); re-run the **Exercise 01, Task 00** setup script if the Migration extension is missing. |
 | **Run Validation** fails | Cannot connect, or the user lacks required roles | Confirm the container is up and that you connected as `bookadmin`; the assessment needs `readAnyDatabase` + `clusterMonitor` (root has both). |
-| The baseline already shows a `$function` finding | The reading-insights report was run earlier in this server session | That is fine — the demonstration still works. To see a truly clean baseline, run `docker restart mongodb` to reset `serverStatus`, reconnect, and re-assess before doing Task 02. |
-| Findings have no collection names | No log path was supplied | Re-run and set **Log Folder Path** to your MongoDB log directory for collection-level detail. |
