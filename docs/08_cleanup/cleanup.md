@@ -2,6 +2,7 @@
 title: "Exercise 08 - Cleanup"
 layout: default
 nav_order: 9
+has_children: true
 ---
 
 # Exercise 08 - Cleanup
