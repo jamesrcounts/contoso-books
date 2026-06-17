@@ -1,0 +1,32 @@
+# Dependabot configuration.
+# Scoped to the actual manifests in this repo so alerts/updates target real
+# files. The companion app lives under src/ (npm); GitHub Actions workflows
+# live under .github/workflows.
+# Docs: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  # Node/npm packages for the sample app. One entry covers every package.json
+  # under src/ (root workspace, server, client, and the standalone deployment
+  # scripts).
+  - package-ecosystem: "npm"
+    directories:
+      - "/src"
+      - "/src/server"
+      - "/src/client"
+      - "/src/deployment/seed"
+      - "/src/deployment/validate"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    # Roll routine updates into a couple of PRs instead of one-per-package.
+    groups:
+      production-dependencies:
+        dependency-type: "production"
+      development-dependencies:
+        dependency-type: "development"
+
+  # Actions used by the Pages build/deploy workflow.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
