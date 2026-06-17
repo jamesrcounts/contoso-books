@@ -2,6 +2,7 @@
 title: "Exercise 04 - Migration Execution — Offline (Snapshot)"
 layout: default
 nav_order: 5
+has_children: true
 ---
 
 # Exercise 04 - Migration Execution — Offline (Snapshot)
