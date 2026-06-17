@@ -1,11 +1,11 @@
 ---
-title: "Exercise 03 - Task 05 — Choose the Migration Mode"
+title: "Exercise 03 - Task 04 — Choose the Migration Mode"
 layout: default
-nav_order: 5
+nav_order: 4
 parent: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code"
 ---
 
-# Task 05 — Choose the Migration Mode
+# Task 04 — Choose the Migration Mode
 
 The source is assessed and remediated. The last planning decision is *how* to move the data — **offline** (snapshot) or **online** (change stream). This task walks the trade-off and records the choice that drives Exercises 04 and 05.
 

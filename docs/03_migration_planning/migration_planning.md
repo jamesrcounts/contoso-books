@@ -39,7 +39,6 @@ A successful migration starts with a complete picture of the source. In this exe
 ## Tasks
 
 - Task 01 — [Run the Baseline Pre-Migration Assessment](01_run_assessment.md) — connect the extension to the local source and run a clean first pass
-- Task 02 — [Exercise the Legacy "Reading Insights" Report](02_exercise_legacy_report.md) — run the server-side JavaScript (`$function`) report, then re-assess and watch the assessment flag it as unsupported
-- Task 03 — [Review the Assessment Findings](03_review_findings.md) — the legacy reading-insights aggregation (server-side JavaScript, `$function`) is flagged as unsupported
-- Task 04 — [Remediate and Re-Assess](04_remediate_and_reassess.md) — rewrite the `$function` stage using standard aggregation operators, then re-run the assessment to confirm a clean report
-- Task 05 — [Choose the Migration Mode](05_choose_migration_mode.md) using the comparison above
+- Task 02 — [Exercise the Legacy "Reading Insights" Report](02_exercise_legacy_report.md) — run the server-side JavaScript (`$function`) report, re-assess and watch the assessment flag it as unsupported, and read why
+- Task 03 — [Remediate and Re-Assess](03_remediate_and_reassess.md) — rewrite the `$function` stage using standard aggregation operators, then re-run the assessment to confirm a clean report
+- Task 04 — [Choose the Migration Mode](04_choose_migration_mode.md) using the comparison above

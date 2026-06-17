@@ -9,7 +9,7 @@ parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 
 A migration is not finished when the data lands — it is finished when you understand how your workload *behaves* on the new platform. In this task you run the same heavy catalog-statistics aggregation you exercised against MongoDB in Exercise 01 Task 06, now against DocumentDB, and compare latency and behavior. This surfaces the operational differences that matter for long-running analytical queries: aggregation runtime, and the cursor and transaction timeouts that govern them.
 
-> **This is a behavior comparison, not a compatibility issue.** The legacy server-side JavaScript (`$function`) reading-insights report was already remediated to standard pipeline operators in Exercise 03 Task 04, so it runs on DocumentDB. This task is about *how it performs* on each platform — runtime, not correctness.
+> **This is a behavior comparison, not a compatibility issue.** The legacy server-side JavaScript (`$function`) reading-insights report was already remediated to standard pipeline operators in Exercise 03 Task 03, so it runs on DocumentDB. This task is about *how it performs* on each platform — runtime, not correctness.
 
 ## The query
 

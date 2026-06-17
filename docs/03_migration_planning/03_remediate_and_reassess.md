@@ -1,11 +1,11 @@
 ---
-title: "Exercise 03 - Task 04 — Remediate and Re-Assess"
+title: "Exercise 03 - Task 03 — Remediate and Re-Assess"
 layout: default
-nav_order: 4
+nav_order: 3
 parent: "Exercise 03 - Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code"
 ---
 
-# Task 04 — Remediate and Re-Assess
+# Task 03 — Remediate and Re-Assess
 
 Now you remediate the `$function` finding to keep the reading-insights report working on DocumentDB. You will rewrite the `$function` stage using standard aggregation operators that Azure DocumentDB supports, confirm the report returns identical results, and re-run the assessment to prove the finding is gone. This is remediation done right: the unsupported feature disappears from the report **without changing what the report does**.
 
@@ -91,4 +91,4 @@ When the new report opens, confirm the **Features** category no longer lists the
 | Re-assessment still shows `$function` | `serverStatus` still holds the old usage | Make sure you ran `docker restart mongodb` **before** re-running the report, and did not call the old code path afterward. |
 | The endpoint 404s after editing | Syntax error in `readingInsights.js` | Check the server terminal — `nodemon` prints the parse error; fix it and save to reload. |
 
-With a clean assessment in hand, the only decision left is *how* to migrate. You make that call in Task 05.
+With a clean assessment in hand, the only decision left is *how* to migrate. You make that call in Task 04.

@@ -98,8 +98,26 @@ database engine**:
 
 The `body` is JavaScript **source, passed as a string** — MongoDB ships it to the database
 engine and runs it once per document. It works here, which is exactly the trap: nothing flags
-it during development. Running the report just now recorded its `$function` usage in the
-source's `serverStatus` metrics — and that is the signal the assessment reads.
+it during development.
+
+Azure DocumentDB is a fully managed, multi-tenant PaaS, and executing arbitrary, user-supplied
+JavaScript inside the database engine is incompatible with the isolation, security, and
+resource-governance guarantees a managed service provides. So the entire **server-side-JavaScript
+family is unsupported**:
+
+| Operator / command | Purpose |
+|--------------------|---------|
+| **`$function`** | Run a JS function as an aggregation expression (used here). |
+| **`$accumulator`** | Custom JS accumulator in `$group`. |
+| **`$where`** | JS predicate in a query filter. |
+| **`mapReduce`** | JS-based map/reduce command. |
+
+The good news: server-side JS is almost always a convenience, not a necessity. Anything
+`$function` computes with `if`/`else` and arithmetic can be expressed with standard aggregation
+operators that **do** run on DocumentDB — which is exactly the remediation in **Task 03**.
+
+Running the report just now recorded its `$function` usage in the source's `serverStatus`
+metrics — and that is the signal the assessment reads.
 
 ## Re-run the assessment
 
@@ -110,10 +128,11 @@ Assessment for Azure DocumentDB**). Give it a distinct **Assessment name** (e.g.
 **View Past Assessments** tab keeps both.
 
 This time the **Assessment Summary** has a new row the baseline did not: a **Warning** —
-`$function is not supported in Azure DocumentDB.` Don't be misled by the "Warning" label. It
-does **not** block the migration — Contoso could move to DocumentDB as-is — but `$function`
-will not run there, so the reading-insights report would break the moment the catalog lands on
-DocumentDB. That report is a feature Contoso wants to keep, so the migration team treats
+`$function is not supported in Azure DocumentDB.` Don't be misled by the "Warning" label — read
+the **message**, not just the badge. The severity tells you whether the platform will *let* you
+migrate; the message tells you whether *your app* will still work afterward. This one does **not**
+block the migration — Contoso could move to DocumentDB as-is — but `$function` will not run there,
+so the reading-insights report would break the moment the catalog lands on DocumentDB. That report is a feature Contoso wants to keep, so the migration team treats
 fixing it as a **product requirement** for the bookstore and remediates it — not because
 DocumentDB demands the change, but to preserve the app's behavior. That is the opportunity this
 finding represents: update the app, and still move forward onto DocumentDB.
@@ -126,7 +145,7 @@ legacy report; that is precisely how the assessment surfaces feature usage — i
 features your workload has actually run. The practical lesson: an assessment is only as complete
 as the source is **exercised**. Run it against a well-exercised source — one where the app's full
 range of features has executed — or a clean-looking report may simply be hiding incompatibilities,
-like this one, that were never triggered. You dig into the `$function` finding in Task 03.
+like this one, that were never triggered. You remediate the `$function` finding in Task 03.
 
 ## Success criteria
 
@@ -142,5 +161,4 @@ blocker.
 | `Invoke-RestMethod` fails to connect | The app (API server on 8080) is not running | Confirm `npm run develop` is running in the first terminal and you saw `Server is running on port 8080`. |
 | Empty array (`[]`) | The `books` collection is not seeded | Re-run the seed step from **Exercise 01, Task 04** and confirm the catalog loads in the app. |
 
-With the `$function` usage now recorded and flagged, you are ready to read the finding in
-Task 03.
+With the `$function` usage now recorded and flagged, you are ready to remediate it in Task 03.
