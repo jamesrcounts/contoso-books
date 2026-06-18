@@ -33,14 +33,16 @@ mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster
 
 ## Leave the app pointed at local — for now
 
-You will **not** repoint the application to Azure in this task. Its `src/server/.env` should keep the **local** connection string it has held since Exercise 01 Task 03:
+You will **not** repoint the application to Azure in this task. The active `BOOKSTORE_DB_CONNECTION_STRING` in `src/server/.env` should keep the **local** value it has held since Exercise 01 Task 03. Add your completed Azure string just below it as a **commented-out line**, so it is parked and ready to paste into the migration job (Exercise 04 Task 02) and to activate at cutover:
 
 ```
 BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+# Azure DocumentDB — activate at cutover (Exercise 04 offline / Exercise 05 online):
+# BOOKSTORE_DB_CONNECTION_STRING=mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000
 PORT=8080
 ```
 
-This is deliberate. The whole point of Exercise 03 is to assess the **source** while the app is still running against it — and the assessment reads the local server's runtime metrics, so the app must keep exercising the local database, not the empty Azure cluster. You repoint `.env` to your Azure connection string at **cutover**, in Exercise 04 (offline) or Exercise 05 (online), and reuse it again as `BOOKSTORE_SEED_DB_CONNECTION_STRING` when seeding data into Azure. Keep the completed Azure string handy — the extension connection you create next also stores it.
+This is deliberate. The whole point of Exercise 03 is to assess the **source** while the app is still running against it — and the assessment reads the local server's runtime metrics, so the app must keep exercising the local database, not the empty Azure cluster. The active line stays local; the commented-out Azure line is what you uncomment (and swap in for the local one) at **cutover**, in Exercise 04 (offline) or Exercise 05 (online). You also reuse the Azure string as `BOOKSTORE_SEED_DB_CONNECTION_STRING` when seeding data into Azure.
 
 ## Confirm connectivity with the DocumentDB extension
 

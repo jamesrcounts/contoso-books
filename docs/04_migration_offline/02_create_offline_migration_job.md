@@ -22,19 +22,31 @@ The job-creation wizard opens. Work through its steps below.
 
 ## Step 1 — Create job
 
-Choose the mode and connectivity for the job:
+Provide the job's basic details:
 
+- **Job Name: `contoso-offline-migration`.** This names the job in the **View Existing Jobs** list and keeps it distinct from the online job you create in Exercise 05.
 - **Migration mode: Offline.** Offline captures a snapshot at the start and bulk-copies it — simple and predictable, and the right fit for Contoso's maintenance window. (Online, covered in Exercise 05, additionally tracks the change stream to avoid downtime.)
 - **Connectivity: Public.** Both the source and the target are reachable over public IPs in this lab, so Public connectivity applies. (Private is for sources or targets exposed only inside a virtual network.)
 
 Select **Next**.
 
+## Sign in to Azure
+
+The first time you advance the wizard, the extension prompts you to sign in to Azure so it can read your subscriptions and resources. Work through the prompts:
+
+1. A dialog asks to sign in — select **Allow**.
+2. Enter your **username**, then your **password**.
+3. At **Sign in to all apps on this device**, choose **Yes** (this is not a shared device).
+4. At **Allow my organization to manage my device**, choose **Yes** to ensure full access to Azure.
+
+Once sign-in completes, the wizard can populate the Azure dropdowns in the next step.
+
 ## Step 2 — Select target
 
-Point the job at the cluster you provisioned in Exercise 02:
+Point the job at the cluster you provisioned in Exercise 02. The fields are briefly disabled while the wizard loads your subscription data, and each dropdown enables a moment after you make the previous selection — give them a second to populate.
 
-1. Select your **subscription**, the **`rg-documentdb-lab`** resource group, and the **Azure DocumentDB** account from the dropdowns.
-2. Provide the **connection string** to the cluster — the same SRV value you stored as `BOOKSTORE_DB_CONNECTION_STRING` in `src/server/.env`:
+1. Select your **subscription**, then the **`rg-documentdb-lab`** resource group. The **Account name** dropdown then populates automatically with your cluster — it is the only one in the subscription.
+2. The **connection string** is required and is not filled in for you. Paste the Azure SRV string you parked as a commented-out line in `src/server/.env` (in Exercise 02 Task 03):
 
    ```
    mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000
@@ -48,7 +60,7 @@ Select **Next**.
 
 ## Step 3 — Select the Database Migration Service (DMS)
 
-The extension performs the transfer on an **Azure Database Migration Service** instance rather than on your laptop. Choose an existing DMS from the dropdown, or select **Create DMS** to provision a new one — a single DMS per region is enough to reuse across jobs.
+The extension performs the transfer on an **Azure Database Migration Service** instance rather than on your laptop. Select **Create DMS** and name it **`dms-documentdb-lab`** — a single DMS per region is enough to reuse across jobs, so you create one here and reuse it for the online migration in Exercise 05. It provisions in under a minute.
 
 > **Register the resource provider first (one-time per subscription).** DMS requires the `Microsoft.DataMigration` provider to be registered, or the wizard cannot create or select a service. Register and confirm it from a terminal:
 >
