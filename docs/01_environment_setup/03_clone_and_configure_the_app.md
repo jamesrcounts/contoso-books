@@ -79,12 +79,12 @@ found 0 vulnerabilities
 In the VS Code Explorer (left sidebar), right-click on the `src/server` folder and select **New File**. Name it `.env` (so the file is `src/server/.env`, alongside the server's `package.json`). With the file open in the editor, paste:
 
 ```
-BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 PORT=8080
 ```
 
 Save with `Ctrl+S`.
 
-> **About this connection string:** `mongodb://bookadmin:bookpass123@localhost:27017` points at the container started in Task 01 and supplies the `bookadmin` credentials, since access control is now enabled. `authSource=admin` tells the driver the user lives in the `admin` database (where the container created it). `?replicaSet=rs0` tells the MongoDB driver to discover the replica set topology — this is what enables change-stream support, which the online migration in Exercise 05 depends on. In Exercise 02 you will swap this value for the Azure DocumentDB connection string; the rest of the lab works without ever changing application code.
+> **About this connection string:** `mongodb://bookadmin:bookpass123@10.0.0.5:27017` points at the container started in Task 01 by the **VM's private IP** — the same address the replica-set member advertises (Task 02); substitute the IP you found there — and supplies the `bookadmin` credentials, since access control is now enabled. `authSource=admin` tells the driver the user lives in the `admin` database (where the container created it). `?replicaSet=rs0` tells the MongoDB driver to discover the replica set topology — this is what enables change-stream support, which the online migration in Exercise 05 depends on. In Exercise 02 you will swap this value for the Azure DocumentDB connection string; the rest of the lab works without ever changing application code.
 
 > **Troubleshooting:** If `code` is not recognized in PowerShell, your PATH did not pick up VS Code — close and reopen PowerShell, or launch VS Code from the Start Menu and use **File → Open Folder** to open the `contoso-books` directory.

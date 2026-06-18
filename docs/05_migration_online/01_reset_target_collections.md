@@ -27,7 +27,7 @@ Right-click the Azure cluster connection and select **Refresh**, then expand it.
 Exercise 04's cutover left `src/server/.env` pointing at Azure. For the online run the application must write to the **local** source, so set `BOOKSTORE_DB_CONNECTION_STRING` back to the local string now (leave `PORT` unchanged):
 
 ```
-BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 PORT=8080
 ```
 

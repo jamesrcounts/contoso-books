@@ -27,7 +27,7 @@ Click into the VS Code integrated terminal that is running `npm run develop` (st
 [1]   VITE v8.0.16  ready in 779 ms
 [1]   ➜  Local:   http://localhost:3000/
 [0] Server is running on port 8080
-[0] DocumentDB connected
+[0] DocumentDB connected to 10.0.0.5:27017
 [1] Terminate batch job (Y/N)?
 [0] Terminate batch job (Y/N)?
 PS C:\Users\labuser\contoso-books\src>

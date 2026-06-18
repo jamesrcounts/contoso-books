@@ -24,7 +24,7 @@ cd deployment/seed
 The seed script reads its own `.env` file inside `src/deployment/seed/`. This file is git-ignored (so your connection string never gets committed), so you create it yourself. In the VS Code Explorer, right-click the `src/deployment/seed` folder, select **New File**, name it `.env`, and paste:
 
 ```
-BOOKSTORE_SEED_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+BOOKSTORE_SEED_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 ```
 
 Save with `Ctrl+S`.

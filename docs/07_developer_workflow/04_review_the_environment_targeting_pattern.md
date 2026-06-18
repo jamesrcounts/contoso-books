@@ -17,7 +17,7 @@ This is the classic *connection-string-per-environment* pattern: the same build 
 
 | Environment | Connection string | Backend |
 |-------------|-------------------|---------|
-| **Local / development** | `mongodb://bookadmin:...@localhost:27017/?replicaSet=rs0&authSource=admin` | MongoDB container on the database host |
+| **Local / development** | `mongodb://bookadmin:...@10.0.0.5:27017/?replicaSet=rs0&authSource=admin` | MongoDB container on the database host |
 | **Upper environments (staging, production)** | `mongodb+srv://bookadmin:...@contosobooks....mongocluster.cosmos.azure.com/?tls=true&...` | Azure DocumentDB cluster |
 
 Developers keep their fast, offline, disposable local loop — the MongoDB container, `mongosh`, and the DocumentDB VS Code extension they already know — while staging and production point at DocumentDB. Nobody has to choose between "familiar tools" and "the managed service": the same code serves both.

@@ -28,7 +28,7 @@ docker start mongodb
 Open `src/server/.env` — the file you have been editing since Exercise 01 — and set the **value** of `BOOKSTORE_DB_CONNECTION_STRING` back to the local container string (it currently holds the Azure SRV string from the Exercise 05 cutover). Leave `PORT` unchanged:
 
 ```
-BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 PORT=8080
 ```
 
@@ -50,10 +50,10 @@ npm run develop
 ```
 [1]   ➜  Local:   http://localhost:3000/
 [0] Server is running on port 8080
-[0] DocumentDB connected
+[0] DocumentDB connected to 10.0.0.5:27017
 ```
 
-The `DocumentDB connected` line is logged by the db layer even against the local container — the same code path connects to Azure DocumentDB later. Seeing it here means the MongoDB driver connected to `localhost:27017` successfully.
+The `DocumentDB connected to 10.0.0.5:27017` line is logged by the db layer once the driver connects — it names the host, so against the local container it reads `10.0.0.5:27017`, and against Azure (the next task) it names the cluster. Same code path; the host distinguishes them.
 
 ## Verify identical behavior
 
@@ -67,14 +67,14 @@ This is the same known-good behavior from before the migration, now served from 
 
 ## Success criteria
 
-`src/server/.env` holds the local MongoDB connection string as the value of `BOOKSTORE_DB_CONNECTION_STRING`, the app logs `DocumentDB connected`, and reads and writes work end-to-end at `http://localhost:3000` against the local container.
+`src/server/.env` holds the local MongoDB connection string as the value of `BOOKSTORE_DB_CONNECTION_STRING`, the app logs `DocumentDB connected to` the local container, and reads and writes work end-to-end at `http://localhost:3000` against the local container.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | App fails with `MongoNetworkError` or hangs on startup | The container is not running | Run `docker ps`; if `mongodb` is absent, `docker start mongodb`. |
-| An **authentication error** on connect | The connection string was not fully swapped back to local | Confirm `BOOKSTORE_DB_CONNECTION_STRING` exactly matches `mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin`, including the credentials and `authSource=admin`. |
+| An **authentication error** on connect | The connection string was not fully swapped back to local | Confirm `BOOKSTORE_DB_CONNECTION_STRING` exactly matches `mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin`, including the credentials and `authSource=admin`. |
 | A port is already in use | A previous `npm run develop` is still running | Stop the earlier run with `Ctrl+C` in its terminal, or change `PORT` in `.env` (and the matching proxy target in `src/client/vite.config.js`). |
 
 Leave the app running for now. In **Task 02** you will swap the connection string the other way — back to Azure DocumentDB — and confirm the same application code behaves identically against the managed service.

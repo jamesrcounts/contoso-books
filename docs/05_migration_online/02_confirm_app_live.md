@@ -9,17 +9,6 @@ parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 
 The whole point of an online migration is that Contoso never goes down — the catalog keeps serving reads and accepting writes while the data is copied and kept in sync. In this task you confirm the app is running against the **local source** and is actively writing, then you leave it running for the rest of the exercise. The writes you make here (and any made during the migration) are exactly what change-stream replication will carry across to DocumentDB.
 
-## Confirm the app points at the local source
-
-Open `src/server/.env` and confirm `BOOKSTORE_DB_CONNECTION_STRING` is the **local** string you set at the end of Task 01. For the online migration the app must target the **local MongoDB container** (the source), not Azure — you switch it to Azure only at cutover in Task 07. The value should be:
-
-```
-BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
-PORT=8080
-```
-
-> **Online migration reads from the source and writes to the target on your behalf** — the *app* stays pointed at the source until cutover.
-
 ## Start the application
 
 From the `src/` directory, start both tiers:
@@ -29,14 +18,35 @@ cd src
 npm run develop
 ```
 
-Wait for the two readiness lines (logs from the server `[0]` and client `[1]` are interleaved):
+Wait for the readiness lines at the end of the output (the server `[0]` and client `[1]` logs are interleaved):
 
 ```
+> bookstore@1.0.0 develop
+> concurrently "cd server && npm run watch" "cd client && npm run dev"
+
+[0]
+[0] > server@1.0.0 watch
+[0] > nodemon server.js
+[0]
+[1]
+[1] > bookstore-front-end@0.1.0 dev
+[1] > vite
+[1]
+[0] [nodemon] 3.1.14
+[0] [nodemon] to restart at any time, enter `rs`
+[0] [nodemon] watching path(s): *.*
+[0] [nodemon] watching extensions: js,mjs,cjs,json
+[0] [nodemon] starting `node server.js`
+[1]
+[1]   VITE v8.0.16  ready in 514 ms
+[1]
 [1]   ➜  Local:   http://localhost:3000/
-[0] DocumentDB connected
+[1]   ➜  Network: use --host to expose
+[0] Server is running on port 8080
+[0] DocumentDB connected to 10.0.0.5:27017
 ```
 
-`DocumentDB connected` confirms the server reached the local replica set. (The app logs "DocumentDB" on every code path — the same code connects to Azure DocumentDB after cutover.) The app connects through its `localhost` seed and the driver follows the replica set to the member at the VM's private IP (Exercise 01 Task 02) — reachable because the app runs on that same VM.
+`DocumentDB connected to 10.0.0.5:27017` confirms the server reached the local replica set at the VM's private IP. The log names the host, so after cutover (Task 07) the same line will name the Azure cluster instead — the same code on every path, with the host telling you which backend.
 
 ## Prove writes are flowing
 
@@ -50,12 +60,4 @@ That write landed in the source `books` collection, appended to the book's `revi
 
 ## Success criteria
 
-The Contoso app is running against the local source replica set (`DocumentDB connected`), the home page serves reads at `http://localhost:3000`, and a comment you added persisted — proving the source is live and accepting writes. The app is left running for the remainder of the exercise.
-
-## Troubleshooting
-
-| Symptom | Likely cause | Fix |
-|---------|--------------|-----|
-| `MongoNetworkError` on startup | The source container is not running | Run `docker ps`; start the container if needed (Exercise 01 Task 01). |
-| Authentication error on startup | `.env` has the Azure string, or wrong credentials | Confirm `BOOKSTORE_DB_CONNECTION_STRING` is the local string above, including `authSource=admin`. |
-| `Cannot GET /` in the browser | You opened the API port (8080) | Browse to `http://localhost:3000`, and start with `npm run develop` (not `npm start`). |
+The Contoso app is running against the local source replica set (`DocumentDB connected to 10.0.0.5:27017`), the home page serves reads at `http://localhost:3000`, and a comment you added persisted — proving the source is live and accepting writes. The app is left running for the remainder of the exercise.

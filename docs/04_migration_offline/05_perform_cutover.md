@@ -37,10 +37,10 @@ Wait for the readiness lines:
 
 ```
 [1]   ➜  Local:   http://localhost:3000/
-[0] DocumentDB connected
+[0] DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com
 ```
 
-This time `DocumentDB connected` means the server connected to **Azure DocumentDB**, not the local container — even though the log line is identical (the app uses "DocumentDB" on every code path). Contoso is now serving its catalog from the migrated data on Azure.
+This time the log line names the Azure cluster — `DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com` — confirming the server connected to **Azure DocumentDB**, not the local container. Same code on every path; only the host in the log changed. Contoso is now serving its catalog from the migrated data on Azure.
 
 ## Step 3 — Verify in the browser
 
@@ -54,7 +54,7 @@ The app is now reading all of this from Azure DocumentDB, not the local containe
 
 ## Success criteria
 
-`src/server/.env` now holds the Azure SRV string as `BOOKSTORE_DB_CONNECTION_STRING`, the app restarted cleanly with `DocumentDB connected`, and `http://localhost:3000` renders the catalog from DocumentDB. The offline migration is complete and Contoso is cut over.
+`src/server/.env` now holds the Azure SRV string as `BOOKSTORE_DB_CONNECTION_STRING`, the app restarted cleanly (logging `DocumentDB connected to` the Azure cluster), and `http://localhost:3000` renders the catalog from DocumentDB. The offline migration is complete and Contoso is cut over.
 
 ## Troubleshooting
 
@@ -62,7 +62,7 @@ The app is now reading all of this from Azure DocumentDB, not the local containe
 |---------|--------------|-----|
 | App fails with a timeout on restart | Client IP not in the `lab-client` firewall rule | Confirm `(Invoke-RestMethod https://api.ipify.org)` matches the `lab-client` rule (Networking → Firewall rules), per Exercise 02. |
 | `invalid key` / authentication error | Wrong username or password in the SRV string | Confirm `bookadmin` and the password you set in Exercise 02 Task 02; reset the password on the cluster if unsure. |
-| App still shows old/local data | `.env` still points at `localhost`, or the app was not restarted | Confirm the value is the `cosmos.azure.com` SRV string and that you restarted `npm run develop`. |
+| App still shows old/local data | `.env` still points at the local source string, or the app was not restarted | Confirm the value is the `cosmos.azure.com` SRV string and that you restarted `npm run develop`. |
 
 ---
 

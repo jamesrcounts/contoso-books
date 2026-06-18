@@ -8,7 +8,8 @@ const db = {
         const client = await MongoClient.connect(url, {
             maxPoolSize: 10,
         });
-        console.log("DocumentDB connected")
+        const host = url.replace(/^mongodb(\+srv)?:\/\//, '').replace(/^[^@]*@/, '').replace(/[/?].*$/, '');
+        console.log(`DocumentDB connected to ${host}`);
         this._dbClient = client;
     },
     

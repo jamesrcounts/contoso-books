@@ -25,7 +25,7 @@ npm install
 The script reads its own git-ignored `.env` file inside `src/deployment/validate/` — and unlike the app or the seed script, it needs **two** connection strings, one per side of the comparison. In the VS Code Explorer, right-click the `src/deployment/validate` folder, select **New File**, name it `.env`, and paste both — the local container as the **source** and your Azure DocumentDB cluster as the **target**:
 
 ```
-BOOKSTORE_SOURCE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+BOOKSTORE_SOURCE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 BOOKSTORE_TARGET_DB_CONNECTION_STRING=mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000
 ```
 

@@ -51,10 +51,10 @@ Wait for the readiness lines:
 
 ```
 [1]   ➜  Local:   http://localhost:3000/
-[0] DocumentDB connected
+[0] DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com
 ```
 
-This time `DocumentDB connected` means the server connected to **Azure DocumentDB**, not the local container — even though the log line is identical (the app uses "DocumentDB" on every code path).
+This time the log line names the Azure cluster — `DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com` — confirming the server connected to **Azure DocumentDB**, not the local container. Same code on every path; only the host in the log changed.
 
 ## Step 5 — Verify in the browser
 
@@ -68,7 +68,7 @@ Contoso is now reading all of this from Azure DocumentDB. You run the full funct
 
 ## Success criteria
 
-Writes to the source were stopped, the migration job was finalized with **Cutover**, `src/server/.env` now holds the Azure SRV string as `BOOKSTORE_DB_CONNECTION_STRING`, and the app restarted cleanly with `DocumentDB connected` — now serving from DocumentDB. You verify end-to-end behavior in Task 08.
+Writes to the source were stopped, the migration job was finalized with **Cutover**, `src/server/.env` now holds the Azure SRV string as `BOOKSTORE_DB_CONNECTION_STRING`, and the app restarted cleanly (logging `DocumentDB connected to` the Azure cluster) — now serving from DocumentDB. You verify end-to-end behavior in Task 08.
 
 ## Troubleshooting
 
@@ -76,4 +76,4 @@ Writes to the source were stopped, the migration job was finalized with **Cutove
 |---------|--------------|-----|
 | App fails with a timeout on restart | Client IP not in the `lab-client` firewall rule | Confirm `(Invoke-RestMethod https://api.ipify.org)` matches the `lab-client` rule (Networking → Firewall rules), per Exercise 02. |
 | `invalid key` / authentication error | Wrong username or password in the SRV string | Confirm `bookadmin` and the password you set in Exercise 02 Task 02; reset the password on the cluster if unsure. |
-| App still shows old/local data | `.env` still points at `localhost`, or app not restarted | Confirm the value is the `cosmos.azure.com` SRV string and that you restarted `npm run develop`. |
+| App still shows old/local data | `.env` still points at the local source string, or app not restarted | Confirm the value is the `cosmos.azure.com` SRV string and that you restarted `npm run develop`. |

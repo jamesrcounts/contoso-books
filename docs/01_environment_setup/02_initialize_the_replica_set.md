@@ -35,7 +35,7 @@ rs.initiate({
 })
 ```
 
-> **Why pass an explicit config?** Without arguments, `rs.initiate()` auto-detects the hostname — inside a Docker container that resolves to the container ID (e.g. `cc9d04ee609c:27017`), which nothing outside the container can reach. Clients connecting with `?replicaSet=rs0` perform topology discovery and dial the member by the name stored in the config, so that name must be routable from every client. The VM's **private IP** is reachable both ways: from this host, the app, `mongosh`, and the DocumentDB extension connect through a `localhost` seed and the driver then dials the member at the private IP — this VM's own address; and from the **cloud migration service** in Exercise 05, which tails the change stream over the virtual network and cannot reach `localhost`. `localhost` would satisfy only local tools, and the container ID neither.
+> **Why pass an explicit config?** Without arguments, `rs.initiate()` auto-detects the hostname — inside a Docker container that resolves to the container ID (e.g. `cc9d04ee609c:27017`), which nothing outside the container can reach. Clients connecting with `?replicaSet=rs0` perform topology discovery and dial the member by the name stored in the config, so that name must be routable from every client. The VM's **private IP** is reachable both ways: from this host, the app, `mongosh`, and the DocumentDB extension reach the member at the private IP — this VM's own address; and from the **cloud migration service** in Exercise 05, which tails the change stream over the virtual network and cannot reach `localhost`. `localhost` would satisfy only local tools, and the container ID neither.
 
 You should see:
 
@@ -108,6 +108,6 @@ If you prefer to add the connection by connection string, use (substitute your p
 mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 ```
 
-> **This is separate from the application's connection.** The app's `src/server/.env` (set in Task 03) points at `localhost` — it runs on this same host, so the `localhost` seed is simplest and the driver discovers the member at the private IP. This extension connection uses the private IP because it doubles as the **source** for the cloud migration service.
+> **The application uses this same connection string.** The app's `src/server/.env` (set in Task 03) holds the same private-IP string, so the app, the Exercise 03 assessment, and the Exercise 04 / 05 migrations all reach the source at `10.0.0.5:27017`.
 
 > **Why Username and Password (and not Entra ID)?** The DocumentDB extension supports two authentication methods: native username/password (SCRAM) and Microsoft Entra ID. Entra ID is only available for Azure DocumentDB clusters — it cannot authenticate against a local MongoDB container. Username and password is the mechanism that works locally, which is why Task 01 enables access control with the `bookadmin` credentials.

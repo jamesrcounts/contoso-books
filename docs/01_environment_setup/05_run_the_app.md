@@ -47,10 +47,10 @@ The `develop` script uses `concurrently` to run two processes: the Express API s
 [1]   ➜  Local:   http://localhost:3000/
 [1]   ➜  Network: use --host to expose
 [0] Server is running on port 8080
-[0] DocumentDB connected
+[0] DocumentDB connected to 10.0.0.5:27017
 ```
 
-The two lines that confirm the app is ready: `[1] ➜ Local: http://localhost:3000/` (the URL you open) and `[0] DocumentDB connected`. That last line is logged by the db layer once the MongoDB driver finishes connecting. (The app uses "DocumentDB" in its log even against the local container — the same code path connects to Azure DocumentDB later in the lab.)
+The two lines that confirm the app is ready: `[1] ➜ Local: http://localhost:3000/` (the URL you open) and `[0] DocumentDB connected to 10.0.0.5:27017`. That last line is logged by the db layer once the MongoDB driver finishes connecting, and it names the host it reached. The same code path connects to Azure DocumentDB later in the lab; the host in the log line is what tells the two apart.
 
 Leave the terminal running — both servers stay in the foreground.
 
@@ -75,7 +75,7 @@ Confirm reads and writes work against the MongoDB container:
 You can also confirm the write directly against the data using the **Azure DocumentDB VS Code extension**, reusing the local container connection you registered in Task 02:
 
 1. In the Activity Bar (the far-left icon strip), select the **DocumentDB** icon to open the **DocumentDB Connections** pane.
-2. Expand the local container connection (`localhost`) you added in Task 02 → the **bookstore** database.
+2. Expand the local container connection (`10.0.0.5`) you added in Task 02 → the **bookstore** database.
 3. Right-click the **books** collection and select **Open Collection** to open its **Collection View** (the query/results tab).
 4. In the find (query) editor at the top of the Collection View, enter the following filter and run it with the **Find Query** button (or `Ctrl+Enter`):
 
@@ -99,7 +99,7 @@ When you have verified the app is working end-to-end, click into the VS Code ter
 
 You now have the known-good baseline needed for the rest of the lab. In Exercise 02 you will provision the Azure DocumentDB target.
 
-> **Troubleshooting — app fails with `MongoNetworkError` or an authentication error:** Confirm the container is running (`docker ps`) and the connection string in `.env` matches `mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin` — including the credentials and `authSource=admin`. If the container was restarted, both the replica set state and the `bookadmin` user are persisted; you do not need to re-initialize or recreate them.
+> **Troubleshooting — app fails with `MongoNetworkError` or an authentication error:** Confirm the container is running (`docker ps`) and the connection string in `.env` matches `mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin` — including the credentials and `authSource=admin`. If the container was restarted, both the replica set state and the `bookadmin` user are persisted; you do not need to re-initialize or recreate them.
 >
 > **Troubleshooting — `Cannot GET /` in the browser:** You opened the API server (port 8080) instead of the UI. Browse to `http://localhost:3000`, and make sure you started the app with `npm run develop` (not `npm start`).
 >

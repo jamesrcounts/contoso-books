@@ -37,12 +37,12 @@ npm run develop
 
 ### Expected output
 
-The startup logs are identical to the local run — the same `DocumentDB connected` line, now backed by the managed cluster rather than the container:
+The startup is identical to the local run except for the host named in the connect line — now the managed cluster instead of the container:
 
 ```
 [1]   ➜  Local:   http://localhost:3000/
 [0] Server is running on port 8080
-[0] DocumentDB connected
+[0] DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com
 ```
 
 ## Verify identical behavior
@@ -53,7 +53,7 @@ Open `http://localhost:3000` and exercise the app exactly as in Task 01 — brow
 
 ## Success criteria
 
-`src/server/.env` holds the Azure DocumentDB connection string as the value of `BOOKSTORE_DB_CONNECTION_STRING`, the app logs `DocumentDB connected`, and reads and writes work end-to-end at `http://localhost:3000` against the managed cluster — with no code change from the local run.
+`src/server/.env` holds the Azure DocumentDB connection string as the value of `BOOKSTORE_DB_CONNECTION_STRING`, the app logs `DocumentDB connected to` the cluster host, and reads and writes work end-to-end at `http://localhost:3000` against the managed cluster — with no code change from the local run.
 
 ## Troubleshooting
 

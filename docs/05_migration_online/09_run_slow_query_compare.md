@@ -20,7 +20,7 @@ Run it against **both** endpoints and note the elapsed time printed by the timin
 **Source (local MongoDB):**
 
 ```powershell
-mongosh "mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin"
+mongosh "mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin"
 ```
 
 ```javascript

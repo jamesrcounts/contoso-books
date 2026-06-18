@@ -55,6 +55,6 @@ Reads (browse, filter, detail), writes (add comment, persists on reload), and a 
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Home page is empty | App connected to the empty/old endpoint, or counts not migrated | Confirm `.env` is the Azure SRV string; verify counts via Task 06; check `[0] DocumentDB connected`. |
+| Home page is empty | App connected to the empty/old endpoint, or counts not migrated | Confirm `.env` is the Azure SRV string; verify counts via Task 06; check `[0] DocumentDB connected to` the cluster host. |
 | New comment doesn't persist after reload | Write failed against the target | Check the server log for write errors; confirm the SRV string includes `retrywrites=false` as provided. |
 | Genre filter / autocomplete errors | `genres` collection missing on target | Confirm `genres` migrated (count = 1) in Task 06. |

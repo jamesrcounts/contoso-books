@@ -30,7 +30,7 @@ npm run develop
 ```
 
 Wait for the two ready lines — `[1] ➜ Local: http://localhost:3000/` and
-`[0] DocumentDB connected` — then leave it running. You will call the API directly rather than
+`[0] DocumentDB connected to 10.0.0.5:27017` — then leave it running. You will call the API directly rather than
 through the React UI.
 
 ## Call the reading-insights endpoint

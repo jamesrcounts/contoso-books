@@ -36,7 +36,7 @@ mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster
 You will **not** repoint the application to Azure in this task. Its `src/server/.env` should keep the **local** connection string it has held since Exercise 01 Task 03:
 
 ```
-BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 PORT=8080
 ```
 
