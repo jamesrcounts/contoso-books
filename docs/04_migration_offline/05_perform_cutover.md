@@ -11,7 +11,7 @@ The snapshot is copied and verified, and the application has been stopped since 
 
 ## Step 1 — Repoint the application at DocumentDB
 
-Open `src/server/.env` and replace the **value** of `BOOKSTORE_DB_CONNECTION_STRING` — currently the local source string — with your Azure SRV string (the one you assembled in Exercise 02 Task 03, with `bookadmin` and your password substituted). Leave `PORT` unchanged:
+In the **DocumentDB** extension, right-click your **Azure cluster connection** and choose **Copy Connection String** — it includes the password. Then open `src/server/.env` and replace the **value** of `BOOKSTORE_DB_CONNECTION_STRING` — currently the local source string — with the string you copied. Leave `PORT` unchanged:
 
 ```
 BOOKSTORE_DB_CONNECTION_STRING=mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000
@@ -20,7 +20,7 @@ PORT=8080
 
 Save the file.
 
-> **Only the connection string changes.** The application code is identical against the local container and against DocumentDB — this is the payoff of the wire-protocol compatibility demonstrated in Exercise 01. No code, drivers, or queries are touched at cutover.
+> **Only the connection string changes.** The application code is identical against the local container and against DocumentDB. No code, drivers, or queries are touched at cutover.
 
 > **Handle this string like a secret** — it contains your admin password in clear text. It belongs only in the git-ignored `.env` file.
 
@@ -41,6 +41,16 @@ Wait for the readiness lines:
 ```
 
 This time `DocumentDB connected` means the server connected to **Azure DocumentDB**, not the local container — even though the log line is identical (the app uses "DocumentDB" on every code path). Contoso is now serving its catalog from the migrated data on Azure.
+
+## Step 3 — Verify in the browser
+
+Open `http://localhost:3000` and confirm the app behaves exactly as it did before the migration:
+
+- The catalog loads and book covers render.
+- Scrolling pages through more books works.
+- The navbar's **genre** filter populates and filtering returns results.
+
+The app is now reading all of this from Azure DocumentDB, not the local container — proof that the migration is complete from the user's point of view, not just the data's.
 
 ## Success criteria
 
