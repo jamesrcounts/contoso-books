@@ -17,6 +17,8 @@ The online job starts with an **initial load** — a bulk copy of the existing d
 
 > **The copy runs on DMS, not your machine.** Because Azure Database Migration Service performs the data transfer in the cloud, you do not need to keep an active connection to the source or target for the load to continue. You can close and reopen the dashboard; status persists. (Keep the app running regardless — that is the live workload being migrated.)
 
+> **Provisioning comes first.** Because this is a Private job, the migration service spends the first few minutes in a **Provisioning** phase — building its temporary virtual network and peering it to yours — before any documents move. During that window the collection counts stay at `0`; that is expected, not a stall. The dashboard also notes that "status updates may be slightly delayed compared to actual data movement," so give the view a moment to refresh before reacting to a brief `0` or a stale row.
+
 ## What to watch
 
 | Collection | Approx. documents | What "done" looks like |

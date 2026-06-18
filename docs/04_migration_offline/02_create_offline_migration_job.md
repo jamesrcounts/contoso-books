@@ -9,32 +9,11 @@ parent: "Exercise 04 - Migration Execution — Offline (Snapshot)"
 
 With writes frozen, you will create the migration job that copies Contoso's catalog from the local MongoDB source into the Azure DocumentDB cluster. You will use the same **Azure DocumentDB Migration Extension** you ran the assessment with in Exercise 03 — this time stepping through the job-creation wizard in **Offline** mode. The extension runs the actual data transfer on an **Azure Database Migration Service (DMS)** instance in the cloud, so once the job starts you do not need to keep VS Code connected.
 
-## Create the migration source connection
-
-The migration runs on a cloud DMS instance, not on your machine, so the source it connects to must be an address DMS can reach over the network. The `localhost` connection you added in Exercise 01 Task 02 is meaningless to a cloud service. In this POC there is a second wrinkle: the local container's `rs0` advertises its member as `localhost:27017` (Exercise 01 Task 02), so a replica-set-aware client follows that advertisement back to `localhost`. (A managed source such as MongoDB Atlas advertises routable hostnames, so replica-set discovery would resolve fine and this wouldn't apply — it's a side effect of running MongoDB in a local container here.) You therefore create a **separate** source connection that points at the VM's **private IP** and uses `directConnection=true` to skip the replica-set redirect.
-
-First, get your VM's private IP:
-
-```powershell
-az vm list-ip-addresses -g rg-documentdb-lab -n vm-docdb-lab --query "[0].virtualMachine.network.privateIpAddresses[0]" -o tsv
-```
-
-It is an address in your lab VNet's range (for example `10.0.0.5`). Then add the connection in the **DocumentDB** extension:
-
-1. Open the **DocumentDB** extension from the Activity Bar and, in the **DocumentDB Connections** pane, select **+ New Connection…** → **Connection String**.
-2. Paste the following, substituting your private IP:
-
-   ```
-   mongodb://bookadmin:bookpass123@<vm-private-ip>:27017/?directConnection=true&authSource=admin
-   ```
-
-3. The new node appears in **DocumentDB Connections**. Expand it to confirm it connects — from the VM, the private IP is reachable, so it lists the `bookstore` database.
-
-> **Keep this connection distinct from the `localhost` one.** The `localhost` connection stays for the app and the Exercise 03 assessment; this private-IP/`directConnection` connection exists specifically so the cloud migration service uses the correct IP to reach the source.
-
 ## Open the migration wizard
 
-1. Right-click the **private-IP source connection** you just created and select **Data Migration…**.
+The migration runs on a cloud DMS instance, not on your machine, so it connects to the source through the **source connection you registered in Exercise 01 Task 02** — the one addressed by the VM's **private IP**. That address is reachable both from this VM and, over the lab virtual network, from the cloud migration service, so the same connection serves the app's local tooling and the migration alike; no separate connection is needed.
+
+1. In the **DocumentDB** extension, expand that source connection so it is connected, then right-click it and select **Data Migration…**.
 2. From the command palette, select **Migration to Azure DocumentDB**.
 3. Choose **Create a new migration job**.
 
@@ -117,7 +96,7 @@ Once the job is created you are automatically redirected to the **View Existing 
 
 ## Success criteria
 
-- A migration job exists in **Offline** / **Private** mode, with the private-IP `directConnection` source and your Azure DocumentDB cluster (via its private endpoint) as target, scoped to the `books` and `genres` collections.
+- A migration job exists in **Offline** / **Private** mode, with the Exercise 01 Task 02 source connection (addressed by the VM private IP) and your Azure DocumentDB cluster (via its private endpoint) as target, scoped to the `books` and `genres` collections.
 - The migration service has Network Contributor on `vm-documentdb-labVNET`, and your VM's NSG allows the DMS CIDR inbound on 27017.
 - The job has been started and now appears under **View Existing Jobs**.
 

@@ -15,10 +15,10 @@ This first run establishes a **baseline** of the source as it stands today.
 
 ## Point the extension at your source
 
-In the VS Code **Activity Bar**, open the **DocumentDB** icon to show the **DocumentDB Connections** pane, and select (or re-add) the local container connection you registered in **Exercise 01, Task 02** — the same source the Contoso app is still running against:
+In the VS Code **Activity Bar**, open the **DocumentDB** icon to show the **DocumentDB Connections** pane, and select (or re-add) the source connection you registered in **Exercise 01, Task 02** — the same local container the Contoso app is still running against, addressed by the VM's private IP:
 
 ```
-mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 ```
 
 Expand it and confirm the **bookstore** database with its **books** and **genres** collections. That connected, expanded node is what the assessment reads.
@@ -72,6 +72,6 @@ The pre-migration assessment completes and you have downloaded the HTML report. 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | The connection fails with a network/timeout error | The MongoDB container is not running | Run `docker ps` and confirm the `mongodb` container is up; start it with `docker start mongodb` if needed. |
-| An authentication error on expand | Wrong credentials or missing `authSource` | Confirm the string is exactly `mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin`, including `authSource=admin`. |
+| An authentication error on expand | Wrong credentials or missing `authSource` | Confirm the string is exactly `mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin` (your VM private IP), including `authSource=admin`. |
 | You don't see the **Data Migration** option | The Migration extension is not installed | Confirm both extensions are present (Extensions view); re-run the **Exercise 01, Task 00** setup script if the Migration extension is missing. |
 | **Run Validation** fails | Cannot connect, or the user lacks required roles | Confirm the container is up and that you connected as `bookadmin`; the assessment needs `readAnyDatabase` + `clusterMonitor` (root has both). |

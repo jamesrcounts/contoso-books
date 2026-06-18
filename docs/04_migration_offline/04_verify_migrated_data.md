@@ -15,7 +15,7 @@ The collection node in the tree shows only a **rounded** count (for example `94.
 
 You will compare the **local source** against the **Azure target**, so open a playground for each:
 
-1. In the **DocumentDB Connections** pane, expand your **local source connection** (the `localhost` connection from Exercise 01 Task 02), right-click the **`bookstore`** database, and open a **query playground**. Its header reads `bookadmin@localhost:27017 / bookstore`.
+1. In the **DocumentDB Connections** pane, expand your **local source connection** (the one from Exercise 01 Task 02, addressed by the VM private IP), right-click the **`bookstore`** database, and open a **query playground**. Its header reads `bookadmin@10.0.0.5:27017 / bookstore`.
 2. Do the same on your **Azure cluster connection** (from Exercise 02 Task 03 — it already stores your credentials and reaches the cluster over its private endpoint). The **`bookstore`** database appears on the target because the migration created it; if you don't see it, right-click the connection and **Refresh**. Its header reads `bookadmin@<your-cluster>.global.mongocluster.cosmos.azure.com / bookstore`.
 
 Keep both playgrounds open — you run the same queries in each and compare the results.

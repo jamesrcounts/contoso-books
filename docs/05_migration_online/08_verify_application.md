@@ -22,19 +22,28 @@ At `http://localhost:3000`:
 1. On a book detail page, **add a comment** and submit.
 2. **Reload** the page — the comment persists. This write went to DocumentDB (`$push` onto the book's `reviewcomments` array).
 
-## Confirm the write on the target with the extension
+## Confirm the write on the target with the query playground
 
-Cross-check the write directly against DocumentDB using the DocumentDB VS Code extension:
+Cross-check directly against DocumentDB using the **DocumentDB extension's query playground**. Open a playground on your **Azure cluster** connection's **`bookstore`** database, then run each block with **`Ctrl+Enter`**:
 
-1. Open the **DocumentDB** extension and expand the **Azure cluster** connection → **bookstore** → **books**.
-2. Right-click **books** → **Open Collection**.
-3. In the find editor, run:
+1. Confirm the catalog counts match what you migrated:
 
-   ```json
-   { "reviewcomments.0": { "$exists": true } }
+   ```javascript
+   ({
+     books:  db.getCollection('books').countDocuments(),
+     genres: db.getCollection('genres').countDocuments()
+   })
    ```
 
-4. The books that carry comments appear — including the one you just commented on, with your comment in its `reviewcomments` array (`{ name, comment }`). Switch between **Table**, **Tree**, and **JSON** layouts to inspect it.
+   This returns `{ books: 96419, genres: 1 }` (plus any books added during the lab).
+
+2. Retrieve the book you just commented on and confirm the comment landed on the target:
+
+   ```javascript
+   db.getCollection('books').findOne({ "reviewcomments.0": { $exists: true } })
+   ```
+
+   The document comes back with your comment in its `reviewcomments` array (`{ name, comment }`) — proof the write you made through the app reached DocumentDB.
 
 > **Same behavior, different backend.** Every check here mirrors the Exercise 01 baseline you ran against the local container. Matching results confirm the application is fully functional on DocumentDB and the cutover is complete.
 

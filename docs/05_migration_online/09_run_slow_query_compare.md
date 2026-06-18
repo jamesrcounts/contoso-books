@@ -7,7 +7,7 @@ parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 
 # Task 09 — Run the Slow Catalog-Statistics Query and Compare
 
-A migration is not finished when the data lands — it is finished when you understand how your workload *behaves* on the new platform. In this task you run the same heavy catalog-statistics aggregation you exercised against MongoDB in Exercise 01 Task 06, now against DocumentDB, and compare latency and behavior. This surfaces the operational differences that matter for long-running analytical queries: aggregation runtime, and the cursor and transaction timeouts that govern them.
+A migration is not finished when the data lands — it is finished when you understand how your workload *behaves* on the new platform. In this task you run a heavy catalog-statistics aggregation against **both** the local source and DocumentDB and compare latency and behavior. Running the same query on each platform side by side surfaces the operational differences that matter for long-running analytical queries: aggregation runtime, and the cursor and transaction timeouts that govern them.
 
 > **This is a behavior comparison, not a compatibility issue.** The legacy server-side JavaScript (`$function`) reading-insights report was already remediated to standard pipeline operators in Exercise 03 Task 03, so it runs on DocumentDB. This task is about *how it performs* on each platform — runtime, not correctness.
 
@@ -15,7 +15,7 @@ A migration is not finished when the data lands — it is finished when you unde
 
 The catalog-statistics aggregation scans the full `books` collection (~96,419 documents), grouping by format to produce counts and average ratings — a full-collection `$group` with no supporting index, which is exactly the kind of long-running analytical query that exposes runtime and timeout behavior.
 
-Run it against **both** endpoints and note the elapsed time printed by the `explain`/timing wrapper.
+Run it against **both** endpoints and note the elapsed time printed by the timing wrapper. This task uses `mongosh` rather than the extension's query playground: the timing wrapper prints an `elapsed ms` line after the results, and the playground surfaces only a single (last) result.
 
 **Source (local MongoDB):**
 

@@ -22,52 +22,40 @@ To make the check deterministic, briefly stop adding writes in the app so any in
 
 ## Condition 2 — Document counts match
 
-Compare counts directly on both endpoints. Open two `mongosh` sessions (or run sequentially).
+Compare counts directly on both endpoints using the **DocumentDB extension's query playground** (a mongosh-flavored scratchpad), with no shell. Open a playground on each side:
 
-**Source (local container):**
+1. In the **DocumentDB Connections** pane, expand your **local source connection** (Exercise 01 Task 02), right-click the **`bookstore`** database, and open a **query playground**.
+2. Do the same on your **Azure cluster connection** (Exercise 02 Task 03).
 
-```powershell
-mongosh "mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin"
-```
-
-```javascript
-use bookstore
-db.books.countDocuments()
-db.genres.countDocuments()
-```
-
-**Target (Azure DocumentDB):**
-
-```powershell
-mongosh "mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
-```
+In each playground, paste this and run it with **`Ctrl+Enter`**. The playground shows only the last result, so this returns both counts at once:
 
 ```javascript
-use bookstore
-db.books.countDocuments()
-db.genres.countDocuments()
+({
+  books:  db.getCollection('books').countDocuments(),
+  genres: db.getCollection('genres').countDocuments()
+})
 ```
 
 The counts must be equal on both sides:
 
 | Collection | Expected |
 |------------|----------|
-| `books` | ~96,419 (plus any new books added during the lab — must match source) |
+| `books` | 96,419 (plus any new books added during the lab — must match source) |
 | `genres` | 1 |
 
 > **Use `countDocuments()`, not `count()` or the cached `estimatedDocumentCount()`.** `countDocuments()` performs an actual count and reflects the true current state on each side, which is what a cutover decision requires.
 
 If the counts differ, the replication gap is not actually closed — return to Task 05, let replication catch up, and re-check. Do not proceed until they match.
 
-## Optional spot-check
+## Spot-check the live write
 
-Pick the book you commented on during Task 05 and confirm the comment exists on **both** source and target (e.g. query `{ "reviewcomments.0": { "$exists": true } }` on each). Matching content alongside matching counts gives high confidence the target is a faithful copy.
-
-Exit both shells:
+Matching counts prove quantity, not fidelity. In **both** playgrounds, retrieve the book you commented on and confirm the comment is present on each side:
 
 ```javascript
-exit
+db.getCollection('books').findOne({ "reviewcomments.0": { $exists: true } })
 ```
+
+The same document, with the same comment in its `reviewcomments` array, should come back on both the source and the target — confirming the change stream carried your write across. Matching content alongside matching counts gives high confidence the target is a faithful, current copy.
 
 ## Success criteria
 

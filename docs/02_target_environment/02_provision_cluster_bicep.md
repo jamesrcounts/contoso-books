@@ -25,7 +25,7 @@ az account set --subscription "<your-subscription-name-or-id>"
 
 ## Create the resource group
 
-The whole lab uses a single resource group, `rg-documentdb-lab`. If you created it in Exercise 01 (Task 00, when provisioning the lab VM), this command is idempotent — it simply confirms the group exists and changes nothing. If you are running the app on your own machine and never created it, this creates it now.
+The whole lab uses a single resource group, `rg-documentdb-lab`. You created it in Exercise 01 (Task 00, when provisioning the lab VM), so this command is idempotent — it simply confirms the group exists and changes nothing.
 
 ```powershell
 az group create --name rg-documentdb-lab --location westus3

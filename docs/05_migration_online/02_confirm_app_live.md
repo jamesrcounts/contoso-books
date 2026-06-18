@@ -38,7 +38,7 @@ Wait for the two readiness lines (logs from the server `[0]` and client `[1]` ar
 [0] DocumentDB connected
 ```
 
-`DocumentDB connected` confirms the server reached the local replica set. (The app logs "DocumentDB" on every code path — the same code connects to Azure DocumentDB after cutover.)
+`DocumentDB connected` confirms the server reached the local replica set. (The app logs "DocumentDB" on every code path — the same code connects to Azure DocumentDB after cutover.) The app connects through its `localhost` seed and the driver follows the replica set to the member at the VM's private IP (Exercise 01 Task 02) — reachable because the app runs on that same VM.
 
 ## Prove writes are flowing
 

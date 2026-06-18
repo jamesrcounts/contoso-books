@@ -11,13 +11,13 @@ You have now run the very same application against a local MongoDB container and
 
 ## One seam, two environments
 
-Every backend choice in this application funnels through a single seam: the value of `BOOKSTORE_DB_CONNECTION_STRING`, read from `src/server/.env` at startup. The application code, the `mongodb` driver, the routes, and the queries never change. That single configuration value is the entire difference between "talking to a container on my laptop" and "talking to Contoso's production cluster in Azure."
+Every backend choice in this application funnels through a single seam: the value of `BOOKSTORE_DB_CONNECTION_STRING`, read from `src/server/.env` at startup. The application code, the `mongodb` driver, the routes, and the queries never change. That single configuration value is the entire difference between "talking to a container on the database host" and "talking to Contoso's production cluster in Azure."
 
 This is the classic *connection-string-per-environment* pattern: the same build artifact is promoted unchanged through every environment, and each environment supplies its own connection string as configuration.
 
 | Environment | Connection string | Backend |
 |-------------|-------------------|---------|
-| **Local / development** | `mongodb://bookadmin:...@localhost:27017/?replicaSet=rs0&authSource=admin` | MongoDB container on the developer's machine |
+| **Local / development** | `mongodb://bookadmin:...@localhost:27017/?replicaSet=rs0&authSource=admin` | MongoDB container on the database host |
 | **Upper environments (staging, production)** | `mongodb+srv://bookadmin:...@contosobooks....mongocluster.cosmos.azure.com/?tls=true&...` | Azure DocumentDB cluster |
 
 Developers keep their fast, offline, disposable local loop — the MongoDB container, `mongosh`, and the DocumentDB VS Code extension they already know — while staging and production point at DocumentDB. Nobody has to choose between "familiar tools" and "the managed service": the same code serves both.
@@ -35,4 +35,4 @@ Developers keep their fast, offline, disposable local loop — the MongoDB conta
 - Validated, by document counts and content checksums, that the local source and Azure target hold exactly the same data (Task 03).
 - Named the connection-string-per-environment pattern as Contoso's standard developer workflow (this task).
 
-This completes Exercise 07. The migration is done, the team's local workflow is unchanged, and the path from laptop to production is a single connection string. In **Exercise 08** you will clean up the Azure resources provisioned during the lab.
+This completes Exercise 07. The migration is done, the team's local workflow is unchanged, and the path from the local host to production is a single connection string. In **Exercise 08** you will clean up the Azure resources provisioned during the lab.

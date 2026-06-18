@@ -11,9 +11,7 @@ Complete this task before starting Exercise 01. You need a Windows 11 machine wi
 
 ## Provision the Lab Machine
 
-### Option A: Azure VM (Recommended)
-
-Provision a Windows 11 VM in Azure to use as your lab machine. Run these commands from your local terminal with the Azure CLI installed.
+Provision a Windows 11 VM in Azure to use as your lab machine. The lab runs entirely on this VM — its private virtual network is what later lets the migration service reach the source over a private connection — so an Azure VM is required. Run these commands from your local terminal with the Azure CLI installed.
 
 ```bash
 az login
@@ -32,10 +30,6 @@ az vm create \
 ```
 
 Once the VM is provisioned, connect via RDP and continue to Install Prerequisites below.
-
-### Option B: Your own Windows 11 machine
-
-Continue directly to Install Prerequisites below.
 
 ---
 

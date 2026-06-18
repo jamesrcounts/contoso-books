@@ -66,5 +66,5 @@ The Azure DocumentDB cluster no longer contains a `bookstore` database (or its `
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | `dropDatabase()` returns `{ ok: 1 }` but `bookstore` still shows briefly | Cached view in the extension | Right-click the connection and **Refresh**; the empty cluster repopulates the tree. |
-| Connection times out before you can drop | Your client IP is not in the `lab-client` firewall rule | Confirm `(Invoke-RestMethod https://api.ipify.org)` matches the `lab-client` rule (Networking → Firewall rules in the portal), as you verified in Exercise 02. |
+| Connection times out before you can drop | The cluster isn't reachable on the path you're using | From the VM the cluster resolves to its **private endpoint** via the linked private DNS zone — confirm the endpoint is **Approved** and the `privatelink.mongocluster.cosmos.azure.com` zone is linked to the VNet (Exercise 02). If you're connecting over the public path, confirm `(Invoke-RestMethod https://api.ipify.org)` matches the `lab-client` firewall rule (Networking → Firewall rules in the portal). |
 | You accidentally connected to `localhost` | Wrong connection string | Stop — the local container is the source. Reconnect with the SRV string ending in `cosmos.azure.com` and verify before dropping. |

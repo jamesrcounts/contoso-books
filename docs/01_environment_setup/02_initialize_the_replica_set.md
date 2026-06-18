@@ -19,16 +19,23 @@ mongosh -u bookadmin -p bookpass123 --authenticationDatabase admin
 
 > **Why authentication works before the replica set is initialized:** the container's entrypoint created the `bookadmin` root user (in the `admin` database) on first boot, before `rs.initiate()` runs. The built-in `root` role includes `clusterAdmin`, so this user is allowed to configure the replica set.
 
-In your `mongosh` session, run the initiation command with an explicit config so the replica set member is registered as `localhost:27017`:
+The replica set member must advertise an address that is reachable both from this VM and from the cloud migration service you will use in Exercise 05 — that is the VM's **private IP**, not `localhost`. Get it from the Azure Instance Metadata Service (no sign-in required); run this in a PowerShell terminal:
+
+```powershell
+Invoke-RestMethod -Headers @{Metadata="true"} `
+  -Uri "http://169.254.169.254/metadata/instance/network/interface/0/ipv4/ipAddress/0/privateIpAddress?api-version=2021-02-01&format=text"
+```
+
+It returns an address in your lab VNet's range (for example `10.0.0.5`). In your `mongosh` session, run the initiation command with an explicit config so the replica set member is registered under that private IP (substitute yours):
 
 ```javascript
 rs.initiate({
   _id: "rs0",
-  members: [{ _id: 0, host: "localhost:27017" }]
+  members: [{ _id: 0, host: "10.0.0.5:27017" }]
 })
 ```
 
-> **Why pass an explicit config?** Without arguments, `rs.initiate()` auto-detects the hostname — inside a Docker container that resolves to the container ID (e.g. `cc9d04ee609c:27017`), not `localhost`. Clients connecting from the host with `?replicaSet=rs0` perform topology discovery and try to dial the member by the name stored in the config; the container ID won't resolve from outside the container, so change-stream tailing (used by the online migration in Exercise 05) breaks. Passing `host: "localhost:27017"` registers the member under a name the host can reach.
+> **Why pass an explicit config?** Without arguments, `rs.initiate()` auto-detects the hostname — inside a Docker container that resolves to the container ID (e.g. `cc9d04ee609c:27017`), which nothing outside the container can reach. Clients connecting with `?replicaSet=rs0` perform topology discovery and dial the member by the name stored in the config, so that name must be routable from every client. The VM's **private IP** is reachable both ways: from this host, the app, `mongosh`, and the DocumentDB extension connect through a `localhost` seed and the driver then dials the member at the private IP — this VM's own address; and from the **cloud migration service** in Exercise 05, which tails the change stream over the virtual network and cannot reach `localhost`. `localhost` would satisfy only local tools, and the container ID neither.
 
 You should see:
 
@@ -55,9 +62,9 @@ rs.status()
 The output is long. Look for these two things:
 
 - `members[0].stateStr: 'PRIMARY'` — the node has been elected primary
-- `members[0].name: 'localhost:27017'` — the member is registered under a host-reachable name
+- `members[0].name: '10.0.0.5:27017'` — the member is registered under the VM's private IP (a name reachable from both the host and the cloud migration service)
 
-If `members[0].name` shows a container ID instead of `localhost:27017`, you initialized without the explicit config above. Reconfigure with `rs.reconfig({...same config as rs.initiate above...}, {force: true})`, or remove and recreate the container and run the correct `rs.initiate(...)` command.
+If `members[0].name` shows a container ID or `localhost:27017` instead of the private IP, you initialized without the explicit config above. Reconfigure with `rs.reconfig({ _id: "rs0", members: [{ _id: 0, host: "10.0.0.5:27017" }] }, { force: true })` (substitute your private IP), or remove and recreate the container and run the correct `rs.initiate(...)` command.
 
 ## Confirm change stream support
 
@@ -83,22 +90,24 @@ exit
 
 ## Connect the DocumentDB VS Code extension to the local container
 
-The container is now a running, authenticated replica set — a valid target for the **DocumentDB for VS Code** extension you installed in Task 00. You will use the extension against this local instance in Exercise 03; the connection details are:
+The container is now a running, authenticated replica set — a valid target for the **DocumentDB for VS Code** extension you installed in Task 00. Register it now as a single **source connection** that you reuse for the Exercise 03 assessment and the Exercise 04 / 05 migrations. Address it by the VM's **private IP** (the same one you registered the member under) — the cloud migration service later connects through this connection and cannot reach `localhost`. The connection details are:
 
 | Setting | Value |
 |---------|-------|
 | Authentication method | **Username and Password** (not Microsoft Entra ID — that applies only to Azure DocumentDB clusters) |
-| Host | `localhost` |
+| Host | `10.0.0.5` (your VM's private IP) |
 | Port | `27017` |
 | Username | `bookadmin` |
 | Password | `bookpass123` |
 | Authentication database (`authSource`) | `admin` |
 | TLS / SSL | **Disabled** — the local container uses no TLS |
 
-If you prefer to add the connection by connection string, use:
+If you prefer to add the connection by connection string, use (substitute your private IP):
 
 ```
-mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
+mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin
 ```
+
+> **This is separate from the application's connection.** The app's `src/server/.env` (set in Task 03) points at `localhost` — it runs on this same host, so the `localhost` seed is simplest and the driver discovers the member at the private IP. This extension connection uses the private IP because it doubles as the **source** for the cloud migration service.
 
 > **Why Username and Password (and not Entra ID)?** The DocumentDB extension supports two authentication methods: native username/password (SCRAM) and Microsoft Entra ID. Entra ID is only available for Azure DocumentDB clusters — it cannot authenticate against a local MongoDB container. Username and password is the mechanism that works locally, which is why Task 01 enables access control with the `bookadmin` credentials.
