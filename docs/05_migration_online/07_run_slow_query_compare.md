@@ -1,11 +1,11 @@
 ---
-title: "Exercise 05 - Task 08 — Run the Slow Catalog-Statistics Query and Compare"
+title: "Exercise 05 - Task 07 — Run the Slow Catalog-Statistics Query and Compare"
 layout: default
-nav_order: 8
+nav_order: 7
 parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 ---
 
-# Task 08 — Run the Slow Catalog-Statistics Query and Compare
+# Task 07 — Run the Slow Catalog-Statistics Query and Compare
 
 A migration is not finished when the data lands — it is finished when you understand how your workload *behaves* on the new platform. In this task you run a heavy catalog-statistics aggregation against **both** the local source and DocumentDB and compare latency and behavior. Running the same query on each platform side by side surfaces the operational differences that matter for long-running analytical queries: aggregation runtime, and the cursor and transaction timeouts that govern them.
 

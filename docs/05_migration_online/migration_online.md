@@ -33,6 +33,5 @@ Exercise 04's cutover left the application pointed at **Azure**, so for this onl
 - Task 03 — [Create the Online Migration Job](03_create_online_migration_job.md) — in the VS Code extension over private connectivity; source: local MongoDB (replica set, via the VM private IP), target: DocumentDB cluster (private endpoint)
 - Task 04 — [Monitor the Initial Load Phase](04_monitor_initial_load.md) — documents are copied while the app continues writing
 - Task 05 — [Monitor Replication and Verify Cutover Conditions](05_monitor_online_sync.md) — watch the change stream replicate live writes, then confirm replication gap = 0 AND document counts match via the DocumentDB extension query playground
-- Task 06 — [Perform the Cutover](06_perform_cutover.md) — update the `.env` connection string to DocumentDB, restart the app, confirm it comes up clean
-- Task 07 — [Verify the Application Against DocumentDB](07_verify_application.md) — confirm the application functions correctly after cutover
-- Task 08 — [Run the Slow Catalog-Statistics Query and Compare](08_run_slow_query_compare.md) — compare latency and behavior with the source; discuss runtime differences (long-running aggregations, cursor and transaction timeouts)
+- Task 06 — [Perform the Cutover and Verify the Application](06_perform_cutover.md) — cut over to DocumentDB (repoint `.env`, restart), then confirm reads, writes, and the migrated data are correct on the target
+- Task 07 — [Run the Slow Catalog-Statistics Query and Compare](07_run_slow_query_compare.md) — compare latency and behavior with the source; discuss runtime differences (long-running aggregations, cursor and transaction timeouts)
