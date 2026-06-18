@@ -1,11 +1,11 @@
 ---
-title: "Exercise 05 - Task 08 — Verify the Application Against DocumentDB"
+title: "Exercise 05 - Task 07 — Verify the Application Against DocumentDB"
 layout: default
-nav_order: 8
+nav_order: 7
 parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 ---
 
-# Task 08 — Verify the Application Against DocumentDB
+# Task 07 — Verify the Application Against DocumentDB
 
 The app is running against DocumentDB after cutover. Now confirm it behaves exactly as it did against the local container in Exercise 01 Task 05 — same reads, same writes, same UI. This is the functional acceptance check that proves the migration succeeded from the user's point of view, not just the data's.
 
@@ -55,6 +55,6 @@ Reads (browse, filter, detail), writes (add comment, persists on reload), and a 
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Home page is empty | App connected to the empty/old endpoint, or counts not migrated | Confirm `.env` is the Azure SRV string; verify counts via Task 06; check `[0] DocumentDB connected to` the cluster host. |
+| Home page is empty | App connected to the empty/old endpoint, or counts not migrated | Confirm `.env` is the Azure SRV string; verify counts via Task 05; check `[0] DocumentDB connected to` the cluster host. |
 | New comment doesn't persist after reload | Write failed against the target | Check the server log for write errors; confirm the SRV string includes `retrywrites=false` as provided. |
-| Genre filter / autocomplete errors | `genres` collection missing on target | Confirm `genres` migrated (count = 1) in Task 06. |
+| Genre filter / autocomplete errors | `genres` collection missing on target | Confirm `genres` migrated (count = 1) in Task 05. |

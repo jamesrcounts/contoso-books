@@ -1,11 +1,11 @@
 ---
-title: "Exercise 05 - Task 07 — Perform the Cutover"
+title: "Exercise 05 - Task 06 — Perform the Cutover"
 layout: default
-nav_order: 7
+nav_order: 6
 parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 ---
 
-# Task 07 — Perform the Cutover
+# Task 06 — Perform the Cutover
 
 Both cutover conditions are met, so it is time to switch Contoso onto DocumentDB. Cutover is a short, coordinated sequence: stop writes to the source, finalize the migration job, repoint the application at the target, and bring it back up. Done in this order, the only "downtime" is the brief application restart — the data is already in sync. In this task you complete the cutover and confirm the app starts clean against DocumentDB.
 
@@ -18,7 +18,7 @@ Stop the application so no new writes hit the source while you finalize. Click i
 ## Step 2 — Finalize the migration job (Cutover)
 
 1. In the migration extension, open **View Existing Jobs** and select your `contoso-online-cutover` job.
-2. Confirm one last time that **Replication Changes Played** is stable and **Time Since Last Change** is small (Task 06).
+2. Confirm one last time that **Replication Changes Played** is stable (Task 05).
 3. Click **Cutover**.
 
 The job finalizes replication and completes. The target now holds the full, consistent dataset.
@@ -64,11 +64,11 @@ Open `http://localhost:3000` and confirm the app behaves exactly as it did befor
 - Scrolling pages through more books works.
 - The navbar's **genre** filter populates and filtering returns results.
 
-Contoso is now reading all of this from Azure DocumentDB. You run the full functional acceptance check in Task 08.
+Contoso is now reading all of this from Azure DocumentDB. You run the full functional acceptance check in Task 07.
 
 ## Success criteria
 
-Writes to the source were stopped, the migration job was finalized with **Cutover**, `src/server/.env` now holds the Azure SRV string as `BOOKSTORE_DB_CONNECTION_STRING`, and the app restarted cleanly (logging `DocumentDB connected to` the Azure cluster) — now serving from DocumentDB. You verify end-to-end behavior in Task 08.
+Writes to the source were stopped, the migration job was finalized with **Cutover**, `src/server/.env` now holds the Azure SRV string as `BOOKSTORE_DB_CONNECTION_STRING`, and the app restarted cleanly (logging `DocumentDB connected to` the Azure cluster) — now serving from DocumentDB. You verify end-to-end behavior in Task 07.
 
 ## Troubleshooting
 

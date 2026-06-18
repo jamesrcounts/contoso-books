@@ -1,58 +1,90 @@
 ---
-title: "Exercise 05 - Task 05 — Monitor the Online Sync Phase"
+title: "Exercise 05 - Task 05 — Monitor Replication and Verify Cutover Conditions"
 layout: default
 nav_order: 5
 parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 ---
 
-# Task 05 — Monitor the Online Sync Phase
+# Task 05 — Monitor Replication and Verify Cutover Conditions
 
-After the initial load, the job enters the **online sync** (replication) phase: it tails the source change stream and continuously applies every new insert, update, and delete to the target. Your job is to watch the **replication lag** converge toward zero — the gap between what has happened on the source and what has been applied on the target — so you know when it is safe to cut over. In this task you interpret the replication metrics and confirm live writes are flowing to DocumentDB.
+After the initial load, the job enters the **online sync** (replication) phase: it tails the source change stream and continuously applies every new insert, update, and delete to the target. The overall job status reads **Ready for cutover**, and each collection's Status column reads **Replicating**. In this task you watch replication work, then verify the two conditions that must hold before you cut over: the **replication gap is zero** and the **document counts match**. Cutover is irreversible — this is the gate that protects against data loss.
 
-## The metrics that matter
+> **Cutting over without confirming the source and target are in sync can result in data loss.** Treat the conditions below as a hard gate — do not click **Cutover** (Task 06) until both pass.
 
-On the expanded job row (**View Existing Jobs** → select the job), the online sync phase surfaces two key signals per collection:
+## The replication metrics
 
-| Metric | What it means | What you want |
-|--------|---------------|---------------|
-| **Replication Changes Played** | Count of source change-stream events applied to the target | Climbs as changes are applied, then **stabilizes** — no more pending backlog |
-| **Time Since Last Change** | Gap between the most recent source change and now | Small and steady — indicates the target is caught up to the source |
+On the expanded job row (**View Existing Jobs** → select the job), the replication phase surfaces two per-collection signals:
 
-A stable **Replication Changes Played** metric means all source changes captured so far have been successfully applied to the target. Combined with a small **Time Since Last Change**, this tells you the replication gap is effectively zero.
+| Metric | What it means | How to read it |
+|--------|---------------|----------------|
+| **Replication Changes Played** | Count of source change-stream events applied to the target | Climbs as changes are applied, then **stabilizes** once the backlog is drained. **This is your convergence signal.** |
+| **Time Since Last Change** | Time since the **last source change to that collection** | **Grows whenever that collection isn't being written to** — it is *not* a lag figure. A small value just means a change happened recently; a large, growing one after you stop writing is expected. |
+
+The signal that the replication gap is effectively zero is **Replication Changes Played holding steady** after you stop generating writes — every captured change has been applied, with no pending backlog. Because only `books` receives writes in this lab (comments), only `books` shows Replication Changes Played climbing; `genres` is never written to, so its count stays at `0` (shown as `--`) and its **Time Since Last Change** simply keeps growing — both are healthy.
 
 ## Watch a live write replicate
 
-Prove the change stream is working end-to-end:
+Prove the change stream is working end-to-end — this doubles as your content-fidelity check:
 
-1. With the app still running, open a book at `http://localhost:3000` and add a distinctive comment (e.g. your name plus a timestamp).
-2. Watch the job dashboard — **Replication Changes Played** ticks up shortly after as that write is applied to the target.
-3. Optionally confirm on the target directly with the DocumentDB extension: open the Azure cluster's `bookstore` → `books` collection and run the find query:
+1. With the app still running, open a book at `http://localhost:3000` and add a comment (e.g. "I love this book").
+2. Watch the job dashboard — **Replication Changes Played** for `books` ticks up shortly after as that write is applied to the target.
+3. Confirm on the target directly with the DocumentDB extension. The migration created the `bookstore` database on the cluster, so **right-click the Azure cluster connection and Refresh** if you don't see it yet, then open a **query playground** on its `bookstore` database and run:
 
-   ```json
-   { "reviewcomments.0": { "$exists": true } }
+   ```javascript
+   db.getCollection('books').find(
+     { "reviewcomments.0": { $exists: true } },
+     { title: 1, reviewcomments: 1 }
+   ).toArray()
    ```
 
-   The book you just commented on appears with your comment in its `reviewcomments` array — on DocumentDB, replicated live from the source.
+   Every commented book comes back — including the one you just added — with your comment in its `reviewcomments` array, on DocumentDB, replicated live from the source.
 
 > **This is the zero-downtime property in action.** Contoso's catalog is serving reads and accepting writes against the source, and every one of those writes is landing on DocumentDB within seconds — without any maintenance window.
 
-## Let it converge
+## Verify the cutover conditions
 
-If you make a burst of writes, **Replication Changes Played** rises and then settles once the backlog drains. Before moving on, stop generating writes for a moment and confirm:
+Both conditions must hold together before you cut over.
 
-- **Replication Changes Played** has **stabilized** (no longer climbing) for all collections.
-- **Time Since Last Change** is small and not growing.
+### Condition 1 — Replication gap = 0
 
-This indicates the replication gap has reached ~0. Keep the job in this phase — you formally validate the gap and document counts in Task 06 before cutting over.
+**Stop generating writes** in the app for a moment so any in-flight changes drain, then confirm on the dashboard:
+
+- **Replication Changes Played** has **stabilized** (no longer climbing) for `books` — every captured change has been applied.
+- Once you stop writing, **Time Since Last Change** simply keeps growing; that's the expected idle state, not lag.
+
+A stable Replication Changes Played with no new writes means the target has applied everything the source has produced — the gap is ~0.
+
+### Condition 2 — Document counts match
+
+Compare counts directly on both endpoints using the **DocumentDB extension's query playground**, with no shell. Open a playground on each side — your **local source connection** (Exercise 01 Task 02) and your **Azure cluster connection** (Exercise 02 Task 03), each on the **`bookstore`** database. In each, run this with **`Ctrl+Enter`** (the playground shows only the last result, so it returns both counts at once):
+
+```javascript
+({
+  books:  db.getCollection('books').countDocuments(),
+  genres: db.getCollection('genres').countDocuments()
+})
+```
+
+Both sides must return the same numbers:
+
+| Collection | Expected |
+|------------|----------|
+| `books` | 96,419 (plus any new books added during the lab — must match source) |
+| `genres` | 1 |
+
+> **Use `countDocuments()`, not `count()` or the cached `estimatedDocumentCount()`.** `countDocuments()` performs an actual count and reflects the true current state on each side, which is what a cutover decision requires.
+
+If the counts differ, the replication gap isn't actually closed — let replication catch up (Condition 1) and re-check. Content fidelity you already confirmed above, when your live write came back from the target.
 
 ## Success criteria
 
-The online sync phase is running, live writes from the app are visibly replicating to DocumentDB, and the replication metrics have converged: **Replication Changes Played** is stable and **Time Since Last Change** is small for both collections. The replication gap is effectively zero.
+Both cutover conditions hold: the replication gap is zero (**Replication Changes Played** stable after you stop writing) **and** `countDocuments()` for `books` and `genres` is equal on the source and the target (96,419 / 1) — and you've seen your live writes land on the target. You are clear to cut over, which you do in **Task 06**.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | **Replication Changes Played** keeps climbing and never stabilizes | App is under continuous write load | Briefly pause new writes (don't add comments) and let the backlog drain to confirm convergence. |
-| **Time Since Last Change** grows steadily | Replication is falling behind or stalled | Check the job for errors; **Pause**/**Resume** if needed. Confirm the source oplog hasn't rolled over (not a concern at lab scale/duration). |
-| Live comment never appears on the target | Looking at the source, or a stale view | Verify you queried the **Azure** (`cosmos.azure.com`) connection and **Refresh** the collection view. |
+| Target count is **lower** than source | Replication still draining | Wait, let **Replication Changes Played** stabilize, then re-run the counts block. |
+| Target count is **higher** than source | Leftover data from Exercise 04 not fully dropped | The target wasn't clean — this is why Task 01 drops `bookstore` and `migration_dlq`. Investigate before cutover; do not proceed. |
+| A live comment never appears on the target | Looking at the source, or a stale view | Verify you queried the **Azure** (`cosmos.azure.com`) connection and **Refresh** it — the migration creates `bookstore`, so the tree won't show it until you refresh. |

@@ -38,7 +38,7 @@ Status:         Bulk copy in progress         Duration:      18m 18s
 While the load runs, exercise the live app to confirm it is unaffected and to seed changes for the next phase:
 
 1. At `http://localhost:3000`, browse and scroll the catalog — reads continue normally.
-2. Add a comment to a book or two. These writes land in the source `reviewcomments` arrays and are recorded in the oplog. They may **not** appear on the target yet — depending on timing they are picked up during initial load or queued for the online sync phase. You will confirm they arrive in Task 05/06.
+2. Add a comment to a book or two. These writes land in the source `reviewcomments` arrays and are recorded in the oplog. They may **not** appear on the target yet — depending on timing they are picked up during initial load or queued for the online sync phase. You will confirm they arrive in Task 05.
 
 ## Initial load complete
 
@@ -47,7 +47,7 @@ The initial load is finished when both collections reach 100%. The overall statu
 - The job is now in the **replication (online sync)** phase, tailing the source change stream.
 - The **Cutover** button becomes **enabled** — the signal that the bulk copy is done and the job is keeping the target in sync.
 
-Do **not** click Cutover yet. The replication gap still needs to converge (Task 05) and counts must be validated (Task 06).
+Do **not** click Cutover yet. The replication gap still needs to converge and counts must be validated (Task 05).
 
 ## Success criteria
 
