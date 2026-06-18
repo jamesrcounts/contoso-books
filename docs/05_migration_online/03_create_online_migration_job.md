@@ -28,6 +28,7 @@ Provide the job's basic details:
 - **Job Name: `contoso-online-cutover`.** This names the job in the **View Existing Jobs** list and keeps it distinct from the offline job in Exercise 04.
 - **Migration mode: Online.** Online copies the existing data and then replicates post-snapshot changes from the source **change stream**, so the application stays live and no writes are lost between the copy and cutover. (Offline, in Exercise 04, takes a one-shot snapshot and requires a write freeze.)
 - **Connectivity: Private.** The migration service reaches the source over the lab virtual network and the target through its private endpoint, so traffic stays on the VNet and never crosses the public internet.
+- **Source connection string.** This field is labeled optional — left blank, it defaults to the connection you launched the wizard from — but **set it explicitly**: `mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin` (substitute your VM private IP). In this lab, a run that left it to default **failed during provisioning**, and the same job succeeded once the string was set explicitly — so provide it.
 
 > **Online requires change streams.** The wizard enforces that **"ChangeStream must be enabled on the source MongoDB server"** — without it, any change made after the initial copy is silently lost. The source satisfies this because it was initialized as a replica set in Exercise 01 Task 02 (the replica set provides the oplog the change stream tails), and because its member advertises the VM private IP, the cloud migration service can reach it to tail that stream.
 
@@ -59,7 +60,13 @@ Select **Next**.
 Because you chose **Private**, this step wires the migration service into your lab virtual network so it can reach both the source VM and the cluster's private endpoint — the same configuration you set up for the offline job in Exercise 04.
 
 1. **Source virtual network** and **target virtual network** — select the **same** network, `vm-documentdb-labVNET`, for both (just as in Exercise 04). After you pick the resource group, the network is selected automatically.
-2. **DMS CIDR range** — select the **same** **`172.28.0.0/16`** you used for the offline job. Because you are reusing it, the **Network Contributor** grant you ran in Exercise 04 still applies, so there is nothing new to grant here. (The wizard may still display the `New-AzRoleAssignment` script; you already ran it in Exercise 04, so you can skip it.)
+2. **DMS CIDR range** — select the **same** **`172.28.0.0/16`** you used for the offline job. Because you are reusing it, the **Network Contributor** grant you ran in Exercise 04 still applies, so there is nothing new to grant here. (The wizard may still display the `New-AzRoleAssignment` script; you already ran it in Exercise 04, so you can skip it.) Confirm the grant is in place if you want:
+
+   ```powershell
+   az role assignment list --scope (az network vnet show -g rg-documentdb-lab -n vm-documentdb-labVNET --query id -o tsv) --query "[?roleDefinitionName=='Network Contributor'].{role:roleDefinitionName, principalType:principalType, principalId:principalId}" -o table
+   ```
+
+   One `ServicePrincipal` row with **Network Contributor** means it's set.
 3. **Verify the inbound firewall rule is still in place.** The migration service connects to your source on port **27017** from the DMS CIDR range; the `allow-dms-mongodb` rule you added in Exercise 04 allows it. Confirm it is present:
 
    ```powershell
@@ -84,6 +91,7 @@ These are the two collections that hold Contoso's catalog (96,419 books and the 
 Review the **Confirm and start migration** summary and check it matches what you configured:
 
 - **Job name** `contoso-online-cutover` · **Migration mode** Online · **Connectivity** Private
+- **Source connection string** `mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin`
 - **Target account** — your subscription, `rg-documentdb-lab`, account name `contosobooks…`, the connection string, and the **Private endpoint** (`…/privateEndpoints/contosobooks…-pe`)
 - **DMS** `dms-documentdb-lab`
 - **Source** and **target virtual network** both `vm-documentdb-labVNET`
@@ -107,4 +115,5 @@ Once the job is created you are redirected to the **View Existing Jobs** page, w
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | **Online** mode is greyed out or warns that **ChangeStream must be enabled** | The source isn't a reachable replica set | Confirm `rs.status()` shows `PRIMARY` with member name **`10.0.0.5:27017`** (your VM private IP), per [Exercise 01 Task 02](../01_environment_setup/02_initialize_the_replica_set.md). If the member shows `localhost` or a container ID, the cloud migration service can't reach it — reconfigure it to the private IP. |
+| The job's status goes to **Failed during resource provisioning** | A DMS-side provisioning issue (often transient — there is no Retry button) | Delete the failed job and **recreate** it, making sure the **source connection string** is set explicitly (Step 1). If it fails again with the grant, the NSG rule, and the private endpoint all verified, capture the **Operation ID** from the error and contact Azure support — a provisioning failure with valid infrastructure is a DMS-managed-side issue. |
 | Target connection fails with an **`invalid key`** / authentication error | Wrong username or password in the connection string | Re-copy it with **Copy Connection String** from your Azure cluster connection; confirm the username is `bookadmin` and the password is the admin password you set in Exercise 02. |

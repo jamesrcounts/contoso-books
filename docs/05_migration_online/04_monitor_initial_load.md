@@ -15,18 +15,25 @@ The online job starts with an **initial load** — a bulk copy of the existing d
 2. The status refreshes automatically at frequent intervals.
 3. Select the job row to expand the **collection-wise** view, showing per-collection progress for `books` and `genres`.
 
-> **The copy runs on DMS, not your machine.** Because Azure Database Migration Service performs the data transfer in the cloud, you do not need to keep an active connection to the source or target for the load to continue. You can close and reopen the dashboard; status persists. (Keep the app running regardless — that is the live workload being migrated.)
+> **The copy runs on DMS, not your machine.** Because Azure Database Migration Service performs the data transfer in the cloud, you don't need to keep VS Code or an active connection open for the load to continue — you can close and reopen the dashboard and the status persists. **But the VM and the MongoDB container must stay running the whole time:** DMS connects directly to the container and reads from it throughout the migration (for online, all the way to cutover). Keep the app running too — that is the live workload being migrated.
 
-> **Provisioning comes first.** Because this is a Private job, the migration service spends the first few minutes in a **Provisioning** phase — building its temporary virtual network and peering it to yours — before any documents move. During that window the collection counts stay at `0`; that is expected, not a stall. The dashboard also notes that "status updates may be slightly delayed compared to actual data movement," so give the view a moment to refresh before reacting to a brief `0` or a stale row.
+> **Provisioning comes first — and for online it takes a while.** Because this is a Private job, the migration service spends its first **10–15 minutes (sometimes longer)** in a **Provisioning** phase — standing up its own temporary virtual network, worker, and peering — before any documents move. During that whole window the overall status reads **Provisioning** and the collection counts stay at `0`; that is expected, not a stall. The dashboard also notes that "status updates may be slightly delayed compared to actual data movement," so give the view a moment to refresh before reacting to a brief `0` or a stale row. (If the job instead goes to **Failed during resource provisioning**, see the [Task 03](03_create_online_migration_job.md) troubleshooting.)
 
 ## What to watch
 
-| Collection | Approx. documents | What "done" looks like |
-|------------|-------------------|------------------------|
-| `books` | 96,419 | Copied count climbs to ~96,419; collection state becomes complete |
-| `genres` | 1 | Completes almost immediately |
+The dashboard shows the job's overall details and a per-collection table. Once provisioning finishes and the bulk copy runs, it looks like this:
 
-The `books` collection is the bulk of the work — `genres` (a single document) finishes nearly instantly. Watch the copied-document counts climb toward the source totals.
+```
+Job name:       contoso-online-cutover        Source server: 10.0.0.5
+Migration mode: Online                        Target server: contosobooks....global.mongocluster.cosmos.azure.com
+Status:         Bulk copy in progress         Duration:      18m 18s
+
+  Database    Collection   Status                     Documents   %      Duration   Time Since Last Change   Replication Changes Played
+  bookstore   books        Initial Load in progress   96419       100%   50s        --                       --
+  bookstore   genres       Initial Load in progress   1           100%   44s        --                       --
+```
+
+`books` (96,419 documents) is the bulk of the work but still copies in well under a minute; `genres` (one document) finishes almost instantly. Watch the **Documents** count climb to the source totals and **%** reach 100%. Notice that **Source server** is the VM's private IP (`10.0.0.5`) — DMS reached the container over the private path. The last two columns, **Time Since Last Change** and **Replication Changes Played**, stay `--` during the initial load; they come alive in the replication phase (Task 05).
 
 ## Keep the application working during the load
 
@@ -37,16 +44,16 @@ While the load runs, exercise the live app to confirm it is unaffected and to se
 
 ## Initial load complete
 
-The initial load is finished when **all** selected collections report complete. At that point:
+The initial load is finished when both collections reach 100%. The overall status moves to **Ready for cutover**, and each collection's state changes from "Initial Load in progress" to **Replicating**:
 
-- The job transitions into the **replication (online sync)** phase.
-- The **Cutover** button becomes **enabled** — this is the signal that the bulk copy is done and the job is now tailing changes.
+- The job is now in the **replication (online sync)** phase, tailing the source change stream.
+- The **Cutover** button becomes **enabled** — the signal that the bulk copy is done and the job is keeping the target in sync.
 
 Do **not** click Cutover yet. The replication gap still needs to converge (Task 05) and counts must be validated (Task 06).
 
 ## Success criteria
 
-The initial load has completed for both `books` and `genres`, the job has entered the replication phase, and the **Cutover** button is now enabled. The application stayed live throughout.
+The initial load has completed for both `books` and `genres` (both at 100%), the job's overall status is **Ready for cutover** with both collections **Replicating**, and the **Cutover** button is now enabled. The application stayed live throughout.
 
 ## Troubleshooting
 
