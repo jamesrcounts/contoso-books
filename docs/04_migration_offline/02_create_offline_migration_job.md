@@ -11,7 +11,7 @@ With writes frozen, you will create the migration job that copies Contoso's cata
 
 ## Create the migration source connection
 
-The migration runs on a cloud DMS instance, not on your machine — so the source it connects to must be an address DMS can reach over the network, and it must **not** rely on replica-set discovery. The `localhost` connection you added in Exercise 01 Task 02 fails both tests: `localhost` is meaningless to a cloud service, and `rs0` advertises its member as `localhost:27017` (Exercise 01 Task 02), so any replica-set-aware client gets redirected back to `localhost`. You therefore create a **separate** source connection that points at the VM's **private IP** and uses `directConnection=true` to skip the replica-set redirect.
+The migration runs on a cloud DMS instance, not on your machine, so the source it connects to must be an address DMS can reach over the network. The `localhost` connection you added in Exercise 01 Task 02 is meaningless to a cloud service. In this POC there is a second wrinkle: the local container's `rs0` advertises its member as `localhost:27017` (Exercise 01 Task 02), so a replica-set-aware client follows that advertisement back to `localhost`. (A managed source such as MongoDB Atlas advertises routable hostnames, so replica-set discovery would resolve fine and this wouldn't apply — it's a side effect of running MongoDB in a local container here.) You therefore create a **separate** source connection that points at the VM's **private IP** and uses `directConnection=true` to skip the replica-set redirect.
 
 First, get your VM's private IP:
 
@@ -30,13 +30,13 @@ It is an address in your lab VNet's range (for example `10.0.0.5`). Then add the
 
 3. The new node appears in **DocumentDB Connections**. Expand it to confirm it connects — from the VM, the private IP is reachable, so it lists the `bookstore` database.
 
-> **Keep this connection distinct from the `localhost` one.** The `localhost` connection stays for the app and the Exercise 03 assessment; this private-IP/`directConnection` connection exists specifically so the cloud migration service can reach the source.
+> **Keep this connection distinct from the `localhost` one.** The `localhost` connection stays for the app and the Exercise 03 assessment; this private-IP/`directConnection` connection exists specifically so the cloud migration service uses the correct IP to reach the source.
 
 ## Open the migration wizard
 
 1. Right-click the **private-IP source connection** you just created and select **Data Migration…**.
 2. From the command palette, select **Migration to Azure DocumentDB**.
-3. Choose **Create a new migration job** (the **Pre-Migration Assessment** option in this same menu is the one you used in Exercise 03).
+3. Choose **Create a new migration job**.
 
 The job-creation wizard opens. Work through its steps below.
 
@@ -46,7 +46,7 @@ Provide the job's basic details:
 
 - **Job Name: `contoso-offline-migration`.** This names the job in the **View Existing Jobs** list and keeps it distinct from the online job you create in Exercise 05.
 - **Migration mode: Offline.** Offline captures a snapshot at the start and bulk-copies it — simple and predictable, and the right fit for Contoso's maintenance window. (Online, covered in Exercise 05, additionally tracks the change stream to avoid downtime.)
-- **Connectivity: Private.** The migration service reaches the source over the lab virtual network and the target through its private endpoint, so traffic never crosses the public internet. (Public connectivity does not work here: VS Code runs *on* the source VM, and a VM cannot reach its own public IP — so there is no single address the extension and the cloud service can both use. Private connectivity, where both sides are reached over the VNet, is the path that works.)
+- **Connectivity: Private.** The migration service reaches the source over the lab virtual network and the target through its private endpoint, so traffic stays on the VNet and never crosses the public internet.
 
 Select **Next**.
 
@@ -67,31 +67,18 @@ Once sign-in completes, the wizard can populate the Azure dropdowns in the next 
 
 Point the job at the cluster you provisioned in Exercise 02. The fields are briefly disabled while the wizard loads your subscription data, and each dropdown enables a moment after you make the previous selection — give them a second to populate.
 
-1. Select your **subscription**, then the **`rg-documentdb-lab`** resource group. The **Account name** dropdown then populates automatically with your cluster — it is the only one in the subscription.
-2. The **connection string** is required and is not filled in for you. Paste the Azure SRV string you parked as a commented-out line in `src/server/.env` (in Exercise 02 Task 03):
+1. Select your **subscription**, then the **`rg-documentdb-lab`** resource group, then your cluster from the **Account name** dropdown (if it is the only cluster in the subscription, it may already be selected).
+2. The **connection string** is required and is not filled in for you. Rather than retype it, get it from the connection you already created: in the **DocumentDB** extension, right-click your **Azure cluster connection** (the one from Exercise 02 Task 03) and choose **Copy Connection String** — it includes the password — then paste it into the field.
 
-   ```
-   mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000
-   ```
+The connection string only gives the extension the cluster's **server name**. The **private DNS zone** you created in Exercise 02 resolves that name to the cluster's **private endpoint**, which is how the migration reaches the target privately.
 
-The connection string is how the extension enumerates the target's databases. The migration itself reaches the cluster over its **private endpoint** (you will see that endpoint listed on the confirmation screen), so the public `lab-client` firewall rule is not what governs the data path here — the private endpoint from Exercise 02 is.
-
-> **Handle this string like a secret.** It contains your administrator password in clear text. Keep it in `src/server/.env` (git-ignored) and the extension's secure store only — never commit it or paste it into shared chat.
+> **Handle this string like a secret.** It contains your administrator password in clear text — never commit it or paste it into shared chat.
 
 Select **Next**.
 
 ## Step 3 — Select the Database Migration Service (DMS)
 
-The extension performs the transfer on an **Azure Database Migration Service** instance rather than on your laptop. Select **Create DMS** and name it **`dms-documentdb-lab`** — a single DMS per region is enough to reuse across jobs, so you create one here and reuse it for the online migration in Exercise 05. It provisions in under a minute.
-
-> **Register the resource provider first (one-time per subscription).** DMS requires the `Microsoft.DataMigration` provider to be registered, or the wizard cannot create or select a service. Register and confirm it from a terminal:
->
-> ```powershell
-> az provider register --namespace Microsoft.DataMigration
-> az provider show -n Microsoft.DataMigration --query registrationState -o tsv
-> ```
->
-> Registration takes a minute or two; wait until the second command returns `Registered` before continuing.
+The extension performs the transfer on an **Azure Database Migration Service** instance rather than on the client host. Select **Create DMS** and name it **`dms-documentdb-lab`** — a single DMS per region is enough to reuse across jobs, so you create one here and reuse it for the online migration in Exercise 05. It provisions in under a minute.
 
 Select **Next**.
 
@@ -100,20 +87,16 @@ Select **Next**.
 Because you chose **Private**, this step wires the migration service into your lab virtual network so it can reach both the source VM and the cluster's private endpoint.
 
 1. **Source virtual network** and **target virtual network** — select the **same** network, `vm-documentdb-labVNET`, for both. Your source VM and the cluster's private endpoint both live in it, so a single VNet covers both sides. After you pick the resource group, the network is selected automatically.
-2. **DMS CIDR range** — enter **`172.28.0.0/16`**. The migration service builds its own temporary virtual network on this range and peers it to yours, so it **must not overlap** your VNet's `10.0.0.0/16`.
-3. **Run the generated script.** The wizard displays a PowerShell script and asks you to run it. It grants the migration service's identity the **Network Contributor** role on your VNet so it can create the peering. Copy it and run it **as shown** in a terminal:
-   - It is an **Az PowerShell** script (`New-AzRoleAssignment`), which is why you installed the Az module in Exercise 01 Task 00. The first time, run `Connect-AzAccount` and sign in (the sign-in window may open **behind** VS Code — Alt+Tab).
+2. **DMS CIDR range** — select **`172.28.0.0/16`** from the dropdown. The migration service builds its own temporary virtual network on this range and peers it to yours, so choose a range that does **not** overlap your VNet's `10.0.0.0/16`.
+3. **Run the generated script.** The wizard displays an **Az PowerShell** script (`New-AzRoleAssignment`) that grants the migration service's identity the **Network Contributor** role on your VNet so it can create the peering. Copy it and run it **as shown** in a terminal. The first time, run `Connect-AzAccount` and sign in (the sign-in window may open **behind** VS Code — Alt+Tab).
+4. **Add the required inbound firewall rule.** The migration service connects to your source on port **27017** from the DMS CIDR range, so add an explicit inbound rule allowing it (substitute your DMS CIDR and your VM's NSG name if they differ):
 
-> **You also need one firewall rule the wizard does not create.** The migration service connects to your source on port **27017** from the DMS CIDR range, but your VM's network security group does not allow that range by default — the built-in "allow virtual network" rule does **not** cover the peered DMS range. Add an explicit inbound rule (substitute your DMS CIDR if you changed it):
->
-> ```powershell
-> az network nsg rule create --resource-group rg-documentdb-lab --nsg-name vm-docdb-labNSG `
->   --name allow-dms-mongodb --priority 1010 --direction Inbound --access Allow --protocol Tcp `
->   --source-address-prefixes 172.28.0.0/16 --source-port-ranges '*' `
->   --destination-port-ranges 27017 --destination-address-prefixes '*'
-> ```
->
-> Without this rule the job provisions and then fails the data copy at 0% (see **Troubleshooting**). `vm-docdb-labNSG` is your VM's network security group.
+   ```powershell
+   az network nsg rule create --resource-group rg-documentdb-lab --nsg-name vm-docdb-labNSG `
+     --name allow-dms-mongodb --priority 1010 --direction Inbound --access Allow --protocol Tcp `
+     --source-address-prefixes 172.28.0.0/16 --source-port-ranges '*' `
+     --destination-port-ranges 27017 --destination-address-prefixes '*'
+   ```
 
 Once the role assignment and the firewall rule are in place, select **Next**.
 
