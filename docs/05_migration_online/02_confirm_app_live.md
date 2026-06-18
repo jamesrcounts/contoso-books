@@ -9,18 +9,16 @@ parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 
 The whole point of an online migration is that Contoso never goes down — the catalog keeps serving reads and accepting writes while the data is copied and kept in sync. In this task you confirm the app is running against the **local source** and is actively writing, then you leave it running for the rest of the exercise. The writes you make here (and any made during the migration) are exactly what change-stream replication will carry across to DocumentDB.
 
-## Confirm the app still points at the source
+## Confirm the app points at the local source
 
-Open `src/server/.env`. For the online migration the app must target the **local MongoDB container** (the source), not Azure — you will switch it to Azure only at cutover in Task 07. The value should be the local string:
+Open `src/server/.env` and confirm `BOOKSTORE_DB_CONNECTION_STRING` is the **local** string you set at the end of Task 01. For the online migration the app must target the **local MongoDB container** (the source), not Azure — you switch it to Azure only at cutover in Task 07. The value should be:
 
 ```
 BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?replicaSet=rs0&authSource=admin
 PORT=8080
 ```
 
-> **If you ran Exercise 04**, its cutover left this value pointing at the Azure SRV string — change it back to the local string above for now. (If you skipped Exercise 04, it may already be local; just confirm.) Online migration reads from the source and writes to the target on your behalf — the *app* stays pointed at the source until cutover.
-
-Save the file.
+> **Online migration reads from the source and writes to the target on your behalf** — the *app* stays pointed at the source until cutover.
 
 ## Start the application
 
