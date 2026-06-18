@@ -15,9 +15,7 @@ The online job starts with an **initial load** — a bulk copy of the existing d
 2. The status refreshes automatically at frequent intervals.
 3. Select the job row to expand the **collection-wise** view, showing per-collection progress for `books` and `genres`.
 
-> **The copy runs on DMS, not your machine.** Because Azure Database Migration Service performs the data transfer in the cloud, you don't need to keep VS Code or an active connection open for the load to continue — you can close and reopen the dashboard and the status persists. **But the VM and the MongoDB container must stay running the whole time:** DMS connects directly to the container and reads from it throughout the migration (for online, all the way to cutover). Keep the app running too — that is the live workload being migrated.
-
-> **Provisioning comes first — and for online it takes a while.** Because this is a Private job, the migration service spends its first **10–15 minutes (sometimes longer)** in a **Provisioning** phase — standing up its own temporary virtual network, worker, and peering — before any documents move. During that whole window the overall status reads **Provisioning** and the collection counts stay at `0`; that is expected, not a stall. The dashboard also notes that "status updates may be slightly delayed compared to actual data movement," so give the view a moment to refresh before reacting to a brief `0` or a stale row. (If the job instead goes to **Failed during resource provisioning**, see the [Task 03](03_create_online_migration_job.md) troubleshooting.)
+> **Provisioning comes first — and for online it takes a while.** Because this is a Private job, the migration service spends its first **10–15 minutes (sometimes longer)** in a **Provisioning** phase — standing up its own temporary virtual network, worker, and peering — before any documents move. During that whole window the overall status reads **Provisioning** and the collection counts stay at `0`; that is expected, not a stall. The dashboard also notes that "status updates may be slightly delayed compared to actual data movement," so give the view a moment to refresh before reacting to a brief `0` or a stale row.
 
 ## What to watch
 
@@ -59,6 +57,4 @@ The initial load has completed for both `books` and `genres` (both at 100%), the
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `books` count stalls well below ~96,419 | Transient DMS/network hiccup | Online jobs auto-resume after transient errors; give it time. If truly stuck, **Pause** then **Resume** the job. |
-| **Cutover** button never enables | One collection not yet complete | Expand the job row and check the per-collection state — all must report complete. |
-| Target shows more documents than source mid-load | Initial load plus already-replicated changes | Expected during an online job; the count-matching check in Task 06 is what you rely on, performed once the gap is zero. |
+| The job's status goes to **Failed during resource provisioning** | A DMS-side provisioning issue (often transient — there is no Retry button) | Delete the failed job and **recreate** it as in Task 03, making sure the **source connection string** is set explicitly on the wizard's first page. If it fails again with the Network Contributor grant, the `allow-dms-mongodb` NSG rule, and the private endpoint all verified, capture the **Operation ID** from the error and contact Azure support — a provisioning failure with valid infrastructure is a DMS-managed-side issue. |
