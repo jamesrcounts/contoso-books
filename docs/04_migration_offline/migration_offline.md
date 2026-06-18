@@ -16,6 +16,7 @@ The application is still pointed at the **local** source (it has been since Exer
 ## Learning Objectives
 
 - Execute an offline snapshot migration using the Azure DocumentDB Migration Extension for VS Code
+- Configure private connectivity for the migration service — virtual-network integration for the source and the cluster's private endpoint for the target
 - Observe the downtime requirement implicit in the offline approach
 - Monitor the snapshot copy phase to completion
 - Verify document counts and spot-check data fidelity after the migration
@@ -23,12 +24,12 @@ The application is still pointed at the **local** source (it has been since Exer
 
 ## Estimated Duration
 
-25 minutes
+45 minutes (the private-connectivity setup in Task 02 — virtual-network integration and the firewall rule — accounts for much of this)
 
 ## Tasks
 
 - Task 01 — Stop the Contoso application (simulate write freeze)
-- Task 02 — Create an offline migration job in the VS Code extension — source: local MongoDB, target: DocumentDB cluster
+- Task 02 — Create an offline migration job in the VS Code extension over private connectivity — source: local MongoDB (private IP), target: DocumentDB cluster (private endpoint)
 - Task 03 — Monitor the snapshot copy phase and confirm completion
 - Task 04 — Verify document counts match between source and target
 - Task 05 — Spot-check migrated data using `mongosh` against the DocumentDB endpoint

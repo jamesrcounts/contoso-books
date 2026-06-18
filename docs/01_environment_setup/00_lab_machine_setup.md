@@ -71,6 +71,13 @@ $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";"
 code --install-extension ms-azuretools.vscode-documentdb
 code --install-extension ms-azurecosmosdbtools.vscode-mongo-migration
 
+# Az PowerShell — the migration wizard's private-connectivity step (Exercise 04 Task 02)
+# generates an Az PowerShell script (New-AzRoleAssignment); without the module it fails with
+# "not recognized." Az.Resources pulls in Az.Accounts (which provides Connect-AzAccount).
+Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+Install-Module -Name Az.Resources -Scope CurrentUser -Force -AllowClobber
+
 # Configure VS Code: default the integrated terminal to Git Bash so the
 # seed script in Exercise 01 Task 04 and all subsequent commands run from a
 # single, consistent shell. Git Bash is auto-detected by VS Code from the
@@ -119,3 +126,13 @@ All commands should return a version number without errors. Expected versions (l
 | mongosh | 2.8.3 |
 | Docker | 29.4.3 |
 | VS Code | 1.122.0 |
+
+Confirm the Az PowerShell module installed as well:
+
+```powershell
+Get-Module Az.Resources -ListAvailable | Select-Object Name, Version
+```
+
+It should list a version. You do **not** sign in to Az PowerShell now — you run `Connect-AzAccount` later, at migration time (Exercise 04 Task 02), when the wizard's private-connectivity script needs it.
+
+> **Heads-up for later:** Azure sign-in windows (both the VS Code extension's and `Connect-AzAccount`'s) can open **behind** the VS Code window. If a sign-in seems to hang, **Alt+Tab** to find the prompt.
