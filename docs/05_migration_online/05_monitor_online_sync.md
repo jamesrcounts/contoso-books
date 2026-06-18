@@ -69,7 +69,7 @@ Both sides must return the same numbers:
 
 | Collection | Expected |
 |------------|----------|
-| `books` | 96,419 (plus any new books added during the lab — must match source) |
+| `books` | 93,624 (plus any new books added during the lab — must match source) |
 | `genres` | 1 |
 
 > **Use `countDocuments()`, not `count()` or the cached `estimatedDocumentCount()`.** `countDocuments()` performs an actual count and reflects the true current state on each side, which is what a cutover decision requires.
@@ -78,7 +78,7 @@ If the counts differ, the replication gap isn't actually closed — let replicat
 
 ## Success criteria
 
-Both cutover conditions hold: the replication gap is zero (**Replication Changes Played** stable after you stop writing) **and** `countDocuments()` for `books` and `genres` is equal on the source and the target (96,419 / 1) — and you've seen your live writes land on the target. You are clear to cut over, which you do in **Task 06**.
+Both cutover conditions hold: the replication gap is zero (**Replication Changes Played** stable after you stop writing) **and** `countDocuments()` for `books` and `genres` is equal on the source and the target (93,624 / 1) — and you've seen your live writes land on the target. You are clear to cut over, which you do in **Task 06**.
 
 ## Troubleshooting
 

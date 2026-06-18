@@ -13,7 +13,7 @@ A migration is not finished when the data lands — it is finished when you unde
 
 ## The query
 
-The catalog-statistics aggregation scans the full `books` collection (~96,419 documents), grouping by format to produce counts and average ratings — a full-collection `$group` with no supporting index, which is exactly the kind of long-running analytical query that exposes runtime and timeout behavior.
+The catalog-statistics aggregation scans the full `books` collection (~93,624 documents), grouping by format to produce counts and average ratings — a full-collection `$group` with no supporting index, which is exactly the kind of long-running analytical query that exposes runtime and timeout behavior.
 
 Run it in a **query playground** on each connection — the same playground you used in Tasks 05 and 06, once on the local source connection and once on the Azure target. Wrap the work in a single returned object so one playground result carries **both** the elapsed time and the rows: the intermediate `const`s don't render, and the final object literal is the result the playground shows. (The playground also prints its own **Executed in N ms** line above the result.)
 
@@ -77,7 +77,7 @@ Both sides return identical counts per format; `avgRating` agrees to roughly 12 
 | Dimension | What to observe |
 |-----------|-----------------|
 | **Latency** | In this run the managed cluster ran the unindexed `$group` markedly faster than the local container (~270 ms vs ~2.8 s). This is **not a benchmark** — a single-node container on a lab VM is not a fair baseline, and cluster numbers vary with tier, region, and load — but don't assume the managed, networked service is the slow side; here it was not. Focus on the *behavior*, not the absolute figures. |
-| **Full-collection scan** | With no index on `bookformat`, both platforms scan all ~96,419 docs. The cost of an unindexed `$group` grows with collection size — the same query gets slower as the catalog grows. |
+| **Full-collection scan** | With no index on `bookformat`, both platforms scan all ~93,624 docs. The cost of an unindexed `$group` grows with collection size — the same query gets slower as the catalog grows. |
 | **Cursor timeouts** | Aggregation results are streamed via a cursor. Long-running cursors can be closed by the server if idle too long; iterate/drain results promptly rather than holding an open cursor. |
 | **Transaction / operation timeouts** | DocumentDB enforces server-side limits on long-running operations. A heavy aggregation that runs unbounded can hit an operation/transaction time limit and be terminated — something a local single-node instance may tolerate silently. |
 
@@ -138,7 +138,7 @@ The first run right after creating an index may include one-time warm-up, so run
 }
 ```
 
-The counts and averages are unchanged — only the time moved. On this cluster the covering index roughly **halved** the elapsed time (pre-index ~234 ms → post-index ~110 ms across two runs): with the index, the planner serves the `$group` directly from the smaller index entries instead of fetching all ~96,419 full documents. As with the source-vs-target comparison, this is **not a benchmark** — it's one cluster, one tier, a handful of runs — but it shows the mechanism: covering the fields a query touches lets it avoid the full-document scan.
+The counts and averages are unchanged — only the time moved. On this cluster the covering index roughly **halved** the elapsed time (pre-index ~234 ms → post-index ~110 ms across two runs): with the index, the planner serves the `$group` directly from the smaller index entries instead of fetching all ~93,624 full documents. As with the source-vs-target comparison, this is **not a benchmark** — it's one cluster, one tier, a handful of runs — but it shows the mechanism: covering the fields a query touches lets it avoid the full-document scan.
 
 The index persists on the collection. To restore the unindexed baseline, drop it:
 

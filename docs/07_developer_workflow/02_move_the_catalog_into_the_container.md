@@ -22,7 +22,7 @@ mongodump --uri "mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&
 writing bookstore.books to ...\bookstore-dump\bookstore\books.bson
 writing bookstore.genres to ...\bookstore-dump\bookstore\genres.bson
 done dumping bookstore.genres (1 document)
-done dumping bookstore.books (96419 documents)
+done dumping bookstore.books (93624 documents)
 ```
 
 `mongodump` writes one BSON file per collection — a `books.bson` of roughly 130 MB and a small `genres.bson` — under `bookstore-dump\bookstore\`.
@@ -40,9 +40,9 @@ mongorestore --uri "mongodb://bookadmin:bookpass123@10.0.0.5:10260/?tls=true" --
 restoring bookstore.genres from ...\bookstore-dump\bookstore\genres.bson
 restoring bookstore.books from ...\bookstore-dump\bookstore\books.bson
 finished restoring bookstore.genres (1 document, 0 failures)
-finished restoring bookstore.books (96419 documents, 0 failures)
+finished restoring bookstore.books (93624 documents, 0 failures)
 no indexes to restore for collection bookstore.books
-96420 document(s) restored successfully. 0 document(s) failed to restore.
+93625 document(s) restored successfully. 0 document(s) failed to restore.
 ```
 
 `mongorestore` recreates the `bookstore` database and both collections. "No indexes to restore" is expected — Contoso's source defined no secondary indexes beyond the default `_id`.
@@ -57,7 +57,7 @@ mongosh "mongodb://bookadmin:bookpass123@10.0.0.5:10260/?tls=true&tlsAllowInvali
 ```
 
 ```
-books=96419
+books=93624
 genres=1
 ```
 
@@ -65,7 +65,7 @@ genres=1
 
 ## Success criteria
 
-`mongorestore` reports `96420 document(s) restored successfully` with `0` failures, and the container holds `bookstore` with **96,419** books and **1** genres document.
+`mongorestore` reports `93625 document(s) restored successfully` with `0` failures, and the container holds `bookstore` with **93,624** books and **1** genres document.
 
 ## Troubleshooting
 

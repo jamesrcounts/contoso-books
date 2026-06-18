@@ -84,7 +84,7 @@ Choose exactly what to migrate:
 - Expand the **`bookstore`** database.
 - Select the **`books`** and **`genres`** collections.
 
-These are the two collections that hold Contoso's catalog (96,419 books and the single genres document). Select **Next**.
+These are the two collections that hold Contoso's catalog (93,624 books and the single genres document). Select **Next**.
 
 ## Step 6 — Confirm and start
 

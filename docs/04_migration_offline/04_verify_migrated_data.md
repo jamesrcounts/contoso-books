@@ -31,11 +31,11 @@ In each playground, paste this and run it with **`Ctrl+Enter`**. The playground 
 })
 ```
 
-Both sides return **`{ books: 96419, genres: 1 }`**.
+Both sides return **`{ books: 93624, genres: 1 }`**.
 
 | Collection | Source (local) | Target (Azure) |
 |------------|----------------|----------------|
-| `books`    | 96,419         | 96,419         |
+| `books`    | 93,624         | 93,624         |
 | `genres`   | 1              | 1              |
 
 The counts must match exactly. They should, because the source was frozen before the snapshot (Task 01) — an offline copy has no opportunity to drift as long as no writes landed afterward.
@@ -94,7 +94,7 @@ db.getCollection('genres').findOne()
 
 ## Success criteria
 
-- `books` reports **96,419** documents and `genres` reports **1** on both the local source and the Azure target.
+- `books` reports **93,624** documents and `genres` reports **1** on both the local source and the Azure target.
 - A known book retrieved from the target matches the source field-for-field, with nested arrays (`genre`, `reviewcomments`) and numeric types (`rating`, `pages`) preserved.
 - `db.getCollection('genres').findOne()` returns the single document with a populated `genresList` array.
 

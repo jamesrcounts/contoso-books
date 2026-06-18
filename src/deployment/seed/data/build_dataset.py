@@ -37,37 +37,32 @@ csv.field_size_limit(10 * 1024 * 1024)
 _ISBN10_RE = re.compile(r"\d{9}[\dXx]")
 _ISBN13_RE = re.compile(r"\d{13}")
 
-# Content filter: this is Microsoft-branded training content, so the seeded catalog must not
-# contain sexually explicit / pornographic titles. A book is dropped if any of its genres is
-# in EXPLICIT_GENRES, or if its TITLE matches EXPLICIT_TITLE_RE. Descriptions are intentionally
-# NOT scanned (literary/historical works often mention these words without being explicit).
-# Deliberately narrow: broad genres like "Romance", "LGBT", "Adult Fiction", and "Sexuality"
-# are preserved — only explicitly erotic/pornographic material is removed.
-EXPLICIT_GENRES = frozenset(
-    {
-        "erotica",
-        "erotic romance",
-        "erotic horror",
-        "erotic paranormal romance",
-        "erotic historical romance",
-        "gay erotica",
-        "bdsm",
-        "pornography",
-        "sex work",
-    }
-)
-EXPLICIT_TITLE_RE = re.compile(
-    r"\berotic|\bpornograph|\bporn\b|\bbdsm\b|\bxxx\b|sex slave|\bkinky\b", re.IGNORECASE
-)
+# Content filter: this is Microsoft-branded training content, so the seeded catalog is filtered
+# to keep it appropriate for a general professional audience. The rule set lives in
+# content_filter.json — shared with refilter_seed_data.js so the from-CSV rebuild here and the
+# in-repo re-pack stay in sync. A book is dropped if ANY of its genres matches an entry in
+# excludeGenresExact (case-insensitive) or contains any substring in excludeGenresSubstring
+# (e.g. "sex" -> Sexuality, Bisexual, Asexual, …), or if its TITLE matches excludeTitleRegex.
+# Descriptions are intentionally NOT scanned (literary/historical works often mention these
+# words without being explicit).
+_FILTER_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "content_filter.json")
+with open(_FILTER_PATH, encoding="utf-8") as _fh:
+    _FILTER = json.load(_fh)
+EXCLUDE_GENRES_EXACT = frozenset(g.lower() for g in _FILTER["excludeGenresExact"])
+EXCLUDE_GENRES_SUBSTR = tuple(s.lower() for s in _FILTER["excludeGenresSubstring"])
+EXPLICIT_TITLE_RE = re.compile(_FILTER["excludeTitleRegex"], re.IGNORECASE)
 
 
 def is_inappropriate(title, genre_list):
-    """True if a book is sexually explicit / pornographic and should be excluded.
+    """True if a book should be excluded from the seed catalog.
 
-    Matches on an explicit genre tag OR an explicit term in the title (see notes above).
+    Matches on an excluded genre tag (exact OR substring) or an explicit term in the title.
+    See content_filter.json and the README "Content filtering" section for the rule set.
     """
-    if any(g.lower() in EXPLICIT_GENRES for g in genre_list):
-        return True
+    for g in genre_list:
+        gl = g.lower()
+        if gl in EXCLUDE_GENRES_EXACT or any(s in gl for s in EXCLUDE_GENRES_SUBSTR):
+            return True
     return bool(EXPLICIT_TITLE_RE.search(title or ""))
 
 
@@ -148,8 +143,8 @@ def build(csv_path, out_dir):
 
             genre_list = split_genres(row.get("genre"))
 
-            # Drop sexually explicit / pornographic titles (see is_inappropriate). Done before
-            # collecting genres so excluded genres (e.g. "Erotica") don't leak into genres.json.
+            # Drop filtered books (see is_inappropriate). Done before collecting genres so
+            # excluded genres (e.g. "Erotica", "Sexuality") don't leak into genres.json.
             if is_inappropriate(title, genre_list):
                 filtered += 1
                 continue

@@ -20,7 +20,7 @@ Select the job's row to drill into the **collection-wise status** — a per-coll
 The overall status moves through three states:
 
 1. **Provisioning** — the migration service builds its own temporary virtual network and peers it to yours (this is the private connectivity you configured in Task 02). Expect this to take **a few minutes**, during which no documents move and the collection counts stay at `0`. That is normal — it is not stuck.
-2. **Bulk copy in progress** — the snapshot is being copied. Once it reaches this state the actual copy is fast: `genres` (one document) finishes almost instantly and `books` (96,419 documents) completes in well under a minute.
+2. **Bulk copy in progress** — the snapshot is being copied. Once it reaches this state the actual copy is fast: `genres` (one document) finishes almost instantly and `books` (93,624 documents) completes in well under a minute.
 3. **Succeeded** — both collection snapshots are on the target and the job is done.
 
 > **The dashboard lags slightly.** As the page itself notes, "status updates may be slightly delayed compared to actual data movement." A collection can briefly show `0` documents (or, if you resumed the job, a stale row from the previous attempt) while the copy is in fact progressing. Give it a moment and let the view refresh before reacting.
@@ -42,7 +42,7 @@ When the copy finishes, the overall status reads **Succeeded** and the collectio
 Job name: contoso-offline-migration     Mode: Offline     Status: Succeeded
 
   Database    Collection    Status       Documents    %       Duration
-  bookstore   books         Completed    96419        100%    26s
+  bookstore   books         Completed    93624        100%    26s
   bookstore   genres        Completed    1            100%    22s
 ```
 
@@ -51,7 +51,7 @@ The per-collection **Duration** reflects only the copy itself (tens of seconds) 
 ## Success criteria
 
 - The job's overall status reads **Succeeded**.
-- The collection-wise view shows both `books` and `genres` as `Completed`, with `books` reporting 96,419 documents.
+- The collection-wise view shows both `books` and `genres` as `Completed`, with `books` reporting 93,624 documents.
 
 ## Troubleshooting
 

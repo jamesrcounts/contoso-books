@@ -27,11 +27,11 @@ Migration mode: Online                        Target server: contosobooks....glo
 Status:         Bulk copy in progress         Duration:      18m 18s
 
   Database    Collection   Status                     Documents   %      Duration   Time Since Last Change   Replication Changes Played
-  bookstore   books        Initial Load in progress   96419       100%   50s        --                       --
+  bookstore   books        Initial Load in progress   93624       100%   50s        --                       --
   bookstore   genres       Initial Load in progress   1           100%   44s        --                       --
 ```
 
-`books` (96,419 documents) is the bulk of the work but still copies in well under a minute; `genres` (one document) finishes almost instantly. Watch the **Documents** count climb to the source totals and **%** reach 100%. Notice that **Source server** is the VM's private IP (`10.0.0.5`) — DMS reached the container over the private path. The last two columns, **Time Since Last Change** and **Replication Changes Played**, stay `--` during the initial load; they come alive in the replication phase (Task 05).
+`books` (93,624 documents) is the bulk of the work but still copies in well under a minute; `genres` (one document) finishes almost instantly. Watch the **Documents** count climb to the source totals and **%** reach 100%. Notice that **Source server** is the VM's private IP (`10.0.0.5`) — DMS reached the container over the private path. The last two columns, **Time Since Last Change** and **Replication Changes Played**, stay `--` during the initial load; they come alive in the replication phase (Task 05).
 
 ## Keep the application working during the load
 

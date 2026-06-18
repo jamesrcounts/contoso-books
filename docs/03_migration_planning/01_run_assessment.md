@@ -57,7 +57,7 @@ Open the downloaded HTML report. It opens with several summary sections describi
 - **General Information** — the assessment name, host, ID, start/end time, and the **Log Folder Path** (shows `NA` because you left it empty).
 - **Instance Summary** — source version (MongoDB `7.0.x`), license (`community`), and instance type (`mongod`).
 - **RBAC Summary** — the source users and roles (your `bookadmin` / `root`).
-- **Database** and **Collection Summary** — the `bookstore` database with its two collections (`books` ≈ 96,419 docs, `genres` = 1).
+- **Database** and **Collection Summary** — the `bookstore` database with its two collections (`books` ≈ 93,624 docs, `genres` = 1).
 
 The findings are in the **Assessment Summary** table at the end, with columns **Database · Collection · Category · Severity · Message**. For this baseline run there are **no Critical findings** — but the table is not empty. You will see a **Warning** that `$changeStream` is only partially supported, plus several **Informational** notes about things a managed platform handles for you (the replication commands, and the `rolesInfo` / `usersInfo` RBAC commands, that you no longer need to run). None of these block migration. The Database and Collection columns are blank because, with no log path supplied, findings are reported at the instance level rather than per collection.
 

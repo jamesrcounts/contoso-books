@@ -44,7 +44,7 @@ You will be prompted for the cluster administrator password (a `@secure()` param
    BOOKSTORE_SEED_DB_CONNECTION_STRING="mongodb+srv://<user>:<password>@<cluster-name>.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
 
 3. Install dependencies and run the seed script with `npm install && npm run seed`. It may take a few minutes to seed the data into books and genres collections.\
-   Item count of books collection is 96,419 and genres collection has only 1 item. \
+   Item count of books collection is 93,624 and genres collection has only 1 item. \
    Successful run result looks like this:
 
 ```
@@ -55,7 +55,7 @@ Seeding completed on genres Collection 9/30/2021, 10:29:10 AM
 Seeding completed on books Collection 9/30/2021, 10:39:40 AM
 ```
 
-> **Indexing note:** DocumentDB (vCore) indexes only `_id` by default, so the list page's filter and sort queries scan the whole collection until you add indexes. This app's list page filters on `rating`, `bookformat`, and `genre` and sorts on `rating`; against a freshly-seeded cluster those queries perform a full collection scan over 96,419 documents. After seeding, run the following in `mongosh` to make them performant:
+> **Indexing note:** DocumentDB (vCore) indexes only `_id` by default, so the list page's filter and sort queries scan the whole collection until you add indexes. This app's list page filters on `rating`, `bookformat`, and `genre` and sorts on `rating`; against a freshly-seeded cluster those queries perform a full collection scan over 93,624 documents. After seeding, run the following in `mongosh` to make them performant:
 >
 > ```js
 > use bookstore

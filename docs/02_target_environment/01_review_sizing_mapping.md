@@ -31,7 +31,7 @@ Burstable tiers accumulate CPU credits and are economical when load is bursty, b
 
 Contoso's catalog is the seed dataset you will migrate in Exercise 04:
 
-- **~96,419 documents** in the `books` collection (plus a 1-document `genres` collection).
+- **~93,624 documents** in the `books` collection (plus a 1-document `genres` collection).
 - **Indexes** beyond the default `_id`: the app filters on `rating`, `bookformat`, and `genre` and sorts on `rating`, so secondary indexes on those fields are added after the load. Index size counts toward both storage *and* the working set you want resident in RAM.
 - **Working set vs RAM** — the list page is read-heavy with paged scans and sorts. Keeping the hot documents and their indexes in memory avoids disk reads on every page. The tier's RAM should comfortably hold that working set.
 - **vCores for concurrency** — multiple users (and the app's infinite-scroll paging) issue overlapping queries. Dedicated vCores keep latency stable under that concurrency rather than throttling.
