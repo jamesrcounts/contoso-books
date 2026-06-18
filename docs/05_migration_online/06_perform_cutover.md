@@ -47,10 +47,31 @@ cd src
 npm run develop
 ```
 
-Wait for the readiness lines:
+Wait for the readiness lines at the end of the output:
 
 ```
+> bookstore@1.0.0 develop
+> concurrently "cd server && npm run watch" "cd client && npm run dev"
+
+[0]
+[0] > server@1.0.0 watch
+[0] > nodemon server.js
+[0]
+[1]
+[1] > bookstore-front-end@0.1.0 dev
+[1] > vite
+[1]
+[0] [nodemon] 3.1.14
+[0] [nodemon] to restart at any time, enter `rs`
+[0] [nodemon] watching path(s): *.*
+[0] [nodemon] watching extensions: js,mjs,cjs,json
+[0] [nodemon] starting `node server.js`
+[1]
+[1]   VITE v8.0.16  ready in 482 ms
+[1]
 [1]   ➜  Local:   http://localhost:3000/
+[1]   ➜  Network: use --host to expose
+[0] Server is running on port 8080
 [0] DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com
 ```
 
@@ -74,6 +95,4 @@ Writes to the source were stopped, the migration job was finalized with **Cutove
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| App fails with a timeout on restart | Client IP not in the `lab-client` firewall rule | Confirm `(Invoke-RestMethod https://api.ipify.org)` matches the `lab-client` rule (Networking → Firewall rules), per Exercise 02. |
-| `invalid key` / authentication error | Wrong username or password in the SRV string | Confirm `bookadmin` and the password you set in Exercise 02 Task 02; reset the password on the cluster if unsure. |
 | App still shows old/local data | `.env` still points at the local source string, or app not restarted | Confirm the value is the `cosmos.azure.com` SRV string and that you restarted `npm run develop`. |
