@@ -7,73 +7,43 @@ parent: "Exercise 04 - Migration Execution — Offline (Snapshot)"
 
 # Task 04 — Verify Document Counts Match Between Source and Target
 
-The dashboard says the job completed — now prove it independently. The first validation gate is the simplest: the document count of each collection on the target must equal the count on the source. Because writes were frozen before the snapshot (Task 01), an offline copy should match exactly, with no drift. In this task you count both collections on each side with `mongosh` and compare.
+The dashboard says the job completed — now prove it independently. The first validation gate is the simplest: the document count of each collection on the target must equal the count on the source. Because writes were frozen before the snapshot (Task 01), an offline copy should match exactly, with no drift. In this task you read both collections' counts on each side directly from the **DocumentDB extension** and compare — no shell required.
+
+The collection node in the tree shows only a **rounded** count (for example `94.2k`), which isn't precise enough to prove an exact match. For the real number, run a count in a **query playground** — the extension's mongosh-flavored scratchpad.
 
 ## Count on the source (local)
 
-Open a terminal and connect `mongosh` to the local container, authenticating as `bookadmin` (the same connection you used in Exercise 01 Task 04):
+In VS Code, open the **DocumentDB** extension from the Activity Bar. In the **DocumentDB Connections** pane:
 
-```bash
-mongosh -u bookadmin -p bookpass123 --authenticationDatabase admin
-```
+1. Expand your **local source connection** (the `localhost` connection from Exercise 01 Task 02).
+2. Right-click the **`bookstore`** database and open a **query playground** for it. The playground header confirms the context — `bookadmin@localhost:27017 / bookstore`.
+3. Paste this and run it with **`Ctrl+Enter`**. The playground shows only the last result, so this returns both counts at once:
 
-Switch to the database and count each collection (run each line on its own — don't paste them together):
+   ```javascript
+   ({
+     books:  db.getCollection('books').countDocuments(),
+     genres: db.getCollection('genres').countDocuments()
+   })
+   ```
 
-```javascript
-use bookstore
-```
-
-```javascript
-db.books.countDocuments()
-```
-
-```javascript
-db.genres.countDocuments()
-```
-
-### Example output
-
-```
-bookstore> db.books.countDocuments()
-96419
-bookstore> db.genres.countDocuments()
-1
-```
-
-Type `exit` to leave this shell.
+The source returns **`{ books: 96419, genres: 1 }`**. Note both numbers.
 
 ## Count on the target (Azure)
 
-Now connect `mongosh` to the **Azure DocumentDB** cluster using the SRV connection string — the same value in `BOOKSTORE_DB_CONNECTION_STRING`, with your real password substituted:
+Now do the same against the **Azure DocumentDB** cluster, using the connection you created in Exercise 02 Task 03 (it already stores your credentials, and it reaches the cluster over its private endpoint):
 
-```bash
-mongosh "mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
-```
+1. In the **DocumentDB Connections** pane, expand your **Azure cluster connection**. The **`bookstore`** database now exists on the target because the migration created it during the copy.
+2. Right-click **`bookstore`** and open a **query playground** for it. The header reads `bookadmin@<your-cluster>.global.mongocluster.cosmos.azure.com / bookstore`.
+3. Run the identical query with **`Ctrl+Enter`**:
 
-> **Handle this string like a secret.** It carries your administrator password in clear text. Quote the whole string, and don't leave it in shell history you intend to share.
+   ```javascript
+   ({
+     books:  db.getCollection('books').countDocuments(),
+     genres: db.getCollection('genres').countDocuments()
+   })
+   ```
 
-Run the same commands against the target:
-
-```javascript
-use bookstore
-```
-
-```javascript
-db.books.countDocuments()
-```
-
-```javascript
-db.genres.countDocuments()
-```
-
-### Example output
-
-```
-bookstore> db.books.countDocuments()
-96419
-bookstore> db.genres.countDocuments()
-1
-```
+The target returns the same **`{ books: 96419, genres: 1 }`**.
 
 ## Compare
 
@@ -93,6 +63,5 @@ The counts must match exactly. They should, because the source was frozen before
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| Target count is **lower** than source | The job hasn't actually finished | Return to Task 03 and confirm the job status is **Completed** for both collections before re-counting. |
-| Target count is **higher**, or off by a few | Writes hit the source after the snapshot started | The freeze in Task 01 was incomplete (something kept writing). Stop all writers, drop and recreate the target collections, and re-run the migration. |
-| Counts are zero on the target | Connected to the wrong database | Run `use bookstore` explicitly — the migration creates the `bookstore` database; the default shell database is not it. |
+| Target count is **lower** than source | The job hasn't actually finished | Return to Task 03 and confirm the job status is **Succeeded** (both collections `Completed`) before re-counting. |
+| `bookstore` or its collections don't appear under the target connection | The tree was expanded before the copy finished, or you're looking at the wrong connection | Right-click the **Azure cluster connection** and **Refresh**, then expand **`bookstore`** — the migration creates that database, so it appears only after the copy completes. |
