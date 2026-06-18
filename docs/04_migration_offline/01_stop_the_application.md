@@ -13,7 +13,7 @@ An offline migration takes a **point-in-time snapshot** of the source and bulk-c
 
 The offline path has no continuous synchronization — it is a one-shot copy, not a replicating stream. Review the comparison in [Exercise 03 — Migration Planning](../03_migration_planning/migration_planning.md): the offline mode requires downtime because the cutover trigger is simply "copy complete," with no mechanism to reconcile changes that land mid-copy. Online migration (Exercise 05) solves this with a change stream, but at the cost of more setup. For Contoso's scheduled window, offline is the simpler, predictable choice.
 
-> **The source of truth is still the local container.** The app has been running against the **local MongoDB container** since Exercise 01. You assembled the Azure connection string in Exercise 02 Task 03 but deliberately left the app pointed at local, so Contoso's catalog still lives in the container — that is what you will migrate. Stopping the app here freezes writes against that source; you repoint the app to Azure at the **cutover in Task 06**.
+> **The source of truth is still the local container.** The app has been running against the **local MongoDB container** since Exercise 01. You assembled the Azure connection string in Exercise 02 Task 03 but deliberately left the app pointed at local, so Contoso's catalog still lives in the container — that is what you will migrate. Stopping the app here freezes writes against that source; you repoint the app to Azure at the **cutover in Task 05**.
 
 ## Stop the app
 

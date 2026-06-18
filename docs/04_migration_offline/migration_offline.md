@@ -31,6 +31,5 @@ The application is still pointed at the **local** source (it has been since Exer
 - Task 01 — Stop the Contoso application (simulate write freeze)
 - Task 02 — Create an offline migration job in the VS Code extension over private connectivity — source: local MongoDB (private IP), target: DocumentDB cluster (private endpoint)
 - Task 03 — Monitor the snapshot copy phase and confirm completion
-- Task 04 — Verify document counts match between source and target
-- Task 05 — Spot-check migrated data using `mongosh` against the DocumentDB endpoint
-- Task 06 — Perform the cutover: repoint the app's `.env` to the Azure connection string and restart, confirming it serves from DocumentDB
+- Task 04 — Verify the migrated data (document counts and a field-level spot-check) with the DocumentDB extension
+- Task 05 — Perform the cutover: repoint the app's `.env` to the Azure connection string and restart, confirming it serves from DocumentDB

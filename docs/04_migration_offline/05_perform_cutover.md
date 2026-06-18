@@ -1,11 +1,11 @@
 ---
-title: "Exercise 04 - Task 06 — Perform the Cutover"
+title: "Exercise 04 - Task 05 — Perform the Cutover"
 layout: default
-nav_order: 6
+nav_order: 5
 parent: "Exercise 04 - Migration Execution — Offline (Snapshot)"
 ---
 
-# Task 06 — Perform the Cutover
+# Task 05 — Perform the Cutover
 
 The snapshot is copied and verified, and the application has been stopped since Task 01 — so the source is frozen and the target holds a faithful copy. All that remains is to point Contoso at DocumentDB and bring it back up. For an offline migration the cutover is short: there is no replication to finalize (the one-shot copy already completed in Task 03) and writes are already stopped, so you only repoint the connection string and restart.
 
