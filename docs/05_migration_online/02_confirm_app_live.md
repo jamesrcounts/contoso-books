@@ -18,7 +18,7 @@ BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@localhost:27017/?
 PORT=8080
 ```
 
-> **If you completed Exercise 02 Task 03**, this value was changed to the Azure SRV string. Change it back to the local string above for now. Online migration reads from the source and writes to the target on your behalf — the *app* stays pointed at the source until cutover. (If you ran Exercise 04 offline, you likely already reverted this; just confirm.)
+> **If you ran Exercise 04**, its cutover left this value pointing at the Azure SRV string — change it back to the local string above for now. (If you skipped Exercise 04, it may already be local; just confirm.) Online migration reads from the source and writes to the target on your behalf — the *app* stays pointed at the source until cutover.
 
 Save the file.
 
