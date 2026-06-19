@@ -12,9 +12,9 @@ Before changing anything, establish the baseline: what the cluster looks like to
 ## Open the cluster page
 
 1. Sign in to the [Azure portal](https://portal.azure.com).
-2. Open the **`rg-documentdb-lab`** resource group and select your **mongoClusters** resource.
+2. Open the **`rg-documentdb-lab`** resource group and select your **Azure DocumentDB** cluster (resource type `Microsoft.DocumentDB/mongoClusters`).
 
-The **Overview** shows the cluster as deployed: **Status** Ready, **server version** 7.0, **M40** tier, **128 GB** storage, a **single shard**, and **high availability Disabled**.
+The **Overview** shows the cluster as deployed: **Status** Ready, **MongoDB version** 7.0, **M40** tier, **128 GiB** disk, a **single shard**, and **High availability** No.
 
 ## The current posture — and the gaps
 
@@ -24,7 +24,7 @@ The cluster was provisioned to be reachable for the migration and the earlier ex
 |------|-------|-------------------|----------|
 | Network | `publicNetworkAccess` **Enabled**; one firewall rule (`lab-client` = your IP) | NS-2 | Task 02 |
 | Identity | **Native** username/password (`bookadmin`) only; no Entra ID | IM-1 / IM-3 / PA-7 | Task 03 |
-| Data protection | TLS enforced; **platform-managed** encryption at rest | DP-3 / DP-4 / DP-5 | Task 04 |
+| Data protection | TLS enforced; **service-managed** encryption at rest | DP-3 / DP-4 / DP-5 | Task 04 |
 | Logging | **No diagnostic settings** configured | LT-1 / LT-3 / LT-4 | Task 05 |
 | Resilience / governance | Automatic backups on; **HA Disabled**; no policy guardrails | BR-1/2 / PV-2 | Task 06 |
 
@@ -36,8 +36,6 @@ Locate these blades — you return to them in the following tasks:
 - **Settings → Authentication** — Microsoft Entra ID and native-auth modes (Task 03).
 - **Settings → Data encryption** — service-managed vs. customer-managed keys (Task 04).
 - **Monitoring → Diagnostic settings** and **Metrics** (Task 05).
-
-> **Posture tooling note.** Microsoft Defender for Cloud has a plan for Azure Cosmos DB, but it covers the **request-unit (NoSQL) accounts, not the vCore Mongo cluster** — so for this cluster, posture is assessed against the **[Azure Security Baseline for Azure Cosmos DB](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-cosmos-db-security-baseline)** and SFI directly, and detection is built on diagnostic logs (Task 05) rather than a Defender plan.
 
 ## SFI framing
 
