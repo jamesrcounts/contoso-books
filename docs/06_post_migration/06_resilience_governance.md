@@ -16,10 +16,12 @@ Hardening isn't done until the cluster can survive a bad day and the posture you
 vCore backs up **automatically** — there is nothing to enable. Confirm the recovery story:
 
 - **Retention** is fixed at **35 days** for standard tiers (backups are geo-redundant); it is not customer-configurable, and longer retention needs a support request.
-- **Point-in-time restore (PITR)** recovers to any moment in the window via the cluster's **Restore** action, which provisions a new cluster from the backup.
+- **Point-in-time restore (PITR)** recovers to any moment in the window via the cluster's **Restore** action, which provisions a *new* cluster from the backup — making it one of the routes to move data onto a **customer-managed key** (Task 04): choose CMK while the restored cluster is created.
 - **Test it.** A backup you've never restored is a hope, not a plan. Periodically restore to a throwaway cluster and validate the data and app connectivity.
 
-For production resilience, also revisit **high availability** — the lab deploys `highAvailability.targetMode: 'Disabled'`; production would choose `SameZone` or `ZoneRedundantPreferred` for a hot standby.
+## High availability
+
+For production resilience, revisit **high availability** — Contoso's POC deploys `highAvailability.targetMode: 'Disabled'`; production would choose `SameZone` or `ZoneRedundantPreferred` for a hot standby. Note that a **restored cluster always comes up with HA disabled**, so re-enable it on the new cluster after a PITR.
 
 ## Governance — enforce the posture
 
@@ -31,9 +33,7 @@ Manual hardening drifts. Use **Azure Policy** to keep it in place:
 
 ## Secure by default — the hardened template
 
-The cleanest control is to deploy hardened from the start. A production `mongoClusters` template would set `publicNetworkAccess: 'Disabled'`, Entra-only `authConfig`, the CMK `encryption` block, a zone-redundant `highAvailability` mode, and ship a `Microsoft.Insights/diagnosticSettings` resource alongside the cluster.
-
-> **Why the lab template stays open.** `src/deployment/main.bicep` intentionally provisions the cluster with public access and native auth so Exercises 02–05 (provisioning, migration, cutover) can reach it from outside the VNet. The hardened settings above are what you'd promote into that template for a real deployment — the point of this exercise is to know the difference.
+The cleanest control is to deploy hardened from the start. Contoso's POC cluster was provisioned open; its **production** template would bake the hardened settings in — `publicNetworkAccess: 'Disabled'`, Entra-only `authConfig`, the CMK `encryption` block, a zone-redundant `highAvailability` mode, and a `Microsoft.Insights/diagnosticSettings` resource shipped alongside the cluster — so a cluster is never briefly unhardened during provisioning.
 
 ## External resources
 
@@ -46,4 +46,4 @@ You can confirm automatic backups and describe PITR and restore-testing, name th
 
 ---
 
-This completes Exercise 06. You hardened the DocumentDB cluster across Azure DocumentDB's security areas — network isolation, identity, data protection, logging and detection, and resilience and governance — and aligned it to the Secure Future Initiative's secure-by-design, secure-by-default, and secure-operations principles. In **Exercise 07** you return to the developer workflow against the cluster.
+This completes Exercise 06. You hardened and reviewed the DocumentDB cluster across Azure DocumentDB's security areas — network isolation, identity, data protection, logging and detection, and resilience and governance — and aligned it to the Secure Future Initiative's secure-by-design, secure-by-default, and secure-operations principles. In **Exercise 07** you return to the developer workflow against the cluster.
