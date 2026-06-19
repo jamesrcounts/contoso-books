@@ -1,11 +1,11 @@
 ---
-title: "Exercise 06 - Task 01 — Browse the Migrated Data with the DocumentDB Extension"
+title: "Exercise 07 - Task 04 — Browse the Migrated Data with the DocumentDB Extension"
 layout: default
-nav_order: 1
-parent: "Exercise 06 - Post-Migration — DocumentDB VS Code Extension & Azure Portal"
+nav_order: 4
+parent: "Exercise 07 - Developer Workflow — Local Container, Driver Compatibility, Environment Targeting"
 ---
 
-# Task 01 — Browse the Migrated Data with the DocumentDB Extension
+# Task 04 — Browse the Migrated Data with the DocumentDB Extension
 
 Now that Contoso's catalog lives in Azure DocumentDB, explore it with the **Azure DocumentDB VS Code extension**. Everything here is standard MongoDB — the extension talks the MongoDB wire protocol to DocumentDB, so browsing and querying work exactly as they would against any MongoDB server.
 
@@ -65,4 +65,4 @@ This filters on the numeric `rating`, matches `History` inside the `genre` array
 
 You can browse the `bookstore` database, the `books` and `genres` collections show the expected document counts (~96,419 and 1), and the sample query returns History titles sorted by rating — the migrated catalog is present and queryable from the extension.
 
-Continue to **Task 02** to switch to the Azure portal and tour the cluster's operational pages.
+Continue to **Task 05** to inspect and manage the catalog's indexes.

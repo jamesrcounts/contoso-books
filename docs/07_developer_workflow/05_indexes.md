@@ -1,11 +1,11 @@
 ---
-title: "Exercise 06 - Task 03 — Inspect and Manage Indexes (Including a TTL Index)"
+title: "Exercise 07 - Task 05 — Inspect and Manage Indexes (Including a TTL Index)"
 layout: default
-nav_order: 3
-parent: "Exercise 06 - Post-Migration — DocumentDB VS Code Extension & Azure Portal"
+nav_order: 5
+parent: "Exercise 07 - Developer Workflow — Local Container, Driver Compatibility, Environment Targeting"
 ---
 
-# Task 03 — Inspect and Manage Indexes (Including a TTL Index)
+# Task 05 — Inspect and Manage Indexes (Including a TTL Index)
 
 Indexing on DocumentDB is **plain MongoDB**: you create indexes with `createIndex`, TTL works through `expireAfterSeconds`, and there is **no indexing policy to manage** the way RU-based Cosmos DB for MongoDB requires. You will inspect the current indexes, add the secondary indexes Contoso's read-heavy catalog needs, and create a TTL index as a demonstration.
 
@@ -31,7 +31,7 @@ db.getCollection('books').createIndex({ bookformat: 1 })
 db.getCollection('books').createIndex({ genre: 1 })
 ```
 
-The `rating` index is **descending** (`-1`) to match the highest-rated-first sort. The `genre` index is a **multikey** index — MongoDB indexes each element of the `genre` array automatically, which is what makes the `$in: ["History"]` filter from Task 01 efficient. Each `createIndex` returns the new index's name (for example, `rating_-1`).
+The `rating` index is **descending** (`-1`) to match the highest-rated-first sort. The `genre` index is a **multikey** index — MongoDB indexes each element of the `genre` array automatically, which is what makes the `$in: ["History"]` genre filter from Task 04 efficient. Each `createIndex` returns the new index's name (for example, `rating_-1`).
 
 ## Step 3 — Create a TTL index (demonstration)
 
@@ -70,4 +70,4 @@ In the extension, refresh the **Indexes** node under each collection to see the 
 
 `db.getCollection('books').getIndexes()` returns the `_id_` index plus the three secondary indexes (`rating_-1`, `bookformat_1`, `genre_1`), and `db.getCollection('book_view_events').getIndexes()` shows a TTL index with `expireAfterSeconds: 3600` — all created with standard MongoDB commands, no indexing policy involved.
 
-Continue to **Task 04** to review the cluster's operational metrics after the migration.
+Continue to **Task 06** to review the connection-string-per-environment pattern.

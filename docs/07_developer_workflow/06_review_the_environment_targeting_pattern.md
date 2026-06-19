@@ -1,11 +1,11 @@
 ---
-title: "Exercise 07 - Task 04 — Review the Connection-String-Per-Environment Pattern"
+title: "Exercise 07 - Task 06 — Review the Connection-String-Per-Environment Pattern"
 layout: default
-nav_order: 4
+nav_order: 6
 parent: "Exercise 07 - Developer Workflow — Local Container, Driver Compatibility, Environment Targeting"
 ---
 
-# Task 04 — Review the Connection-String-Per-Environment Pattern
+# Task 06 — Review the Connection-String-Per-Environment Pattern
 
 You have now run the very same application against a local MongoDB container and against Azure DocumentDB, swapping nothing but one environment variable, and proven the data on both sides is identical. This final task steps back from the keyboard to name the pattern you exercised — because it is the recommended developer workflow for the whole team going forward, not just a one-time migration trick.
 
@@ -33,6 +33,7 @@ Developers keep their fast, offline, disposable local loop — the MongoDB conta
 - Pointed the unchanged app at the local MongoDB container and confirmed identical behavior (Task 01).
 - Pointed the unchanged app at Azure DocumentDB and confirmed identical behavior — the driver-compatibility demo (Task 02).
 - Validated, by document counts and content checksums, that the local source and Azure target hold exactly the same data (Task 03).
+- Browsed the migrated catalog and managed its indexes — including a TTL index — directly with the DocumentDB VS Code extension (Tasks 04–05).
 - Named the connection-string-per-environment pattern as Contoso's standard developer workflow (this task).
 
 This completes Exercise 07. The migration is done, the team's local workflow is unchanged, and the path from the local host to production is a single connection string. In **Exercise 08** you will clean up the Azure resources provisioned during the lab.

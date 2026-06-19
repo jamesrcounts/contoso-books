@@ -27,4 +27,6 @@ The migration is done, but Contoso's developers still need to be productive. In 
 - Task 01 — Point the app back at the local MongoDB container by swapping the `.env` value — confirm identical behavior
 - Task 02 — Point it again at DocumentDB — confirm identical behavior (driver compatibility demo)
 - Task 03 — Execute the validation script to compare document counts and checksums across collections
-- Task 04 — Review the connection-string-per-environment pattern as the recommended developer workflow
+- Task 04 — Browse the migrated data and run a query with the DocumentDB VS Code extension
+- Task 05 — Inspect and manage indexes on the migrated collections, including a TTL index
+- Task 06 — Review the connection-string-per-environment pattern as the recommended developer workflow
