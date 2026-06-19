@@ -1,32 +1,34 @@
 ---
-title: "Exercise 07 - Developer Workflow — Local Container, Driver Compatibility, Environment Targeting"
+title: "Exercise 07 - Developer Workflow — A Local DocumentDB Development Loop"
 layout: default
 nav_order: 8
 has_children: true
 ---
 
-# Exercise 07 - Developer Workflow — Local Container, Driver Compatibility, Environment Targeting
+# Exercise 07 - Developer Workflow — A Local DocumentDB Development Loop
 
 ## Scenario Overview
 
-The migration is done, but Contoso's developers still need to be productive. In this exercise you will demonstrate that the local MongoDB container workflow is unchanged — developers keep using familiar tools and drivers, and only the connection string differs between local and Azure environments.
+Contoso's catalog now runs on Azure DocumentDB, but the development team still writes and tests code against a local **MongoDB** container. That is a consistency gap: MongoDB supports features DocumentDB does not, so a developer can write code that passes locally and only fails once it reaches Azure. Exercise 03 hit exactly this — a server-side-JavaScript `$function` aggregation that DocumentDB rejects had to be rewritten before the migration could proceed.
+
+In this exercise you close the gap by moving local development onto a **local DocumentDB container** — the same open-source engine that backs the Azure service, run in Docker. With both ends speaking DocumentDB, the only thing that differs between a developer's machine and production is the connection string, and an unsupported feature now fails fast — locally — instead of in Azure.
 
 ## Learning Objectives
 
-- Confirm that the same application code runs unchanged against either MongoDB or DocumentDB by switching the connection string
-- Validate data integrity between source and target
-- Understand the compatibility story: MongoDB drivers work against DocumentDB in production
-- Apply the environment-targeting pattern (local → MongoDB container, upper environments → DocumentDB) as the standard developer workflow
+- Run the open-source DocumentDB engine locally in a container
+- Move Contoso's catalog from the MongoDB container into the DocumentDB container with native MongoDB tools
+- Point the unchanged application at the local container and confirm identical behavior
+- Validate that the moved data is identical to the source
+- Switch the app between the local container and Azure DocumentDB with a single connection-string change
 
 ## Estimated Duration
 
-25 minutes
+20 minutes
 
 ## Tasks
 
-- Task 01 — Point the app back at the local MongoDB container by swapping the `.env` value — confirm identical behavior
-- Task 02 — Point it again at DocumentDB — confirm identical behavior (driver compatibility demo)
-- Task 03 — Execute the validation script to compare document counts and checksums across collections
-- Task 04 — Browse the migrated data and run a query with the DocumentDB VS Code extension
-- Task 05 — Inspect and manage indexes on the migrated collections, including a TTL index
-- Task 06 — Review the connection-string-per-environment pattern as the recommended developer workflow
+- Task 01 — Run the local DocumentDB container and connect to it with `mongosh`
+- Task 02 — Move the `bookstore` catalog from the MongoDB container into the DocumentDB container with `mongodump`/`mongorestore`
+- Task 03 — Validate that the moved data matches the source, by count and content checksum
+- Task 04 — Point the app at the local DocumentDB container and confirm identical behavior
+- Task 05 — Switch between the local container and Azure DocumentDB by changing only the connection string

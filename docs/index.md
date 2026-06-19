@@ -19,7 +19,7 @@ Your job is to plan and execute that migration without disrupting the developmen
 - Used Azure Migrate to discover and assess the source MongoDB instance
 - Executed a live migration from MongoDB to Azure DocumentDB
 - Validated that the application connects and functions correctly against DocumentDB
-- Confirmed that developers can keep using MongoDB tooling locally while the application runs against DocumentDB in Azure
+- Moved local development onto a local DocumentDB container, so developers run the same engine locally as in production
 
 ## Prerequisites
 
@@ -27,11 +27,12 @@ Your job is to plan and execute that migration without disrupting the developmen
 |-------------|---------|
 | Azure subscription | Contributor access — provided for this lab |
 | Azure CLI | v2.60 or later — [install guide](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) |
-| Docker Desktop | Required for local MongoDB container |
+| Docker Desktop | Required for the local MongoDB and DocumentDB containers |
 | VS Code | With MongoDB extension and Azure extensions |
 | Node.js (or Python) | TBD — matches the client app stack |
 | Git | Any recent version |
 | MongoDB Shell (`mongosh`) | v2.x — [install guide](https://www.mongodb.com/docs/mongodb-shell/install/) |
+| MongoDB Database Tools | `mongodump` / `mongorestore` — installed via `winget` in Exercise 07 |
 
 > **Azure costs:** All Azure resources in this lab are provisioned in the provided subscription. No personal Azure charges will be incurred. Clean up resources using the instructions at the end of the lab.
 
@@ -45,5 +46,5 @@ Your job is to plan and execute that migration without disrupting the developmen
 | 04 | [Migration Execution — Offline (Snapshot)](04_migration_offline/migration_offline.md) | ~20 min |
 | 05 | [Migration Execution — Online (Change Stream)](05_migration_online/migration_online.md) | ~25 min |
 | 06 | [Post-Migration — DocumentDB VS Code Extension & Azure Portal](06_post_migration/post_migration.md) | ~30 min |
-| 07 | [Developer Workflow — Local Container, Driver Compatibility, Environment Targeting](07_developer_workflow/developer_workflow.md) | ~25 min |
+| 07 | [Developer Workflow — A Local DocumentDB Development Loop](07_developer_workflow/developer_workflow.md) | ~20 min |
 | 08 | [Cleanup](08_cleanup/cleanup.md) | ~10 min |

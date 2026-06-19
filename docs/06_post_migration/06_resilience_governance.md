@@ -46,4 +46,4 @@ You can confirm automatic backups and describe PITR and restore-testing, name th
 
 ---
 
-This completes Exercise 06. You hardened and reviewed the DocumentDB cluster across Azure DocumentDB's security areas — network isolation, identity, data protection, logging and detection, and resilience and governance — and aligned it to the Secure Future Initiative's secure-by-design, secure-by-default, and secure-operations principles. In **Exercise 07** you return to the developer workflow against the cluster.
+This completes Exercise 06. You hardened and reviewed the DocumentDB cluster across Azure DocumentDB's security areas — network isolation, identity, data protection, logging and detection, and resilience and governance — and aligned it to the Secure Future Initiative's secure-by-design, secure-by-default, and secure-operations principles. In **Exercise 07** you bring the development loop full circle, moving local development onto a DocumentDB container so the team's local stack matches production.

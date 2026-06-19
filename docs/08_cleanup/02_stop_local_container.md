@@ -1,24 +1,24 @@
 ---
-title: "Exercise 08 - Task 02 — Stop and Remove the Local MongoDB Container"
+title: "Exercise 08 - Task 02 — Stop and Remove the Local Containers"
 layout: default
 nav_order: 2
 parent: "Exercise 08 - Cleanup"
 ---
 
-# Task 02 — Stop and Remove the Local MongoDB Container
+# Task 02 — Stop and Remove the Local Containers
 
-The local MongoDB container `mongodb` and its `mongo-keyfile` named volume (both created in Exercise 01) were only needed as the migration **source**. Now that the migration is complete, remove them to reclaim local resources.
+Two local containers remain: the MongoDB container `mongodb` (with its `mongo-keyfile` volume) from Exercise 01, and the DocumentDB container `documentdb` from Exercise 07. Neither is needed once you are done developing — remove them to reclaim local resources.
 
 Run all commands in **PowerShell**.
 
-## Stop and remove the container
+## Stop and remove the containers
 
 ```powershell
-docker stop mongodb
-docker rm mongodb
+docker stop mongodb documentdb
+docker rm mongodb documentdb
 ```
 
-`docker stop` halts the running container; `docker rm` deletes it. If the container is already stopped, the `stop` command is harmless. You can also do both at once with `docker rm -f mongodb`.
+`docker stop` halts the running containers; `docker rm` deletes them. If a container is already stopped, the `stop` command is harmless. You can also force-remove a running container with `docker rm -f <name>`.
 
 ## Remove the named volume
 
@@ -30,15 +30,16 @@ docker volume rm mongo-keyfile
 
 > **Note:** A volume cannot be removed while a container is still using it. If `docker volume rm` reports the volume is in use, confirm the `mongodb` container was removed in the previous step, then try again.
 
-## (Optional) reclaim the image
+## (Optional) reclaim the images
 
-If you no longer need the MongoDB image locally, remove it to free disk space:
+If you no longer need the images locally, remove them to free disk space:
 
 ```powershell
 docker rmi mongo:7.0
+docker rmi ghcr.io/documentdb/documentdb/documentdb-local:latest
 ```
 
-This is optional — leave the image in place if you expect to run MongoDB containers again soon.
+This is optional — leave the images in place if you expect to run the containers again soon.
 
 ## Success criteria
 
@@ -49,6 +50,6 @@ docker ps -a
 docker volume ls
 ```
 
-`docker ps -a` shows no `mongodb` container, and `docker volume ls` shows no `mongo-keyfile` volume.
+`docker ps -a` shows neither the `mongodb` nor the `documentdb` container, and `docker volume ls` shows no `mongo-keyfile` volume.
 
 With the local container removed, continue to **Task 03** to confirm the Azure resource group is gone.
