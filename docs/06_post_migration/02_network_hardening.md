@@ -2,12 +2,12 @@
 title: "Exercise 06 - Task 02 — Network Hardening"
 layout: default
 nav_order: 2
-parent: "Exercise 06 - Post-Migration Hardening — Azure Security Baseline & SFI"
+parent: "Exercise 06 - Post-Migration Hardening — Azure DocumentDB Security Guidance & SFI"
 ---
 
 # Task 02 — Network Hardening
 
-**Benchmark: NS-2 (secure cloud services with network controls). SFI: protect networks.**
+**Azure DocumentDB security — network security. SFI: protect networks.**
 
 The cluster currently accepts connections over its public endpoint, gated only by a firewall rule. Production should expose no public surface at all — reach the cluster exclusively over the private endpoint that is already deployed in the lab VNet.
 
@@ -70,7 +70,7 @@ The DNS chain shows the path is private; running the workload shows it still fun
 ## External resources
 
 - [Configure Azure Private Link for an Azure Cosmos DB account](https://learn.microsoft.com/azure/cosmos-db/how-to-configure-private-endpoints)
-- [Azure Security Baseline for Azure Cosmos DB — NS-2](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-cosmos-db-security-baseline)
+- [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
 
 ## Success criteria
 

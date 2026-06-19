@@ -2,7 +2,7 @@
 title: "Exercise 06 - Task 01 — Review the Cluster's Security Posture"
 layout: default
 nav_order: 1
-parent: "Exercise 06 - Post-Migration Hardening — Azure Security Baseline & SFI"
+parent: "Exercise 06 - Post-Migration Hardening — Azure DocumentDB Security Guidance & SFI"
 ---
 
 # Task 01 — Review the Cluster's Security Posture
@@ -18,15 +18,15 @@ The **Overview** shows the cluster as deployed: **Status** Ready, **MongoDB vers
 
 ## The current posture — and the gaps
 
-The cluster was provisioned to be reachable for the migration and the earlier exercises, which means several settings are at their permissive defaults. Each gap below maps to a Microsoft cloud security benchmark control and is closed in a later task:
+The cluster was provisioned to be reachable for the migration and the earlier exercises, which means several settings are at their permissive defaults. Each gap below maps to a security area and is closed in a later task:
 
-| Area | Today | Benchmark control | Fixed in |
-|------|-------|-------------------|----------|
-| Network | `publicNetworkAccess` **Enabled**; one firewall rule (`lab-client` = your IP) | NS-2 | Task 02 |
-| Identity | **Native** username/password (`bookadmin`) only; no Entra ID | IM-1 / IM-3 / PA-7 | Task 03 |
-| Data protection | TLS enforced; **service-managed** encryption at rest | DP-3 / DP-4 / DP-5 | Task 04 |
-| Logging | **No diagnostic settings** configured | LT-1 / LT-3 / LT-4 | Task 05 |
-| Resilience / governance | Automatic backups on; **HA Disabled**; no policy guardrails | BR-1/2 / PV-2 | Task 06 |
+| Area | Today | Fixed in |
+|------|-------|----------|
+| Network | `publicNetworkAccess` **Enabled**; one firewall rule (`lab-client` = your IP) | Task 02 |
+| Identity | **Native** username/password (`bookadmin`) only; no Entra ID | Task 03 |
+| Data protection | TLS enforced; **service-managed** encryption at rest | Task 04 |
+| Logging | **No diagnostic settings** configured | Task 05 |
+| Resilience / governance | Automatic backups on; **HA Disabled**; no policy guardrails | Task 06 |
 
 ## Where the security controls live
 

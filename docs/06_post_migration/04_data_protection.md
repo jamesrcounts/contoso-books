@@ -2,16 +2,16 @@
 title: "Exercise 06 - Task 04 — Data Protection"
 layout: default
 nav_order: 4
-parent: "Exercise 06 - Post-Migration Hardening — Azure Security Baseline & SFI"
+parent: "Exercise 06 - Post-Migration Hardening — Azure DocumentDB Security Guidance & SFI"
 ---
 
 # Task 04 — Data Protection
 
-**Benchmark: DP-3 (encrypt in transit), DP-4 (encrypt at rest by default), DP-5 (customer-managed keys). SFI: secure by default.**
+**Azure DocumentDB security — transport security and data encryption. SFI: secure by default.**
 
 DocumentDB encrypts data both in transit and at rest out of the box. This task confirms those defaults hands-on, and shows why customer-managed keys are a cluster-creation decision rather than a switch you flip later.
 
-## Encryption in transit (DP-3)
+## Encryption in transit
 
 TLS is **always enforced** — the service rejects any connection without it, and there's no setting to weaken it. Confirm it directly: open `src/server/.env`, find `BOOKSTORE_DB_CONNECTION_STRING`, and check that the value carries **`tls=true`**:
 
@@ -21,11 +21,11 @@ mongodb+srv://…mongocluster.cosmos.azure.com/?tls=true&authMechanism=MONGODB-O
 
 That's the passwordless OIDC string from Task 03 — TLS rides along on every connection, app and extension alike. Nothing to change; it's secure by default.
 
-## Encryption at rest (DP-4)
+## Encryption at rest
 
 All data and backups are encrypted at rest with **service-managed keys** (AES-256) by default — no configuration required. See it in the portal: open **Settings → Data encryption**, where the mode shows **Service-managed key** (the Overview's **Storage encryption** field says the same). For most workloads this fully satisfies the encryption-at-rest control.
 
-## Customer-managed keys (DP-5)
+## Customer-managed keys
 
 Stay on the **Data encryption** blade and look at the mode selector. It's a pair of radio buttons — **Service-managed key** (selected) and **Customer-managed key** — but the **whole group is greyed out**. You can't switch this cluster to CMK, and it isn't a missing permission: the SMK-vs-CMK mode is chosen **at cluster creation and is immutable for the cluster's lifetime**. The disabled radios are the control telling you exactly that.
 
@@ -42,7 +42,7 @@ In IaC, that "born with CMK" choice is the `encryption.customerManagedKeyEncrypt
 
 - [Data encryption in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/database-encryption-at-rest)
 - [Configure customer-managed keys for Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/how-to-data-encryption)
-- [Azure Security Baseline for Azure Cosmos DB — DP-3/4/5](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-cosmos-db-security-baseline)
+- [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
 
 ## Success criteria
 

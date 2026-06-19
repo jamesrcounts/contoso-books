@@ -2,26 +2,26 @@
 title: "Exercise 06 - Task 06 — Resilience and Governance"
 layout: default
 nav_order: 6
-parent: "Exercise 06 - Post-Migration Hardening — Azure Security Baseline & SFI"
+parent: "Exercise 06 - Post-Migration Hardening — Azure DocumentDB Security Guidance & SFI"
 ---
 
 # Task 06 — Resilience and Governance
 
-**Benchmark: BR-1/2 (backup and recovery), PV-2 (audit and enforce secure configuration). SFI: secure operations and secure by design.**
+**Azure DocumentDB security — backup and restore, and governance. SFI: secure operations and secure by design.**
 
 Hardening isn't done until the cluster can survive a bad day and the posture you just set can't silently drift. This task confirms backup/restore and puts guardrails around the configuration.
 
-## Backup and recovery (BR-1/2)
+## Backup and recovery
 
 vCore backs up **automatically** — there is nothing to enable. Confirm the recovery story:
 
 - **Retention** is fixed at **35 days** for standard tiers (backups are geo-redundant); it is not customer-configurable, and longer retention needs a support request.
 - **Point-in-time restore (PITR)** recovers to any moment in the window via the cluster's **Restore** action, which provisions a new cluster from the backup.
-- **BR-2 — test it.** A backup you've never restored is a hope, not a plan. Periodically restore to a throwaway cluster and validate the data and app connectivity.
+- **Test it.** A backup you've never restored is a hope, not a plan. Periodically restore to a throwaway cluster and validate the data and app connectivity.
 
 For production resilience, also revisit **high availability** — the lab deploys `highAvailability.targetMode: 'Disabled'`; production would choose `SameZone` or `ZoneRedundantPreferred` for a hot standby.
 
-## Governance — enforce the posture (PV-2)
+## Governance — enforce the posture
 
 Manual hardening drifts. Use **Azure Policy** to keep it in place:
 
@@ -37,8 +37,8 @@ The cleanest control is to deploy hardened from the start. A production `mongoCl
 
 ## External resources
 
-- [Restore a cluster — Azure Cosmos DB for MongoDB vCore](https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/how-to-restore-cluster)
-- [Azure Security Baseline for Azure Cosmos DB — BR / PV](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-cosmos-db-security-baseline)
+- [Restore an Azure DocumentDB cluster](https://learn.microsoft.com/azure/documentdb/how-to-restore-cluster)
+- [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
 
 ## Success criteria
 
@@ -46,4 +46,4 @@ You can confirm automatic backups and describe PITR and restore-testing, name th
 
 ---
 
-This completes Exercise 06. You hardened the DocumentDB cluster across the Azure Security Baseline's control families — network isolation, identity, data protection, logging and detection, and resilience and governance — and aligned it to the Secure Future Initiative's secure-by-design, secure-by-default, and secure-operations principles. In **Exercise 07** you return to the developer workflow against the cluster.
+This completes Exercise 06. You hardened the DocumentDB cluster across Azure DocumentDB's security areas — network isolation, identity, data protection, logging and detection, and resilience and governance — and aligned it to the Secure Future Initiative's secure-by-design, secure-by-default, and secure-operations principles. In **Exercise 07** you return to the developer workflow against the cluster.

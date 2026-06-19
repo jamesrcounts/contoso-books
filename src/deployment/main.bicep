@@ -133,5 +133,21 @@ resource peDnsGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@202
   }
 }
 
+// Log Analytics workspace for the cluster's diagnostic (audit) logs (Exercise 06 Task 05).
+// The portal's "Add diagnostic setting" experience can't create a workspace inline — it only
+// selects an existing one — so the workspace must exist before the learner configures logging.
+// The diagnostic setting itself stays a hands-on Task 05 step (and Task 06's Azure Policy enforces it).
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+  name: '${clusterName}-logs'
+  location: location
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 30
+  }
+}
+
 output clusterName string = cluster.name
+output logAnalyticsWorkspaceName string = logAnalytics.name
 output connectionString string = 'mongodb+srv://${adminUsername}:<password>@${clusterName}.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000'

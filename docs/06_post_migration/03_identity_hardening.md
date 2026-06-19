@@ -2,12 +2,12 @@
 title: "Exercise 06 - Task 03 — Identity Hardening"
 layout: default
 nav_order: 3
-parent: "Exercise 06 - Post-Migration Hardening — Azure Security Baseline & SFI"
+parent: "Exercise 06 - Post-Migration Hardening — Azure DocumentDB Security Guidance & SFI"
 ---
 
 # Task 03 — Identity Hardening
 
-**Benchmark: IM-1 (centralized identity), IM-3 (manage app identities), PA-7 (least privilege). SFI: protect identities and secrets.**
+**Azure DocumentDB security — identity management. SFI: protect identities and secrets.**
 
 The cluster authenticates with a native `bookadmin` username and password, and that password sits in cleartext in `src/server/.env`. The SFI-aligned end state is **passwordless**, with two separated identities: **you** administer the cluster under your own Microsoft Entra ID account (via the DocumentDB VS Code extension or mongosh), and the **application** authenticates as the VM's **system-assigned managed identity** — a dedicated, non-human identity separate from your admin account. Native password auth is then turned off.
 
@@ -91,7 +91,7 @@ The cluster goes to **Updating** for 5–10 minutes. When it returns to **Ready*
 
 - [Connect to Azure DocumentDB using role-based access control and Microsoft Entra ID](https://learn.microsoft.com/azure/documentdb/how-to-connect-role-based-access-control)
 - [Azure DocumentDB service limits — RBAC limitations](https://learn.microsoft.com/azure/documentdb/limitations#authentication-and-access-control-role-based-access-control)
-- [Azure Security Baseline for Azure Cosmos DB — IM-1, PA-7](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-cosmos-db-security-baseline)
+- [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
 
 ## Success criteria
 

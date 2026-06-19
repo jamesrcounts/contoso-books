@@ -2,26 +2,27 @@
 title: "Exercise 06 - Task 05 — Logging, Threat Detection, and Monitoring"
 layout: default
 nav_order: 5
-parent: "Exercise 06 - Post-Migration Hardening — Azure Security Baseline & SFI"
+parent: "Exercise 06 - Post-Migration Hardening — Azure DocumentDB Security Guidance & SFI"
 ---
 
 # Task 05 — Logging, Threat Detection, and Monitoring
 
-**Benchmark: LT-1 (threat detection), LT-3 (network traffic logging), LT-4 (security logging). SFI: monitor and detect.**
+**Azure DocumentDB security — monitoring and response. SFI: monitor and detect.**
 
 A hardened cluster you can't observe is only half-secured. This task turns on audit logging, sets the realistic detection approach for vCore, and confirms the operational health signals.
 
-## Route diagnostic and audit logs to Log Analytics (LT-3/4)
+## Route diagnostic and audit logs to Log Analytics
 
 1. On the cluster page, open **Monitoring → Diagnostic settings → Add diagnostic setting**.
-2. Select the cluster's log categories (for example **`MongoRequests`**) and send them to a **Log Analytics workspace** (Event Hub or Storage are also valid destinations for SIEM or long-term archival).
-3. Save. Operations now have a queryable record of requests and access.
+2. Name the setting — for example `cluster-audit-logs`.
+3. Tick the **audit** category group (it selects the cluster's **`vCoreMongoRequests`** log), choose **Send to Log Analytics workspace**, and pick **`<cluster>-logs`**. (Event Hub or Storage are also valid destinations for SIEM or long-term archival.)
+4. Save. Operations now have a queryable record of requests and access — confirm with `vCoreMongoRequests | take 10` in the workspace once logs begin flowing (a few minutes).
 
 > **Enforce it.** There is a built-in Azure Policy, *"Enable logging by category group for microsoft.documentdb/mongoclusters to Log Analytics"*, that deploys this setting automatically on any cluster that lacks it — assign it so logging is never silently missing (see Task 06).
 
-## Threat detection on vCore (LT-1)
+## Threat detection on vCore
 
-Microsoft Defender for Cloud's Cosmos DB plan does **not** cover vCore Mongo clusters, so detection here is **log-based**: build alert rules over the diagnostic logs in Log Analytics — or forward them to **Microsoft Sentinel** — for signals such as repeated authentication failures, access from unexpected locations, or anomalous query volume. This is the vCore-appropriate substitute for native anomaly alerts; don't assume a Defender plan is watching.
+Microsoft Defender for Cloud's Cosmos DB plan protects **only the API for NoSQL** — it covers no MongoDB flavor, vCore included — so no Defender plan is watching this cluster. Detection here is **log-based**: build alert rules over the diagnostic logs in Log Analytics — or forward them to **Microsoft Sentinel** — for signals such as repeated authentication failures, access from unexpected locations, or anomalous query volume. These are exactly the access-pattern anomalies Defender flags for NoSQL; on vCore you assemble them yourself.
 
 ## Confirm the operational health signals
 
@@ -36,11 +37,11 @@ Then add the **Mongo request duration** metric (available because the cluster is
 
 ## External resources
 
-- [Monitor diagnostics logs — Azure Cosmos DB for MongoDB vCore](https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/how-to-monitor-diagnostics-logs)
-- [Azure Security Baseline for Azure Cosmos DB — LT-1/3/4](https://learn.microsoft.com/security/benchmark/azure/baselines/azure-cosmos-db-security-baseline)
+- [Monitor Azure DocumentDB diagnostics logs](https://learn.microsoft.com/azure/documentdb/how-to-monitor-diagnostics-logs)
+- [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
 
 ## Success criteria
 
-A diagnostic setting ships the cluster's logs to Log Analytics, you can describe the log-based detection approach for vCore (and why a Defender plan isn't the answer here), and the Metrics page reads healthy with the Mongo request duration metric split by operation and error code.
+A diagnostic setting ships the cluster's **`vCoreMongoRequests`** (audit) logs to the pre-provisioned Log Analytics workspace, you can describe the log-based detection approach for vCore (and why Defender — NoSQL-only — isn't the answer here), and the Metrics page reads healthy with the Mongo request duration metric split by operation and error code.
 
 Continue to **Task 06** to cover resilience and governance.
