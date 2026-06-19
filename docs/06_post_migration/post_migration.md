@@ -16,7 +16,7 @@ In this exercise you harden the DocumentDB (vCore) cluster against the **Microso
 ## Learning Objectives
 
 - **Network (NS-2):** tighten the firewall to least privilege and disable public network access, leaving the private endpoint as the only path
-- **Identity (IM-1, IM-3, PA-7):** enable Microsoft Entra ID authentication, move clients to passwordless managed-identity (OIDC) with a least-privilege role, and disable native authentication
+- **Identity (IM-1, IM-3, PA-7):** enable Microsoft Entra ID authentication, move clients to passwordless sign-in with your signed-in Entra user identity (OIDC) and a least-privilege role, and disable native authentication
 - **Data protection (DP-3/4/5):** confirm TLS in transit and encryption at rest, and know when to reach for customer-managed keys
 - **Logging & detection (LT-1/3/4):** route diagnostic and audit logs to Log Analytics, and understand the threat-detection options for vCore
 - **Resilience & governance (BR-1/2, PV-2):** verify backups and restore, and enforce the hardened posture with Azure Policy and secure-by-default infrastructure-as-code
