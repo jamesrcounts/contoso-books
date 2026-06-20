@@ -32,7 +32,7 @@ Your job is to plan and execute that migration without disrupting the developmen
 | Node.js (or Python) | TBD — matches the client app stack |
 | Git | Any recent version |
 | MongoDB Shell (`mongosh`) | v2.x — [install guide](https://www.mongodb.com/docs/mongodb-shell/install/) |
-| MongoDB Database Tools | `mongodump` / `mongorestore` — installed via `winget` in Exercise 07 |
+| MongoDB Database Tools | `mongodump` / `mongorestore` — installed in Exercise 01 setup |
 
 > **Azure costs:** All Azure resources in this lab are provisioned in the provided subscription. No personal Azure charges will be incurred. Clean up resources using the instructions at the end of the lab.
 

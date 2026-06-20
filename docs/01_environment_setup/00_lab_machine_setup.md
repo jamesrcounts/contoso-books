@@ -55,10 +55,19 @@ winget install --id Git.Git -e --silent --accept-source-agreements
 winget install --id OpenJS.NodeJS.LTS -e --silent --accept-source-agreements
 winget install --id Microsoft.AzureCLI -e --silent --accept-source-agreements
 winget install --id MongoDB.Shell -e --silent --accept-source-agreements
+winget install --id MongoDB.DatabaseTools -e --silent --accept-source-agreements
 winget install --id Docker.DockerDesktop -e --silent --accept-source-agreements
 winget install --id Microsoft.VisualStudioCode -e --silent --accept-source-agreements
 
-# Reload PATH so `code` is available in this session
+# The MongoDB Database Tools MSI installs to a versioned folder it does NOT add to PATH.
+# Register that bin folder on the machine PATH so mongodump/mongorestore resolve in new shells.
+$mongoToolsBin = Join-Path (Get-ChildItem "C:\Program Files\MongoDB\Tools" -Directory | Sort-Object Name -Descending | Select-Object -First 1).FullName "bin"
+$machinePathCurrent = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+if (($machinePathCurrent -split ';') -notcontains $mongoToolsBin) {
+    [System.Environment]::SetEnvironmentVariable("Path", $machinePathCurrent.TrimEnd(';') + ";" + $mongoToolsBin, "Machine")
+}
+
+# Reload PATH so `code` and the MongoDB tools are available in this session
 $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
 
 # VS Code extensions
@@ -106,6 +115,7 @@ git --version
 node --version
 az --version
 mongosh --version
+mongodump --version
 docker --version
 code --version
 ```
@@ -118,6 +128,7 @@ All commands should return a version number without errors. Expected versions (l
 | Node.js | v24.16.0 |
 | Azure CLI | 2.86.0 |
 | mongosh | 2.8.3 |
+| MongoDB Database Tools | 100.17.0 |
 | Docker | 29.4.3 |
 | VS Code | 1.122.0 |
 
