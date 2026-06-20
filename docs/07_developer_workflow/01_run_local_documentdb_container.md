@@ -62,20 +62,27 @@ Using MongoDB:  7.0.0
 Using Mongosh:  2.8.3
 ```
 
-`mongosh` redacts the credentials in its echo, reports the wire-compatible server version (`7.0.0`), and adds `directConnection=true` itself. At the prompt, ping the server and list the databases:
+`mongosh` redacts the credentials in its echo, reports the wire-compatible server version (`7.0.0`), and adds `directConnection=true` itself. At the prompt, ping the server:
 
 ```javascript
 db.runCommand({ ping: 1 })
-show dbs
 ```
 
 ```
 { ok: 1 }
+```
 
+Then list the databases:
+
+```javascript
+show dbs
+```
+
+```
 sampledb  ...
 ```
 
-`ping` returns `{ ok: 1 }`, and the only database present is the engine's built-in `sampledb` — there is no `bookstore` yet. You move Contoso's catalog in the next task. Leave the shell with `exit`.
+The only database present is the engine's built-in `sampledb` — there is no `bookstore` yet. You move Contoso's catalog in the next task. Leave the shell with `exit`.
 
 ## Success criteria
 
@@ -85,7 +92,6 @@ sampledb  ...
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| `docker run` fails with **`name "documentdb" is already in use`** | A `documentdb` container already exists from an earlier attempt | `docker rm -f documentdb`, then re-run — or `docker start documentdb` if you just need the existing one up. |
 | `mongosh` reports a connection error right after `docker run` | The engine is still initializing | Wait a few seconds and retry; `docker logs documentdb` shows when the gateway is ready. |
 | A **TLS / certificate** error on connect | The connection string is missing the TLS options | Include both `tls=true` **and** `tlsAllowInvalidCertificates=true` — the container's certificate is self-signed. |
 
