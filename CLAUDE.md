@@ -84,6 +84,7 @@ The app's npm workspace lives in `src/` (that's where the root `package.json` is
 Read by `src/server/server.js` (via `dotenv`):
 
 - `BOOKSTORE_DB_CONNECTION_STRING` — Mongo connection string. Connects to the `bookstore` database (hard-coded in [db.js](src/server/src/db/db.js)).
+- `APP_ENV` — selects which env file `server.js` loads: unset → `.env`, otherwise `.env.<APP_ENV>` (e.g. `APP_ENV=azure` → `.env.azure`). A custom `server.js` convention (Exercise 07 Task 04), not a `dotenv` feature.
 - `PORT` — server port, defaults to `8080`.
 - `NODE_ENV=production` — when set, server also serves the built React app from `../client/dist`.
 

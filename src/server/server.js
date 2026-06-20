@@ -5,7 +5,12 @@ import path from 'path'
 
 import dotenv from "dotenv";
 
-dotenv.config();
+// Select the env file by APP_ENV: unset -> .env, otherwise .env.<APP_ENV> (e.g. .env.azure).
+// This is a small convention this app implements itself — dotenv does not select files by
+// environment on its own. In another stack you might use a native mechanism instead (for
+// example ASP.NET Core's ASPNETCORE_ENVIRONMENT with appsettings.{Environment}.json).
+const envFile = process.env.APP_ENV ? `.env.${process.env.APP_ENV}` : ".env";
+dotenv.config({ path: envFile });
 
 /* Create an Express application.*/
 const app = express();
