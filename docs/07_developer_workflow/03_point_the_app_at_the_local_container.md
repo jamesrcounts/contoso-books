@@ -1,13 +1,13 @@
 ---
-title: "Exercise 07 - Task 04 — Point the App at the Local DocumentDB Container"
+title: "Exercise 07 - Task 03 — Point the App at the Local DocumentDB Container"
 layout: default
-nav_order: 4
+nav_order: 3
 parent: "Exercise 07 - Developer Workflow — A Local DocumentDB Development Loop"
 ---
 
-# Task 04 — Point the App at the Local DocumentDB Container
+# Task 03 — Point the App at the Local DocumentDB Container
 
-The container holds a verified copy of the catalog. Now point the application at it — the payoff of the whole exercise. You change **one** line of configuration; the application code, the `mongodb` driver, the routes, and the queries are all untouched. From here on, local development runs against the same engine as production.
+The container holds the catalog you moved in Task 02. Now point the application at it — the payoff of the whole exercise. You change **one** line of configuration; the application code, the `mongodb` driver, the routes, and the queries are all untouched. From here on, local development runs against the same engine as production.
 
 ## Swap the connection string
 
@@ -63,4 +63,4 @@ The app logs `DocumentDB connected to 10.0.0.5:10260`, and reads and writes work
 | A **TLS / certificate** error in the server log | The connection string is missing the TLS options | The value must end with `?tls=true&tlsAllowInvalidCertificates=true`. |
 | A port is already in use | A previous `npm run develop` is still running | Stop it with `Ctrl+C` in its terminal. |
 
-Leave the app running. In **Task 05** you will switch it between this local container and Azure DocumentDB by changing only the connection string.
+Leave the app running. In **Task 04** you will switch it between this local container and Azure DocumentDB by changing only the connection string.

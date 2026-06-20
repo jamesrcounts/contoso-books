@@ -29,6 +29,5 @@ In this exercise you close the gap by moving local development onto a **local Do
 
 - Task 01 — Run the local DocumentDB container and connect to it with `mongosh`
 - Task 02 — Move the `bookstore` catalog from the MongoDB container into the DocumentDB container with `mongodump`/`mongorestore`
-- Task 03 — Validate that the moved data matches the source, by count and content checksum
-- Task 04 — Point the app at the local DocumentDB container and confirm identical behavior
-- Task 05 — Switch between the local container and Azure DocumentDB by changing only the connection string
+- Task 03 — Point the app at the local DocumentDB container and confirm identical behavior
+- Task 04 — Switch between the local container and Azure DocumentDB by changing only the connection string

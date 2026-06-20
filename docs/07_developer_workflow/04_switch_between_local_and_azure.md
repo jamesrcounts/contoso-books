@@ -1,11 +1,11 @@
 ---
-title: "Exercise 07 - Task 05 — Switch Between the Local Container and Azure"
+title: "Exercise 07 - Task 04 — Switch Between the Local Container and Azure"
 layout: default
-nav_order: 5
+nav_order: 4
 parent: "Exercise 07 - Developer Workflow — A Local DocumentDB Development Loop"
 ---
 
-# Task 05 — Switch Between the Local Container and Azure
+# Task 04 — Switch Between the Local Container and Azure
 
 You have run the app against the local DocumentDB container. Switching it to Azure DocumentDB — and back — is a one-line change, because every backend choice in this application funnels through a single seam: the value of `BOOKSTORE_DB_CONNECTION_STRING` in `src/server/.env`. This is the connection-string-per-environment pattern, and it is the team's standard developer workflow.
 
@@ -43,14 +43,12 @@ Both differences live entirely **in the connection string** — `authMechanism` 
 
 - **Full-stack consistency.** Local development and production run the *same* DocumentDB engine. A feature DocumentDB doesn't support fails on the developer's machine, not in Azure — the server-side-JavaScript `$function` aggregation removed back in Exercise 03 would have surfaced the moment it ran locally.
 - **Configuration, not code.** The connection string lives in git-ignored `.env`; each environment supplies its own, and the build artifact is promoted unchanged.
-- **Verifiable parity.** The comparison script from Task 03 gives the team a repeatable count-and-checksum check between any two environments — useful well beyond this migration.
 
 ## What you accomplished in this exercise
 
 - Ran the open-source DocumentDB engine locally in a container (Task 01).
 - Moved Contoso's catalog into it with `mongodump`/`mongorestore` (Task 02).
-- Verified the move by document count and content checksum (Task 03).
-- Pointed the unchanged app at the container and confirmed identical behavior (Task 04).
+- Pointed the unchanged app at the container and confirmed identical behavior (Task 03).
 - Named the connection-string-per-environment pattern as the team's standard workflow (this task).
 
 This completes Exercise 07. Local development now runs on DocumentDB end-to-end, and the path from a developer's machine to production is a single connection string. In **Exercise 08** you will clean up the lab's Azure resources and local containers.

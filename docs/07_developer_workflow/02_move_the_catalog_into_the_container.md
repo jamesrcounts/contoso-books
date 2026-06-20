@@ -75,4 +75,4 @@ genres=1
 | `mongorestore` fails with **`certificate signed by unknown authority`** | `--tlsInsecure` was omitted (the URI's `tlsAllowInvalidCertificates` is ignored by the tools) | Add `--tlsInsecure` to the `mongorestore` command. |
 | `mongodump` connection error | The MongoDB container is stopped | `docker ps`; if `mongodb` is absent, `docker start mongodb`. |
 
-The catalog is now in the container. Continue to **Task 03** to confirm — by count and content checksum — that the move was faithful.
+The catalog is now in the container. Continue to **Task 03** to point the app at the container.
