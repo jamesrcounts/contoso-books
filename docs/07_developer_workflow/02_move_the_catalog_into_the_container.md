@@ -7,7 +7,7 @@ parent: "Exercise 07 - Developer Workflow — A Local DocumentDB Development Loo
 
 # Task 02 — Move the Catalog into the DocumentDB Container
 
-The container is running but empty — `show dbs` listed only the built-in `sampledb`. In this task you move Contoso's catalog out of the MongoDB container and into the DocumentDB container with the standard MongoDB tools `mongodump` and `mongorestore` (installed in Exercise 01), which Microsoft recommends for moving a full database into DocumentDB. The MongoDB container keeps its copy — you are snapshotting it, not emptying it.
+The container is running but empty — `show dbs` listed no databases yet. In this task you move Contoso's catalog out of the MongoDB container and into the DocumentDB container with the standard MongoDB tools `mongodump` and `mongorestore` (installed in Exercise 01), which Microsoft recommends for moving a full database into DocumentDB. The MongoDB container keeps its copy — you are snapshotting it, not emptying it.
 
 ## Dump the catalog from the MongoDB container
 
@@ -61,7 +61,7 @@ books=96419
 genres=1
 ```
 
-`show dbs` now lists `bookstore` alongside `sampledb`.
+`show dbs` now lists `bookstore`.
 
 ## Success criteria
 

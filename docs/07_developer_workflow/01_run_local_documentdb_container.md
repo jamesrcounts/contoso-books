@@ -27,10 +27,13 @@ Status: Downloaded newer image for ghcr.io/documentdb/documentdb/documentdb-loca
 
 ## Start the container
 
-Run the container detached, publishing port 10260 and setting the admin credentials. Reuse the same `bookadmin` / `bookpass123` you used for the MongoDB container, so the only thing that differs between the two local connection strings is the port and the TLS options:
+Run the container detached. Three flags make it durable enough to survive a host reboot: a named **volume** (`documentdb-data`) mounted at the data directory persists the catalog; **`--restart unless-stopped`** brings the container back when Docker Desktop starts after a reboot (already set to start on sign-in in Exercise 01); and **`SKIP_INIT_DATA=true`** turns off the image's built-in sample database — which otherwise re-seeds on every start and crashes the container once it holds data. Reuse the same `bookadmin` / `bookpass123` you used for the MongoDB container, so the only thing that differs between the two local connection strings is the port and the TLS options:
 
 ```powershell
 docker run --detach --publish 10260:10260 --name documentdb `
+  --restart unless-stopped `
+  -v documentdb-data:/data `
+  -e SKIP_INIT_DATA=true `
   ghcr.io/documentdb/documentdb/documentdb-local:latest `
   --username bookadmin --password bookpass123
 ```
@@ -78,11 +81,7 @@ Then list the databases:
 show dbs
 ```
 
-```
-sampledb  ...
-```
-
-The only database present is the engine's built-in `sampledb` — there is no `bookstore` yet. You move Contoso's catalog in the next task. Leave the shell with `exit`.
+It returns nothing — the container starts empty (the built-in sample database is disabled by `SKIP_INIT_DATA`), and there is no `bookstore` yet. You move Contoso's catalog in the next task. Leave the shell with `exit`.
 
 ## Success criteria
 
@@ -95,4 +94,4 @@ The only database present is the engine's built-in `sampledb` — there is no `b
 | `mongosh` reports a connection error right after `docker run` | The engine is still initializing | Wait a few seconds and retry; `docker logs documentdb` shows when the gateway is ready. |
 | A **TLS / certificate** error on connect | The connection string is missing the TLS options | Include both `tls=true` **and** `tlsAllowInvalidCertificates=true` — the container's certificate is self-signed. |
 
-The container's data lives inside the container; it survives `docker stop` / `docker start` but is discarded by `docker rm` (no volume is mounted). With the container running, continue to **Task 02** to move Contoso's catalog into it.
+The catalog lives in the `documentdb-data` volume, so it survives `docker stop` / `docker start` and a host reboot — the container restarts on its own and reconnects to the same data. (It is removed only when you delete the volume in Exercise 08.) With the container running, continue to **Task 02** to move Contoso's catalog into it.

@@ -20,15 +20,15 @@ docker rm mongodb documentdb
 
 `docker stop` halts the running containers; `docker rm` deletes them. If a container is already stopped, the `stop` command is harmless. You can also force-remove a running container with `docker rm -f <name>`.
 
-## Remove the named volume
+## Remove the named volumes
 
-The replica-set keyfile lived in a Docker named volume. Remove it now:
+The MongoDB replica-set keyfile and the DocumentDB catalog each lived in a Docker named volume. Remove both now:
 
 ```powershell
-docker volume rm mongo-keyfile
+docker volume rm mongo-keyfile documentdb-data
 ```
 
-> **Note:** A volume cannot be removed while a container is still using it. If `docker volume rm` reports the volume is in use, confirm the `mongodb` container was removed in the previous step, then try again.
+> **Note:** A volume cannot be removed while a container is still using it. If `docker volume rm` reports a volume is in use, confirm the containers were removed in the previous step, then try again.
 
 ## (Optional) reclaim the images
 
@@ -50,6 +50,6 @@ docker ps -a
 docker volume ls
 ```
 
-`docker ps -a` shows neither the `mongodb` nor the `documentdb` container, and `docker volume ls` shows no `mongo-keyfile` volume.
+`docker ps -a` shows neither the `mongodb` nor the `documentdb` container, and `docker volume ls` shows neither the `mongo-keyfile` nor the `documentdb-data` volume.
 
 With the local container removed, continue to **Task 03** to confirm the Azure resource group is gone.
