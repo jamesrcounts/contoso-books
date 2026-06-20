@@ -7,21 +7,21 @@ parent: "Exercise 07 - Developer Workflow — A Local DocumentDB Development Loo
 
 # Task 04 — Switch Between the Local Container and Azure
 
-You have run the app against the local DocumentDB container. Pointing it at Azure DocumentDB — and back — is a **one-variable** change, because the bookstore app selects its configuration by environment. You set `APP_ENV`, the app loads the matching `.env` file, and nothing else changes — not the code, the driver, the routes, or the queries.
+Every time you've changed which backend the app talks to — the Exercise 05 cutover, and pointing it at the container in Task 03 — you edited `BOOKSTORE_DB_CONNECTION_STRING` in the default `.env` by hand. That works, but the app has supported a cleaner way the whole time: a single variable, `APP_ENV`, selects which `.env` file the app loads. Nothing else differs between the two environments — not the code, the driver, the routes, or the queries.
 
 ## How the app selects its environment
 
-When the server starts, it chooses which env file to load based on `APP_ENV` (in [server.js](../../src/server/server.js)):
+Selecting a config file by environment isn't something Node or `dotenv` do for you — it's a small convention the bookstore app implements itself. You can copy this technique into your own apps, or use whatever your stack offers natively: ASP.NET Core's `ASPNETCORE_ENVIRONMENT` with `appsettings.{Environment}.json`, Rails' `RAILS_ENV`, Spring profiles, and so on.
+
+Here it is in full, in [server.js](../../src/server/server.js):
 
 ```javascript
 const envFile = process.env.APP_ENV ? `.env.${process.env.APP_ENV}` : ".env";
 dotenv.config({ path: envFile });
 ```
 
-- No `APP_ENV` → `.env` (the local default you have used all along).
+- No `APP_ENV` → `.env` (the default).
 - `APP_ENV=azure` → `.env.azure`.
-
-> **This is application code, not a platform feature.** Node and `dotenv` don't select config files by environment on their own — those two lines are a convention the bookstore implements itself. In your own apps you can copy this technique, or use whatever your stack offers natively: ASP.NET Core's `ASPNETCORE_ENVIRONMENT` with `appsettings.{Environment}.json`, Rails' `RAILS_ENV`, Spring profiles, and so on.
 
 ## Provide the Azure environment file
 
