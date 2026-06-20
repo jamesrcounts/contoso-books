@@ -34,11 +34,11 @@ az deployment group create `
 
 You will be prompted for the cluster administrator password (a `@secure()` parameter). The application itself runs locally — see [Connect to the application](#connect-to-the-application) below.
 
-### Import the sample dataset into the Azure DocumentDB account
+### Import the sample dataset into the Azure DocumentDB cluster
 
 1. Navigate to folder ./src/deployment/seed using Git Bash.
 
-2. Update .env file in this path by specifying value for "BOOKSTORE_SEED_DB_CONNECTION_STRING" of the database account created by the deployment template in the previous step.
+2. Update .env file in this path by specifying value for "BOOKSTORE_SEED_DB_CONNECTION_STRING" of the cluster created by the deployment template in the previous step.
    You can get the connection string from Azure portal > DocumentDB cluster resource > Connection strings blade.
    Example of updated .env file:
    BOOKSTORE_SEED_DB_CONNECTION_STRING="mongodb+srv://<user>:<password>@<cluster-name>.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
@@ -55,7 +55,7 @@ Seeding completed on genres Collection 9/30/2021, 10:29:10 AM
 Seeding completed on books Collection 9/30/2021, 10:39:40 AM
 ```
 
-> **Migration gotcha (intentional, for the lab):** DocumentDB (vCore) indexes only `_id` by default — unlike the older RU-based Cosmos DB for MongoDB API, which auto-indexes every field. The list page in this app filters on `rating`, `bookformat`, and `genre` and sorts on `rating`. Against a freshly-seeded cluster those queries will perform a full collection scan over 96,419 documents. After seeding, run the following in `mongosh` to make them performant:
+> **Indexing note:** DocumentDB (vCore) indexes only `_id` by default, so the list page's filter and sort queries scan the whole collection until you add indexes. This app's list page filters on `rating`, `bookformat`, and `genre` and sorts on `rating`; against a freshly-seeded cluster those queries perform a full collection scan over 96,419 documents. After seeding, run the following in `mongosh` to make them performant:
 >
 > ```js
 > use bookstore
@@ -75,6 +75,9 @@ npm run develop
 
 This runs the API server (port 8080) and the Vite dev server (port 3000); open `http://localhost:3000` to browse the catalog. Point the app at your cluster by setting `BOOKSTORE_DB_CONNECTION_STRING` to the connection string from the previous section.
 
+<!-- TODO: Replace this screenshot — the current image (cosmosbookstoremainpage.png) shows a
+     Cosmos DB reference in the UI. Retake it, rename the file to drop "cosmos"
+     (e.g. contosobooksmainpage.png), and update the path below. -->
 ![Contoso Books main page](src/deployment/docs/images/cosmosbookstoremainpage.png)
 
 ## Dataset Credits

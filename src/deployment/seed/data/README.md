@@ -10,10 +10,8 @@ These files are the dataset that `populate_data.js` loads into the `bookstore` d
 | &nbsp;&nbsp;↳ `genres.json` | single document `{ "genresList": [...] }` — the de-duped, sorted list of every genre |
 | `build_dataset.py` | the generator that produced the tarball above |
 
-The data is vendored into the repo on purpose: it used to be downloaded at seed time from an
-Azure Storage blob (`cosmosbookstorestg.blob.core.windows.net`) that no longer exists, so
-seeding broke for anyone cloning the repo. Shipping the dataset in-repo removes that
-third-party dependency — clone, set a connection string, run `npm run seed`, done.
+The data is vendored into the repo on purpose so seeding has no third-party download
+dependency — clone, set a connection string, run `npm run seed`, done.
 
 ## Source
 
