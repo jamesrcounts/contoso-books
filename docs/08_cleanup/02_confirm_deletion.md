@@ -1,11 +1,11 @@
 ---
-title: "Exercise 08 - Task 03 — Confirm the Resource Group No Longer Exists"
+title: "Exercise 08 - Task 02 — Confirm the Resource Group No Longer Exists"
 layout: default
-nav_order: 3
+nav_order: 2
 parent: "Exercise 08 - Cleanup"
 ---
 
-# Task 03 — Confirm the Resource Group No Longer Exists
+# Task 02 — Confirm the Resource Group No Longer Exists
 
 Task 01 deleted the resource group with `--no-wait`, so the command returned before deletion finished. Deletion takes several minutes to complete server-side. This task confirms it actually finished and that no billable lab resources remain.
 
@@ -31,4 +31,4 @@ The command returns `false` once deletion has finished. While deletion is still 
 
 The resource group `rg-documentdb-lab` is absent from both the portal **Resource groups** list and the `az group exists` check (which returns `false`). No lab resources remain billable.
 
-The lab environment is now fully torn down — both the Azure cluster and the local MongoDB container have been removed.
+The lab environment is now fully torn down — the resource group and everything it held, including the DocumentDB cluster and the lab VM, is gone.

@@ -13,10 +13,9 @@ Delete all Azure resources created during the lab to prevent ongoing charges to 
 
 ## Estimated Duration
 
-10 minutes
+~5 minutes
 
 ## Tasks
 
-- Task 01 — Delete the resource group (removes the DocumentDB cluster and all associated resources)
-- Task 02 — Stop and remove the local MongoDB container
-- Task 03 — Confirm resource group no longer exists in the Azure portal
+- Task 01 — Delete the resource group (removes the DocumentDB cluster, the lab VM, and everything else in the group)
+- Task 02 — Confirm the resource group no longer exists in the Azure portal
