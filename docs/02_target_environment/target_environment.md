@@ -9,7 +9,7 @@ has_children: true
 
 ## Scenario Overview
 
-In this exercise you will provision the Azure DocumentDB cluster that will become Contoso's production database. Because Azure DocumentDB is natively MongoDB wire-protocol compatible, no application code changes are required — only the connection string changes. The migration extension creates the database and collections during the initial load phase in Exercise 04, so this exercise focuses on the cluster itself: sizing, provisioning, network access, and connectivity.
+In this exercise you will provision the Azure DocumentDB cluster that will become Contoso's production database. Azure DocumentDB is natively MongoDB wire-protocol compatible, so after the workload is assessed and any compatibility findings are remediated in Exercise 03, cutover requires only a connection-string change. The migration extension creates the database and collections during the initial load phase in Exercise 04, so this exercise focuses on the cluster itself: sizing, provisioning, network access, and connectivity.
 
 ## Learning Objectives
 

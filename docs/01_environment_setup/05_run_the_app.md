@@ -94,7 +94,7 @@ When you have verified the app is working end-to-end, click into the VS Code ter
 ## What you just demonstrated
 
 - A standard Node.js + MongoDB driver application connects to a containerized MongoDB instance using only a connection string
-- The application is **completely unaware** of whether it is talking to a local container, a managed MongoDB service, or — as you will prove in Exercise 05 — Azure DocumentDB. Only the connection string changes.
+- The application uses the same MongoDB driver and connection seam for the local container and Azure DocumentDB. After Exercise 03 identifies and remediates any incompatible workload features, cutover changes only the connection string.
 - The seeded `books` and `genres` collections are now the **source data** that will be migrated to DocumentDB in Exercises 04 and 05.
 
 You now have the known-good baseline needed for the rest of the lab. In Exercise 02 you will provision the Azure DocumentDB target.
