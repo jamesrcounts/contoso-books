@@ -7,11 +7,11 @@ parent: "Exercise 02 - Target Environment Setup — Azure DocumentDB"
 
 # Task 01 — Review the Sizing Mapping
 
-Before you provision anything, it helps to understand *why* Contoso picks the cluster tier and storage size it does. Azure DocumentDB (vCore) sizes very differently from the older RU-based Cosmos DB for MongoDB API. This task is conceptual — there are no commands to run. The next task provisions the cluster with exactly the values reasoned through here.
+Before you provision anything, it helps to understand *why* Contoso picks the cluster tier and storage size it does. This task explains that sizing decision — there are no commands to run. The next task provisions the cluster with exactly the values reasoned through here.
 
-## The vCore capacity model
+## How capacity is provisioned
 
-Azure DocumentDB (vCore) is a **provisioned cluster**: you choose compute and storage, and you pay for them whether or not you use them. There are **no request units (RUs)** to budget, and throughput is not metered per-operation. Two dials are set independently:
+For the Azure DocumentDB cluster used in this workshop, compute and storage are configured independently:
 
 - **Compute (the cluster tier)** — selects the number of vCores and the amount of RAM per shard. This governs query concurrency, how much of your working set can stay in memory, and (on Premium SSD v2) the cluster's IOPS and throughput ceiling.
 - **Storage (size in GB)** — selects the disk per shard, scaled separately from compute. Storage is sized for capacity: data, indexes, and room to grow.
