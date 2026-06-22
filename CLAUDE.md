@@ -110,9 +110,9 @@ The seed script uses a separate env var `BOOKSTORE_SEED_DB_CONNECTION_STRING` (d
 
 ### Deployment (`src/deployment/`)
 
-- [azuredeploy.json](src/deployment/azuredeploy.json) — ARM template provisioning App Service + DocumentDB vCore cluster (`Microsoft.DocumentDB/mongoClusters`).
-- [ecosystem.config.js](src/ecosystem.config.js) — PM2 config used by the App Service host; it `cd`s into `/home/site/wwwroot/src/server/` and runs `server.js`.
-- [deployment/seed/](src/deployment/seed/) — standalone Node script (CommonJS, separate `package.json`) that downloads `books.json`/`genres.json` from a public Azure Storage URL and bulk-inserts them.
+- [main.bicep](src/deployment/main.bicep) — Bicep template that provisions the Azure DocumentDB cluster, firewall rule, private endpoint and DNS integration, and Log Analytics workspace used by the workshop.
+- The application is not deployed to Azure hosting; learners run the Express API and Vite client locally with `npm run develop` from `src/`.
+- [deployment/seed/](src/deployment/seed/) — standalone Node.js seeder (CommonJS, separate `package.json`) that reads the vendored `data/seed-data.tar.gz` archive and bulk-inserts its `books` and `genres` data into the `bookstore` database. It uses `BOOKSTORE_SEED_DB_CONNECTION_STRING` from `src/deployment/seed/.env`.
 
 ## Conventions worth knowing
 
