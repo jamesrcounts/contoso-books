@@ -85,7 +85,7 @@ The cluster goes to **Updating** for 5–10 minutes. When it returns to **Ready*
 
 > **Sequence matters.** Disable native auth **only after** every client is on Entra — here, your admin access (Step 1) and the app's managed identity (Step 2). Doing it earlier locks out the app.
 
-> **One-way in practice.** Re-enabling native isn't a toggle back — it requires supplying the admin username and a **new** password ([documented here](https://learn.microsoft.com/azure/cosmos-db/mongodb/how-to-migrate-documentdb#post-migration-actions)). Treat Entra-only as the point of no return for this lab.
+> **This choice is reversible.** Entra-only is not a point of no return: Azure DocumentDB supports changing authentication methods after provisioning. If you change them later, preserve and test at least one administrative access path throughout the transition. See the [current DocumentDB authentication guidance](https://learn.microsoft.com/azure/documentdb/how-to-connect-role-based-access-control).
 
 ## External resources
 
