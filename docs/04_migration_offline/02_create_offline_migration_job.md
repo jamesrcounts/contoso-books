@@ -36,7 +36,7 @@ The first time you advance the wizard, the extension prompts you to sign in to A
 1. A dialog asks to sign in — select **Allow**.
 2. Enter your **username**, then your **password**.
 3. At **Sign in to all apps on this device**, choose **Yes** (this is not a shared device).
-4. At **Allow my organization to manage my device**, choose **Yes** to ensure full access to Azure.
+4. At **Allow my organization to manage my device**, choose **Yes**.
 
 Once sign-in completes, the wizard can populate the Azure dropdowns in the next step.
 
