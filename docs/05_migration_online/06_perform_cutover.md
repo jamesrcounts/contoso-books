@@ -7,40 +7,26 @@ parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 
 # Task 06 — Perform the Cutover and Verify the Application
 
-Both cutover conditions are met, so it is time to switch Contoso onto DocumentDB and confirm it works. Cutover is a short, coordinated sequence: stop writes to the source, finalize the migration job, repoint the application at the target, and bring it back up. Done in this order, the only "downtime" is the brief application restart — the data is already in sync. You then verify the app functions correctly against DocumentDB.
+Both cutover conditions are met, so it is time to switch Contoso onto DocumentDB and confirm it works. The application stays online against the source while you prepare the new connection. You then briefly restart it onto DocumentDB and finalize the migration job by clicking **Cutover** last. There is no separate write-freeze window — only the brief application restart needed to load the new connection string.
 
-## Step 1 — Stop writes to the source
+## Step 1 — Repoint the application at DocumentDB
 
-Stop the application so no new writes hit the source while you finalize. Click into the VS Code terminal running `npm run develop` and press **Ctrl+C**. `concurrently` shuts down both the API server and the Vite dev server.
-
-> **Why stop writes first?** Cutover assumes the target has caught up to the source. If the app kept writing to the source after you cut over the job, those last writes would be stranded on the old source and never reach DocumentDB. Stopping writes freezes the source so the final state is exactly what replication has already delivered.
-
-## Step 2 — Finalize the migration job (Cutover)
-
-1. In the migration extension, open **View Existing Jobs** and select your `contoso-online-cutover` job.
-2. Confirm one last time that **Replication Changes Played** is stable (Task 05).
-3. Click **Cutover**.
-
-The job finalizes replication and completes. The target now holds the full, consistent dataset.
-
-## Step 3 — Repoint the application at DocumentDB
-
-In the **DocumentDB** extension, right-click your **Azure cluster connection** and choose **Copy Connection String** — it includes the password. Then open `src/server/.env` and replace the **value** of `BOOKSTORE_DB_CONNECTION_STRING` — currently the local source string — with the string you copied. Leave `PORT` unchanged:
+Leave the application running against the source while you prepare the cutover. In the **DocumentDB** extension, right-click your **Azure cluster connection** and choose **Copy Connection String** — it includes the password. Then open `src/server/.env` and replace the **value** of `BOOKSTORE_DB_CONNECTION_STRING` — currently the local source string — with the string you copied. Leave `PORT` unchanged:
 
 ```
 BOOKSTORE_DB_CONNECTION_STRING=mongodb+srv://bookadmin:YOUR_ACTUAL_PASSWORD@contosobooks....global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000
 PORT=8080
 ```
 
-Save the file.
+Save the file. The running server keeps its existing source connection until you restart it in Step 2, so saving `.env` does not interrupt the application or move traffic by itself.
 
 > **Only the connection string changes.** The application code is identical against the local container and against DocumentDB. No code, drivers, or queries are touched at cutover.
 
 > **Handle this string like a secret** — it contains your admin password in clear text. It belongs only in the git-ignored `.env` file.
 
-## Step 4 — Restart the application
+## Step 2 — Briefly restart the application onto DocumentDB
 
-From `src/`, start the app again:
+Click into the VS Code terminal running `npm run develop` and press **Ctrl+C**. `concurrently` shuts down both tiers. Immediately restart them from `src/`:
 
 ```powershell
 cd src
@@ -75,7 +61,17 @@ Wait for the readiness lines at the end of the output:
 [0] DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com
 ```
 
-This time the log line names the Azure cluster — `DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com` — confirming the server connected to **Azure DocumentDB**, not the local container. Same code on every path; only the host in the log changed.
+This time the log line names the Azure cluster — `DocumentDB connected to contosobooks....global.mongocluster.cosmos.azure.com` — confirming the server reconnected to **Azure DocumentDB**, not the local container. Same code on every path; only the host in the log changed. The application is already serving from the target; the migration job is still replicating and has not yet been finalized.
+
+## Step 3 — Finalize the migration job (Cutover)
+
+With the application now connected to DocumentDB, no new application writes are going to the source. Finalize the migration job last:
+
+1. In the migration extension, open **View Existing Jobs** and select your `contoso-online-cutover` job.
+2. Confirm one last time that **Replication Changes Played** is stable (Task 05).
+3. Click **Cutover**.
+
+The job finalizes replication and completes. Contoso remains online on DocumentDB, and the source is no longer part of the application path.
 
 ## Verify the application against DocumentDB
 
@@ -124,7 +120,7 @@ Cross-check directly against DocumentDB using the **DocumentDB extension's query
 
 ## Success criteria
 
-Writes to the source were stopped, the migration job was finalized with **Cutover**, `src/server/.env` now holds the Azure SRV string as `BOOKSTORE_DB_CONNECTION_STRING`, and the app restarted cleanly (logging `DocumentDB connected to` the Azure cluster). Reads (browse, filter, detail), writes (add comment, persists on reload), and a direct extension query against the Azure cluster all succeed — the Contoso app functions correctly against DocumentDB, matching the Exercise 01 baseline. The online migration is functionally complete.
+`src/server/.env` now holds the Azure SRV string as `BOOKSTORE_DB_CONNECTION_STRING`; the application was briefly restarted and reconnected to the Azure cluster before the migration job was finalized with **Cutover**. There was no separate write-freeze window. Reads (browse, filter, detail), writes (add comment, persists on reload), and a direct extension query against the Azure cluster all succeed — the Contoso app functions correctly against DocumentDB, matching the Exercise 01 baseline. The online migration is functionally complete.
 
 ## Troubleshooting
 

@@ -11,7 +11,7 @@ has_children: true
 
 The offline migration in Exercise 04 worked — but it required a maintenance window, and Contoso is worried it won't be able to take the catalog down for one in production. So the team wants to understand the **online** alternative. In this exercise you run an online (change stream) migration, which performs an initial copy and then tails the source oplog to keep the target in sync until cutover, so the books catalog stays live and keeps accepting writes the entire time.
 
-Exercise 04's cutover left the application pointed at **Azure**, so for this online run you first repoint it back to the **local** source (Task 01) and keep it there throughout the sync. Only at **cutover** — once the replication gap reaches zero — do you repoint its `src/server/.env` to the Azure connection string again.
+Exercise 04's cutover left the application pointed at **Azure**, so for this online run you first repoint it back to the **local** source (Task 01) and keep it there throughout the sync. At **cutover** — once the replication gap reaches zero — you update `src/server/.env` while the app remains online, briefly restart it onto Azure, and click the migration job's **Cutover** action last.
 
 ## Learning Objectives
 
@@ -33,5 +33,5 @@ Exercise 04's cutover left the application pointed at **Azure**, so for this onl
 - Task 03 — [Create the Online Migration Job](03_create_online_migration_job.md) — in the VS Code extension over private connectivity; source: local MongoDB (replica set, via the VM private IP), target: DocumentDB cluster (private endpoint)
 - Task 04 — [Monitor the Initial Load Phase](04_monitor_initial_load.md) — documents are copied while the app continues writing
 - Task 05 — [Monitor Replication and Verify Cutover Conditions](05_monitor_online_sync.md) — watch the change stream replicate live writes, then confirm replication gap = 0 AND document counts match via the DocumentDB extension query playground
-- Task 06 — [Perform the Cutover and Verify the Application](06_perform_cutover.md) — cut over to DocumentDB (repoint `.env`, restart), then confirm reads, writes, and the migrated data are correct on the target
+- Task 06 — [Perform the Cutover and Verify the Application](06_perform_cutover.md) — repoint `.env` while the app remains online, briefly restart onto DocumentDB, click **Cutover** last, then confirm reads, writes, and the migrated data are correct on the target
 - Task 07 — [Run the Slow Catalog-Statistics Query and Compare](07_run_slow_query_compare.md) — compare latency and behavior with the source; discuss runtime differences (long-running aggregations, cursor and transaction timeouts)

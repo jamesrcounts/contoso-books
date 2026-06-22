@@ -56,7 +56,7 @@ Wait for the readiness lines at the end of the output (the server `[0]` and clie
 
 That write landed in the source `books` collection, appended to the book's `reviewcomments` array (each entry is `{ name, comment }`). Because the source is a replica set, that operation is recorded in the oplog — which is precisely what the online migration's change stream tails.
 
-> **Leave the app running.** Do **not** stop it. The application stays live through the initial load (Task 04) and the online sync (Task 05); you only stop writes at cutover (Task 06). Keeping it running — and occasionally adding a comment — gives you live changes to watch replicate in Task 05.
+> **Leave the app running.** Do **not** stop it. The application stays live through the initial load (Task 04), online sync (Task 05), and cutover preparation (Task 06). At cutover you update the connection string while the app is still online, then briefly restart it onto DocumentDB before clicking **Cutover** last. Keeping it running — and occasionally adding a comment — gives you live changes to watch replicate in Task 05.
 
 ## Success criteria
 

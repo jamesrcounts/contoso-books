@@ -18,9 +18,9 @@ On the expanded job row (**View Existing Jobs** → select the job), the replica
 | Metric | What it means | How to read it |
 |--------|---------------|----------------|
 | **Replication Changes Played** | Count of source change-stream events applied to the target | Climbs as changes are applied, then **stabilizes** once the backlog is drained. **This is your convergence signal.** |
-| **Time Since Last Change** | Time since the **last source change to that collection** | **Grows whenever that collection isn't being written to** — it is *not* a lag figure. A small value just means a change happened recently; a large, growing one after you stop writing is expected. |
+| **Time Since Last Change** | Time since the **last source change to that collection** | **Grows whenever that collection isn't being written to** — it is *not* a lag figure. A small value just means a change happened recently; a large, growing value during a quiet interval is expected. |
 
-The signal that the replication gap is effectively zero is **Replication Changes Played holding steady** after you stop generating writes — every captured change has been applied, with no pending backlog. Because only `books` receives writes in this lab (comments), only `books` shows Replication Changes Played climbing; `genres` is never written to, so its count stays at `0` (shown as `--`) and its **Time Since Last Change** simply keeps growing — both are healthy.
+The signal that the replication gap is effectively zero is **Replication Changes Played holding steady** once you pause adding manual test comments — every captured change has been applied, with no pending backlog. Keep the application online; you are only pausing your test activity long enough to observe convergence. Because only `books` receives writes in this lab (comments), only `books` shows Replication Changes Played climbing; `genres` is never written to, so its count stays at `0` (shown as `--`) and its **Time Since Last Change** simply keeps growing — both are healthy.
 
 ## Watch a live write replicate
 
@@ -47,12 +47,12 @@ Both conditions must hold together before you cut over.
 
 ### Condition 1 — Replication gap = 0
 
-**Stop generating writes** in the app for a moment so any in-flight changes drain, then confirm on the dashboard:
+Leave the app running, but pause adding manual test comments for a moment so any in-flight changes drain, then confirm on the dashboard:
 
 - **Replication Changes Played** has **stabilized** (no longer climbing) for `books` — every captured change has been applied.
-- Once you stop writing, **Time Since Last Change** simply keeps growing; that's the expected idle state, not lag.
+- While no new test comment is being added, **Time Since Last Change** simply keeps growing; that's the expected idle state, not lag.
 
-A stable Replication Changes Played with no new writes means the target has applied everything the source has produced — the gap is ~0.
+A stable Replication Changes Played between manual test comments means the target has applied everything the source has produced — the gap is ~0.
 
 ### Condition 2 — Document counts match
 
@@ -78,7 +78,7 @@ If the counts differ, the replication gap isn't actually closed — let replicat
 
 ## Success criteria
 
-Both cutover conditions hold: the replication gap is zero (**Replication Changes Played** stable after you stop writing) **and** `countDocuments()` for `books` and `genres` is equal on the source and the target (93,624 / 1) — and you've seen your live writes land on the target. You are clear to cut over, which you do in **Task 06**.
+Both cutover conditions hold: the replication gap is zero (**Replication Changes Played** stable while no new test comment is being added) **and** `countDocuments()` for `books` and `genres` is equal on the source and the target (93,624 / 1) — and you've seen your live writes land on the target. Keep the app online and continue to **Task 06**, where you update its connection, briefly restart it onto Azure, and click **Cutover** last.
 
 ## Troubleshooting
 
