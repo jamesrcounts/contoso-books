@@ -49,7 +49,7 @@ Open `http://localhost:3000` and exercise the app:
 2. **View detail** — open a book; the detail page renders with full fields.
 3. **Write** — add a comment on a book and reload to confirm it persists.
 
-This is the same known-good behavior from earlier in the lab, now served from the local DocumentDB container — and because the engine matches production, anything that works here works in Azure.
+This is the same known-good behavior from earlier in the lab, now served from the local DocumentDB container. Because the container runs the same DocumentDB engine, engine features and query behavior have parity with Azure DocumentDB. Just as importantly, attempts to use unsupported engine features fail during local development, shifting compatibility feedback left before deployment. This parity applies to the database engine; Azure-managed capabilities such as identity, networking, high availability, and service limits are still validated in Azure.
 
 ## Success criteria
 
