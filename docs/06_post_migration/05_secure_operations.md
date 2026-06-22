@@ -15,8 +15,8 @@ A hardened cluster you can't observe is only half-secured. This task turns on au
 
 1. On the cluster page, open **Monitoring → Diagnostic settings → Add diagnostic setting**.
 2. Name the setting — for example `cluster-audit-logs`.
-3. Tick the **audit** category group (it selects the cluster's **`vCoreMongoRequests`** log), choose **Send to Log Analytics workspace**, and pick **`<cluster>-logs`**. (Event Hub or Storage are also valid destinations for SIEM or long-term archival.)
-4. Save. Operations now have a queryable record of requests and access — confirm with `vCoreMongoRequests | take 10` in the workspace once logs begin flowing (a few minutes).
+3. Tick the **audit** category group (it selects the cluster's **`VCoreMongoRequests`** log), choose **Send to Log Analytics workspace**, and pick **`<cluster>-logs`**. (Event Hub or Storage are also valid destinations for SIEM or long-term archival.)
+4. Save. Operations now have a queryable record of requests and access — confirm with `VCoreMongoRequests | take 10` in the workspace once logs begin flowing (a few minutes).
 
 > **Enforce it.** There is a built-in Azure Policy, *"Enable logging by category group for microsoft.documentdb/mongoclusters to Log Analytics"*, that deploys this setting automatically on any cluster that lacks it — assign it so logging is never silently missing (see Task 06).
 
@@ -43,6 +43,6 @@ Then add the **Mongo request duration** metric (available because the cluster is
 
 ## Success criteria
 
-A diagnostic setting ships the cluster's **`vCoreMongoRequests`** (audit) logs to the pre-provisioned Log Analytics workspace, you can describe the log-based detection approach for Azure DocumentDB using Log Analytics or Microsoft Sentinel, and the Metrics page reads healthy with the Mongo request duration metric split by operation and error code.
+A diagnostic setting ships the cluster's **`VCoreMongoRequests`** (audit) logs to the pre-provisioned Log Analytics workspace, you can describe the log-based detection approach for Azure DocumentDB using Log Analytics or Microsoft Sentinel, and the Metrics page reads healthy with the Mongo request duration metric split by operation and error code.
 
 Continue to **Task 06** to cover resilience and governance.
