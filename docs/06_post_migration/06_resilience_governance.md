@@ -9,19 +9,30 @@ parent: "Exercise 06 - Post-Migration Hardening — Azure DocumentDB Security Gu
 
 **Azure DocumentDB security — backup and restore, and governance. SFI: secure operations and secure by design.**
 
-Hardening isn't done until the cluster can survive a bad day and the posture you just set can't silently drift. This task confirms backup/restore and puts guardrails around the configuration.
+Hardening isn't done until the cluster can survive a bad day and the posture you just set can't silently drift. This task reviews backup/restore, high availability, cross-region disaster recovery, and the guardrails around the configuration.
 
 ## Backup and recovery
 
 Azure DocumentDB creates backups **automatically** — there is nothing to enable. Confirm the recovery story:
 
-- **Retention** is fixed at **35 days** for standard tiers (backups are geo-redundant); it is not customer-configurable, and longer retention needs a support request.
+- **Retention depends on the cluster tier and state.** Backups for active regular-tier clusters, such as M40, are retained for **35 days**. Backups for active burstable M10, M20, and M25 clusters are retained for **7 days**. After a cluster is deleted, its backups are retained for **7 days**.
+- **Snapshot redundancy is regional.** In regions that support availability zones, backup snapshots are stored across three availability zones. This provides in-region zonal durability; it is not geo-redundant storage in a paired region.
 - **Point-in-time restore (PITR)** recovers to any moment in the window via the cluster's **Restore** action, which provisions a *new* cluster from the backup — making it one of the routes to move data onto a **customer-managed key** (Task 04): choose CMK while the restored cluster is created.
 - **Test it.** A backup you've never restored is a hope, not a plan. Periodically restore to a throwaway cluster and validate the data and app connectivity.
 
 ## High availability
 
-For production resilience, revisit **high availability** — Contoso's POC deploys `highAvailability.targetMode: 'Disabled'`; production would choose `SameZone` or `ZoneRedundantPreferred` for a hot standby. Note that a **restored cluster always comes up with HA disabled**, so re-enable it on the new cluster after a PITR.
+For production resilience, revisit **high availability** — Contoso's POC deploys `highAvailability.targetMode: 'Disabled'`; production would choose `SameZone` or `ZoneRedundantPreferred` for a hot standby. Note that a **restored cluster always comes up with HA disabled**, so re-enable it on the new cluster after a PITR. High availability protects against failures within a region; it is not a cross-region disaster-recovery strategy.
+
+## Cross-region disaster recovery
+
+Backups and point-in-time restore protect against accidental changes and support cluster recovery, but they are not a complete disaster-recovery solution. For a regional outage, plan for **cross-region replication** and application reconnection or failover.
+
+Define and validate the recovery objectives for the workload:
+
+- **Recovery point objective (RPO):** the maximum acceptable amount of data loss, measured in time.
+- **Recovery time objective (RTO):** the maximum acceptable time to restore service.
+- **Recovery exercise:** test replica promotion or failover, connection-string changes, application recovery, and data validation against the agreed RPO and RTO.
 
 ## Governance — enforce the posture
 
@@ -38,11 +49,12 @@ The cleanest control is to deploy hardened from the start. Contoso's POC cluster
 ## External resources
 
 - [Restore an Azure DocumentDB cluster](https://learn.microsoft.com/azure/documentdb/how-to-restore-cluster)
+- [Create a cross-region or same-region replica](https://learn.microsoft.com/azure/documentdb/how-to-cluster-replica)
 - [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
 
 ## Success criteria
 
-You can confirm automatic backups and describe PITR and restore-testing, name the governance guardrails (built-in logging policy, custom policies for the controls without built-ins, tagging), and articulate the secure-by-default template that bakes Tasks 02–05 into infrastructure-as-code.
+You can identify the retention window for each cluster tier and state, distinguish zonal snapshot storage from geo-redundancy, describe PITR and restore-testing, and explain how high availability, cross-region replication, RPO, and RTO fit into the recovery plan. You can also name the governance guardrails (built-in logging policy, custom policies for the controls without built-ins, tagging) and articulate the secure-by-default template that bakes Tasks 02–05 into infrastructure-as-code.
 
 ---
 
