@@ -32,7 +32,7 @@ Burstable tiers accumulate CPU credits and are economical when load is bursty, b
 Contoso's catalog is the seed dataset you will migrate in Exercise 04:
 
 - **~93,624 documents** in the `books` collection (plus a 1-document `genres` collection).
-- **Indexes** beyond the default `_id`: the app filters on `rating`, `bookformat`, and `genre` and sorts on `rating`, so secondary indexes on those fields are added after the load. Index size counts toward both storage *and* the working set you want resident in RAM.
+- **Indexes** — the source defines no secondary indexes beyond the default `_id`, which still consumes storage and working-set memory.
 - **Working set vs RAM** — the list page is read-heavy with paged scans and sorts. Keeping the hot documents and their indexes in memory avoids disk reads on every page. The tier's RAM should comfortably hold that working set.
 - **vCores for concurrency** — multiple users (and the app's infinite-scroll paging) issue overlapping queries. Dedicated vCores keep latency stable under that concurrency rather than throttling.
 - **Storage headroom** — the raw dataset is small, but you want room for indexes and future growth without resizing mid-lab.
@@ -40,7 +40,7 @@ Contoso's catalog is the seed dataset you will migrate in Exercise 04:
 ## Why Contoso uses M40 and 128 GB
 
 - **Tier = M40.** The dataset alone would run on a much smaller tier, but Contoso is standing this up as a **production** database and a production operator needs to see how it behaves. M40+ emits **database-level request metrics** (request rate, latency, error codes via the Mongo request-duration metric) — the signals Contoso relies on to watch SLAs, plan capacity, and triage incidents. M40 also supplies the dedicated vCores (and the IOPS/throughput that scale with them) to hold latency steady under the read-heavy, concurrent catalog traffic, well clear of the burstable range. You will use those request metrics yourself in Exercise 06.
-- **Storage = 128 GB.** Far more than ~96k book documents and their indexes need today, but Contoso provisions for the life of the catalog, not just its launch: a growing bookstore adds titles, comments, and indexes over time, and DocumentDB storage can only be **increased, never decreased**. Starting at 128 GB buys room to grow without a disruptive resize down the line.
+- **Storage = 128 GB.** Far more than ~96k book documents and their indexes need today, but Contoso provisions for the life of the catalog, not just its launch: a growing bookstore adds titles, comments, and indexes over time. DocumentDB storage can be **increased without downtime**, but it cannot be decreased. Starting at 128 GB provides room for growth while avoiding the need for an early capacity increase.
 
 > **Key takeaway:** compute and storage are chosen for *different* reasons — compute (M40) for the production observability, concurrency, and IOPS Contoso's workload needs, storage (128 GB) for capacity headroom as the catalog grows. You will set both explicitly in the Bicep parameters in the next task.
 
