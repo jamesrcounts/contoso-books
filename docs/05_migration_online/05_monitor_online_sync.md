@@ -87,4 +87,4 @@ Both cutover conditions hold: the replication gap is zero (**Replication Changes
 | **Replication Changes Played** keeps climbing and never stabilizes | App is under continuous write load | Briefly pause new writes (don't add comments) and let the backlog drain to confirm convergence. |
 | Target count is **lower** than source | Replication still draining | Wait, let **Replication Changes Played** stabilize, then re-run the counts block. |
 | Target count is **higher** than source | Leftover data from Exercise 04 not fully dropped | The target wasn't clean — this is why Task 01 drops `bookstore` and `migration_dlq`. Investigate before cutover; do not proceed. |
-| A live comment never appears on the target | Looking at the source, or a stale view | Verify you queried the **Azure** (`cosmos.azure.com`) connection and **Refresh** it — the migration creates `bookstore`, so the tree won't show it until you refresh. |
+| A live comment never appears on the target | Looking at the source, or a stale view | Verify you queried the **Azure DocumentDB cluster connection** and **Refresh** it — the migration creates `bookstore`, so the tree won't show it until you refresh. |

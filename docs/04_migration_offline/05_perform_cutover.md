@@ -61,7 +61,7 @@ The app is now reading all of this from Azure DocumentDB, not the local containe
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
 | `invalid key` / authentication error | Wrong username or password in the SRV string | Confirm `bookadmin` and the password you set in Exercise 02 Task 02; reset the password on the cluster if unsure. |
-| App still shows old/local data | `.env` still points at the local source string, or the app was not restarted | Confirm the value is the `cosmos.azure.com` SRV string and that you restarted `npm run develop`. |
+| App still shows old/local data | `.env` still points at the local source string, or the app was not restarted | Confirm the value is the Azure DocumentDB SRV connection string from Exercise 02 Task 03 and that you restarted `npm run develop`. |
 
 ---
 

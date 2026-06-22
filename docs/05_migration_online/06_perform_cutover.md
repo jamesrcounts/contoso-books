@@ -130,5 +130,5 @@ Writes to the source were stopped, the migration job was finalized with **Cutove
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| App still shows old data, or the home page is empty | `.env` not repointed, or the app wasn't restarted | Confirm the value is the `cosmos.azure.com` SRV string and that you restarted `npm run develop` — the connect log should read `DocumentDB connected to` the cluster host. |
+| App still shows old data, or the home page is empty | `.env` not repointed, or the app wasn't restarted | Confirm the value is the Azure DocumentDB SRV connection string from Exercise 02 Task 03 and that you restarted `npm run develop` — the connect log should read `DocumentDB connected to` the cluster host. |
 | A new comment doesn't persist after reload | Write failed against the target | Check the server log for write errors; confirm the SRV string includes `retrywrites=false` as provided. |

@@ -9,12 +9,12 @@ parent: "Exercise 05 - Migration Execution — Online (Change Stream)"
 
 Exercise 04's offline migration left two databases on the Azure DocumentDB cluster: **`bookstore`** (the migrated catalog — `books` and `genres`) and a separate **`migration_dlq`** database (a dead-letter database the migration service creates to capture any documents it couldn't apply; it may be empty, but it is a distinct database). Before running the online migration you need a **clean target** — an online job expects to create the collections itself during its initial load, and leftover documents would corrupt the count-matching check at cutover (Task 05). In this task you drop **both** databases so the cluster is empty again, then repoint the application back at the local source for the online run.
 
-> **This is the *target* (Azure), not the source.** You are dropping data on the DocumentDB cluster only. The local MongoDB container — Contoso's live source — is never touched here. Double-check you are operating against the Azure cluster connection (the one whose connection string ends in `cosmos.azure.com`) before dropping anything.
+> **This is the *target* (Azure), not the source.** You are dropping data on the DocumentDB cluster only. The local MongoDB container — Contoso's live source — is never touched here. Double-check you are operating against the Azure DocumentDB cluster connection registered in Exercise 02 Task 03 before dropping anything.
 
 ## Drop the target databases
 
 1. In VS Code, open the **DocumentDB** extension from the Activity Bar.
-2. In **DocumentDB Connections**, expand the Azure cluster connection you registered in Exercise 02 Task 03 (the one whose connection string ends in `cosmos.azure.com`).
+2. In **DocumentDB Connections**, expand the Azure DocumentDB cluster connection you registered in Exercise 02 Task 03.
 3. Right-click the **bookstore** database node and select **Delete Database** (confirm when prompted).
 4. Right-click the **migration_dlq** database node and select **Delete Database** as well.
 
