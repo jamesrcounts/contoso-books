@@ -69,7 +69,7 @@ The DNS chain shows the path is private; running the workload shows it still fun
 
 ## External resources
 
-- [Configure Azure Private Link for an Azure Cosmos DB account](https://learn.microsoft.com/azure/cosmos-db/how-to-configure-private-endpoints)
+- [Enable private access in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/how-to-private-link)
 - [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
 
 ## Success criteria
