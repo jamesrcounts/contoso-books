@@ -1,6 +1,6 @@
 title: Contoso Books Training Lab
 description: >-
-  A hands-on workshop for building on Azure DocumentDB (vCore), using the
+  A hands-on MongoDB-to-Azure DocumentDB migration workshop using the
   Contoso Books sample application.
 
 theme: just-the-docs

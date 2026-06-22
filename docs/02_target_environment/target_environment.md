@@ -14,7 +14,7 @@ In this exercise you will provision the Azure DocumentDB cluster that will becom
 ## Learning Objectives
 
 - Provision an Azure DocumentDB cluster using Bicep, selecting a cluster tier, storage size, and MongoDB version
-- Understand the vCore capacity model — compute (cluster tier: vCores + RAM) and storage are selected and scaled independently
+- Understand how capacity is provisioned — compute (cluster tier: vCores + RAM) and storage are selected and scaled independently
 - Map the source workload to a starting cluster tier and storage size: data plus indexes, working set vs RAM, vCores for concurrency, storage with growth headroom
 - Retrieve the connection string and store it for later use
 - Configure public network access (firewall rule for the lab client IP) and confirm connectivity — a new cluster blocks all connections by default

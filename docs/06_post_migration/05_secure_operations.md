@@ -9,7 +9,7 @@ parent: "Exercise 06 - Post-Migration Hardening — Azure DocumentDB Security Gu
 
 **Azure DocumentDB security — monitoring and response. SFI: monitor and detect.**
 
-A hardened cluster you can't observe is only half-secured. This task turns on audit logging, sets the realistic detection approach for vCore, and confirms the operational health signals.
+A hardened cluster you can't observe is only half-secured. This task turns on audit logging, establishes the detection approach for Azure DocumentDB, and confirms the operational health signals.
 
 ## Route diagnostic and audit logs to Log Analytics
 
@@ -20,7 +20,7 @@ A hardened cluster you can't observe is only half-secured. This task turns on au
 
 > **Enforce it.** There is a built-in Azure Policy, *"Enable logging by category group for microsoft.documentdb/mongoclusters to Log Analytics"*, that deploys this setting automatically on any cluster that lacks it — assign it so logging is never silently missing (see Task 06).
 
-## Threat detection on vCore
+## Threat detection for Azure DocumentDB
 
 Microsoft Defender for Cloud's Cosmos DB plan protects **only the API for NoSQL** — it covers no MongoDB flavor, vCore included — so no Defender plan is watching this cluster. Detection here is **log-based**: build alert rules over the diagnostic logs in Log Analytics — or forward them to **Microsoft Sentinel** — for signals such as repeated authentication failures, access from unexpected locations, or anomalous query volume. These are exactly the access-pattern anomalies Defender flags for NoSQL; on vCore you assemble them yourself.
 

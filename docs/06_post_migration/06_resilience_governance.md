@@ -13,7 +13,7 @@ Hardening isn't done until the cluster can survive a bad day and the posture you
 
 ## Backup and recovery
 
-vCore backs up **automatically** — there is nothing to enable. Confirm the recovery story:
+Azure DocumentDB creates backups **automatically** — there is nothing to enable. Confirm the recovery story:
 
 - **Retention** is fixed at **35 days** for standard tiers (backups are geo-redundant); it is not customer-configurable, and longer retention needs a support request.
 - **Point-in-time restore (PITR)** recovers to any moment in the window via the cluster's **Restore** action, which provisions a *new* cluster from the backup — making it one of the routes to move data onto a **customer-managed key** (Task 04): choose CMK while the restored cluster is created.
@@ -28,7 +28,7 @@ For production resilience, revisit **high availability** — Contoso's POC deplo
 Manual hardening drifts. Use **Azure Policy** to keep it in place:
 
 - A **built-in** policy enforces diagnostic logging for `mongoClusters` (Task 05).
-- vCore has **no built-in** policies for public-access, disable-native-auth, or CMK — author **custom** `audit`/`deny` policies over the `Microsoft.DocumentDB/mongoClusters` properties (`publicNetworkAccess`, `authConfig`, `encryption`) to prevent a non-compliant cluster from being created.
+- The service has **no built-in** policies for public access, disabling native authentication, or CMK — author **custom** `audit`/`deny` policies over the `Microsoft.DocumentDB/mongoClusters` properties (`publicNetworkAccess`, `authConfig`, `encryption`) to prevent a non-compliant cluster from being created.
 - **Tag** the cluster with owner, environment, and data classification for inventory and compliance reporting.
 
 ## Secure by default — the hardened template

@@ -25,7 +25,7 @@ See the project memory `always-edit-in-worktree`.
 
 This repository is a Jekyll-based training lab (just-the-docs theme, published to GitHub Pages). The instructional content lives under `docs/` and its image assets under `media/`; the companion sample application the exercises operate on lives entirely under `src/`. The two trees are siblings and never interleave.
 
-The sample app (`src/`) is a bookstore demonstrating Azure DocumentDB (the vCore-based, MongoDB wire-protocol-compatible service). Express + native `mongodb` driver on the backend, Vite/React on the frontend.
+The sample app (`src/`) is the bookstore companion application for the Azure DocumentDB migration workshop. It uses Express with the native `mongodb` driver on the backend and Vite/React on the frontend.
 
 ## Repo structure & taxonomy
 

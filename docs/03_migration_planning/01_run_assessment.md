@@ -42,7 +42,7 @@ Select **Run Validation**. The extension verifies credentials, prerequisites, an
 The wizard asks for four inputs. Enter them exactly as follows:
 
 - **Assessment name** — `contoso-books-source`.
-- **Offering** — select **vCore** (Azure DocumentDB is the vCore-based service being targeted).
+- **Offering** — select **vCore**. This is the option the assessment wizard currently uses for Azure DocumentDB.
 - **MongoDB Log Folder Path** — **leave this empty.** The MongoDB instance runs in a container that writes its log to the container's stdout (viewable with `docker logs mongodb`), not to a host folder you could point at. With no path supplied, the assessment reads feature usage from the source's `serverStatus` and reports Features findings at the **instance level**, which is all that is necessary at this point.
 - **Data Assessment Logs** — **leave this empty.** This field ingests JSON produced by the separate Data Assessment CLI, which is not used here.
 
