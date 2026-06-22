@@ -22,7 +22,7 @@ A hardened cluster you can't observe is only half-secured. This task turns on au
 
 ## Threat detection for Azure DocumentDB
 
-Microsoft Defender for Cloud's Cosmos DB plan protects **only the API for NoSQL** — it covers no MongoDB flavor, vCore included — so no Defender plan is watching this cluster. Detection here is **log-based**: build alert rules over the diagnostic logs in Log Analytics — or forward them to **Microsoft Sentinel** — for signals such as repeated authentication failures, access from unexpected locations, or anomalous query volume. These are exactly the access-pattern anomalies Defender flags for NoSQL; on vCore you assemble them yourself.
+Azure DocumentDB currently has no dedicated Microsoft Defender for Databases workload-protection offering. Detection for this cluster is therefore **log-based**: build alert rules over the diagnostic logs in Log Analytics — or forward them to **Microsoft Sentinel** — for signals such as repeated authentication failures, access from unexpected locations, or anomalous query volume.
 
 ## Confirm the operational health signals
 
@@ -39,9 +39,10 @@ Then add the **Mongo request duration** metric (available because the cluster is
 
 - [Monitor Azure DocumentDB diagnostics logs](https://learn.microsoft.com/azure/documentdb/how-to-monitor-diagnostics-logs)
 - [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
+- [Microsoft Defender for Databases overview](https://learn.microsoft.com/azure/defender-for-cloud/defender-for-databases-overview)
 
 ## Success criteria
 
-A diagnostic setting ships the cluster's **`vCoreMongoRequests`** (audit) logs to the pre-provisioned Log Analytics workspace, you can describe the log-based detection approach for vCore (and why Defender — NoSQL-only — isn't the answer here), and the Metrics page reads healthy with the Mongo request duration metric split by operation and error code.
+A diagnostic setting ships the cluster's **`vCoreMongoRequests`** (audit) logs to the pre-provisioned Log Analytics workspace, you can describe the log-based detection approach for Azure DocumentDB using Log Analytics or Microsoft Sentinel, and the Metrics page reads healthy with the Mongo request duration metric split by operation and error code.
 
 Continue to **Task 06** to cover resilience and governance.
