@@ -1,94 +1,125 @@
 # Contoso Books
 
-Contoso Books is a sample books catalog application that demonstrates the capabilities of Azure DocumentDB (the vCore-based, MongoDB wire-protocol-compatible service).
+Contoso Books is the companion application for the **MongoDB to Azure DocumentDB Migration Workshop**. The workshop follows a realistic migration from a local MongoDB workload to Azure DocumentDB, covering environment setup, assessment, offline and online migration, validation, and the post-migration developer workflow.
 
-Some of the functionalities being demonstrated are:
+![Contoso Books main page](media/contoso-books-main-page.png)
 
-- Connecting to the database & the client configuration
-- Reads & Queries
-- Sorting & Indexing
-- Updates
-- Using different operators
-- Regex queries
-- Aggregation pipelines
+## What the workshop demonstrates
 
-## Deploy the app quickly
+- Running the Contoso Books application locally against MongoDB
+- Configuring MongoDB as a single-node replica set for change-stream support
+- Provisioning and connecting to an Azure DocumentDB target cluster
+- Assessing MongoDB workload compatibility before migration
+- Planning and executing offline snapshot migrations
+- Executing online migrations while the source application continues accepting writes
+- Validating document counts, application behavior, and data integrity after cutover
+- Exploring migrated data, indexes, scaling, and metrics with Azure tools
+- Using the same MongoDB driver-based application across local and Azure environments by changing its connection string
+- Cleaning up the local and Azure resources created during the workshop
 
-Clone this repository and navigate to the root of the directory.
+## Workshop exercises
 
-Follow the steps below to deploy the app with minimal effort and begin experimenting with the application and the codebase.
+| # | Exercise | Duration |
+|---|---|---|
+| 01 | [Environment Setup — Containerized MongoDB & Client App](docs/01_environment_setup/environment_setup.md) | ~40 min |
+| 02 | [Target Environment Setup — Azure DocumentDB](docs/02_target_environment/target_environment.md) | ~25 min |
+| 03 | [Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code](docs/03_migration_planning/migration_planning.md) | ~35 min |
+| 04 | [Migration Execution — Offline (Snapshot)](docs/04_migration_offline/migration_offline.md) | ~20 min |
+| 05 | [Migration Execution — Online (Change Stream)](docs/05_migration_online/migration_online.md) | ~25 min |
+| 06 | [Post-Migration — DocumentDB VS Code Extension & Azure Portal](docs/06_post_migration/post_migration.md) | ~30 min |
+| 07 | [Developer Workflow — A Local DocumentDB Development Loop](docs/07_developer_workflow/developer_workflow.md) | ~15 min |
+| 08 | [Cleanup](docs/08_cleanup/cleanup.md) | ~10 min |
 
-### Deploy the resources to Azure
+Start with the [workshop guide](docs/index.md) for the complete scenario, prerequisites, and exercise sequence.
 
-The Bicep template at [src/deployment/main.bicep](src/deployment/main.bicep) provisions an Azure DocumentDB cluster (and a firewall rule for your client IP). Deploy it with the Azure CLI into a resource group:
+## Run the sample application locally
 
-```powershell
-az group create --name rg-documentdb-lab --location westus3
+The sample application runs locally. Azure resources are introduced only when the workshop reaches the migration exercises.
 
-az deployment group create `
-  --resource-group rg-documentdb-lab `
-  --name main `
-  --template-file src/deployment/main.bicep `
-  --parameters adminUsername=bookadmin clientIpAddress=<your-public-ip>
+### Prerequisites
+
+- Docker Desktop
+- Node.js 20.19 or later
+- MongoDB Shell (`mongosh`)
+- Git
+
+The complete workshop also requires an Azure subscription, Azure CLI, VS Code, and the extensions listed in the [lab machine setup](docs/01_environment_setup/00_lab_machine_setup.md).
+
+### 1. Start MongoDB
+
+Start MongoDB 7.0 in a local container with replica set mode enabled:
+
+```sh
+docker run -d --name mongodb -p 27017:27017 mongo:7.0 --replSet rs0
 ```
 
-You will be prompted for the cluster administrator password (a `@secure()` parameter). The application itself runs locally — see [Connect to the application](#connect-to-the-application) below.
+After the container finishes starting, initialize the single-node replica set:
 
-### Import the sample dataset into the Azure DocumentDB cluster
-
-1. Navigate to folder ./src/deployment/seed using Git Bash.
-
-2. Update .env file in this path by specifying value for "BOOKSTORE_SEED_DB_CONNECTION_STRING" of the cluster created by the deployment template in the previous step.
-   You can get the connection string from Azure portal > DocumentDB cluster resource > Connection strings blade.
-   Example of updated .env file:
-   BOOKSTORE_SEED_DB_CONNECTION_STRING="mongodb+srv://<user>:<password>@<cluster-name>.global.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
-
-3. Install dependencies and run the seed script with `npm install && npm run seed`. It may take a few minutes to seed the data into books and genres collections.\
-   Item count of books collection is 93,624 and genres collection has only 1 item. \
-   Successful run result looks like this:
-
-```
-$$$ Seeding data started 9/30/2021, 10:29:05 AM
-Fetching books
-Fetching genres
-Seeding completed on genres Collection 9/30/2021, 10:29:10 AM
-Seeding completed on books Collection 9/30/2021, 10:39:40 AM
+```sh
+mongosh --eval 'rs.initiate({_id: "rs0", members: [{_id: 0, host: "localhost:27017"}]})'
 ```
 
-> **Indexing note:** DocumentDB (vCore) indexes only `_id` by default, so the list page's filter and sort queries scan the whole collection until you add indexes. This app's list page filters on `rating`, `bookformat`, and `genre` and sorts on `rating`; against a freshly-seeded cluster those queries perform a full collection scan over 93,624 documents. After seeding, run the following in `mongosh` to make them performant:
->
-> ```js
-> use bookstore
-> db.books.createIndex({ rating: 1 })
-> db.books.createIndex({ bookformat: 1 })
-> db.books.createIndex({ genre: 1 })
-> ```
+### 2. Install the application
 
-### Connect to the application
+From the repository root:
 
-The application runs locally. From `src/`, install dependencies and start both tiers:
-
-```powershell
+```sh
+cd src
 npm install
+```
+
+Create `src/server/.env` with the local connection settings:
+
+```dotenv
+BOOKSTORE_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
+PORT=8080
+```
+
+### 3. Import the sample dataset
+
+The dataset is bundled with the repository. Create `src/deployment/seed/.env` with the seeder's connection setting:
+
+```dotenv
+BOOKSTORE_SEED_DB_CONNECTION_STRING=mongodb://localhost:27017/?replicaSet=rs0
+```
+
+Then run the Node.js seeder:
+
+```sh
+cd deployment/seed
+npm install
+npm run seed
+cd ../..
+```
+
+The seeder imports the bundled data into the `books` and `genres` collections in the `bookstore` database.
+
+For responsive filtering and sorting over the full dataset, create the application indexes:
+
+```javascript
+mongosh
+use bookstore
+db.books.createIndex({ rating: 1 })
+db.books.createIndex({ bookformat: 1 })
+db.books.createIndex({ genre: 1 })
+exit
+```
+
+### 4. Start the application
+
+From `src/`, start the Express API and Vite client:
+
+```sh
 npm run develop
 ```
 
-This runs the API server (port 8080) and the Vite dev server (port 3000); open `http://localhost:3000` to browse the catalog. Point the app at your cluster by setting `BOOKSTORE_DB_CONNECTION_STRING` to the connection string from the previous section.
+Open <http://localhost:3000> in a browser. The API runs on port `8080` and the Vite development server proxies application requests to it.
 
-<!-- TODO: Replace this screenshot — the current image (cosmosbookstoremainpage.png) shows a
-     Cosmos DB reference in the UI. Retake it, rename the file to drop "cosmos"
-     (e.g. contosobooksmainpage.png), and update the path below. -->
-![Contoso Books main page](src/deployment/docs/images/cosmosbookstoremainpage.png)
+## Dataset credits
 
-## Dataset Credits
-
-The dataset used in this application is ["GoodReads 100k books"](https://www.kaggle.com/mdhamani/goodreads-books-100k) dataset from Kaggle.
+The bundled data is derived from the [GoodReads 100k books](https://www.kaggle.com/datasets/mdhamani/goodreads-books-100k) dataset on Kaggle. See the [seed data documentation](src/deployment/seed/data/README.md) for its license, document shape, and regeneration instructions.
 
 ## References
 
-- [What is Azure DocumentDB?](https://learn.microsoft.com/azure/documentdb/introduction)
-- [DocumentDB feature compatibility](https://learn.microsoft.com/azure/documentdb/compatibility-features)
-
-## License
-
-**Contoso Books** is licensed under the MIT license. See the [LICENSE](./LICENSE.txt) file for more details.
+- [Azure DocumentDB documentation](https://learn.microsoft.com/azure/documentdb/)
+- [Azure DocumentDB feature compatibility](https://learn.microsoft.com/azure/documentdb/compatibility-features)
