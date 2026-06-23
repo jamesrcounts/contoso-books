@@ -13,7 +13,7 @@ Now you remediate the `$function` finding to keep the reading-insights report wo
 
 The `$function` body is a plain `if`/`else` ladder over the `pages` field. The aggregation framework has a native operator for exactly that — **`$switch`**, which evaluates a list of `case`/`then` branches and falls back to a `default`. It runs inside the supported expression engine, with no server-side JavaScript.
 
-Open [readingInsights.js](src/server/src/db/readingInsights.js) and replace the `$addFields` stage.
+Open [readingInsights.js](../../src/server/src/db/readingInsights.js) and replace the `$addFields` stage.
 
 **Before** — server-side JavaScript (unsupported on DocumentDB):
 

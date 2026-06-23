@@ -75,7 +75,7 @@ page count; in the standard seed dataset every book has one, so it does not show
 ## How the report is built
 
 The endpoint is a thin route over an aggregation pipeline in
-[readingInsights.js](src/server/src/db/readingInsights.js). The first stage classifies each
+[readingInsights.js](../../src/server/src/db/readingInsights.js). The first stage classifies each
 book into a tier with a `$function` operator that executes a JavaScript function **inside the
 database engine**:
 
