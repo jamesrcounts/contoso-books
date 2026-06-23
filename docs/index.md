@@ -29,7 +29,7 @@ Your job is to plan and execute that migration without disrupting the developmen
 | Azure CLI | v2.60 or later — [install guide](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli) |
 | Docker Desktop | Required for the local MongoDB and DocumentDB containers |
 | VS Code | With MongoDB extension and Azure extensions |
-| Node.js (or Python) | TBD — matches the client app stack |
+| Node.js | v20.19 or later — required by the application and seed tooling |
 | Git | Any recent version |
 | MongoDB Shell (`mongosh`) | v2.x — [install guide](https://www.mongodb.com/docs/mongodb-shell/install/) |
 | MongoDB Database Tools | `mongodump` / `mongorestore` — installed in Exercise 01 setup |
