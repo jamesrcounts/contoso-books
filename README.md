@@ -19,18 +19,18 @@ Contoso Books is the companion application for the **MongoDB to Azure DocumentDB
 
 ## Workshop exercises
 
-| # | Exercise | Duration |
-|---|---|---|
-| 01 | [Environment Setup — Containerized MongoDB & Client App](docs/01_environment_setup/environment_setup.md) | ~40 min |
-| 02 | [Target Environment Setup — Azure DocumentDB](docs/02_target_environment/target_environment.md) | ~25 min |
-| 03 | [Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code](docs/03_migration_planning/migration_planning.md) | ~35 min |
-| 04 | [Migration Execution — Offline (Snapshot)](docs/04_migration_offline/migration_offline.md) | ~20 min |
-| 05 | [Migration Execution — Online (Change Stream)](docs/05_migration_online/migration_online.md) | ~25 min |
-| 06 | [Post-Migration — DocumentDB VS Code Extension & Azure Portal](docs/06_post_migration/post_migration.md) | ~30 min |
-| 07 | [Developer Workflow — A Local DocumentDB Development Loop](docs/07_developer_workflow/developer_workflow.md) | ~15 min |
-| 08 | [Cleanup](docs/08_cleanup/cleanup.md) | ~10 min |
+| # | Exercise |
+|---|---|
+| 01 | [Environment Setup — Containerized MongoDB & Client App](docs/01_environment_setup/environment_setup.md) |
+| 02 | [Target Environment Setup — Azure DocumentDB](docs/02_target_environment/target_environment.md) |
+| 03 | [Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code](docs/03_migration_planning/migration_planning.md) |
+| 04 | [Migration Execution — Offline (Snapshot)](docs/04_migration_offline/migration_offline.md) |
+| 05 | [Migration Execution — Online (Change Stream)](docs/05_migration_online/migration_online.md) |
+| 06 | [Post-Migration — DocumentDB VS Code Extension & Azure Portal](docs/06_post_migration/post_migration.md) |
+| 07 | [Developer Workflow — A Local DocumentDB Development Loop](docs/07_developer_workflow/developer_workflow.md) |
+| 08 | [Cleanup](docs/08_cleanup/cleanup.md) |
 
-Start with the [workshop guide](docs/index.md) for the complete scenario, prerequisites, and exercise sequence.
+Start with the [workshop guide](docs/index.md) for the complete scenario, prerequisites, exercise sequence, and current duration estimates.
 
 ## Run the sample application locally
 
