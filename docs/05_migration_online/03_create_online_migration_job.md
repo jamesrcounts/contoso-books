@@ -59,11 +59,11 @@ Select **Next**.
 
 Because you chose **Private**, this step wires the migration service into your lab virtual network so it can reach both the source VM and the cluster's private endpoint — the same configuration you set up for the offline job in Exercise 04.
 
-1. **Source virtual network** and **target virtual network** — select the **same** network, `vm-documentdb-labVNET`, for both (just as in Exercise 04). After you pick the resource group, the network is selected automatically.
+1. **Source virtual network** and **target virtual network** — select the **same** network, `vm-docdb-labVNET`, for both (just as in Exercise 04). After you pick the resource group, the network is selected automatically.
 2. **DMS CIDR range** — select the **same** **`172.28.0.0/16`** you used for the offline job. Because you are reusing it, the **Network Contributor** grant you ran in Exercise 04 still applies, so there is nothing new to grant here. (The wizard may still display the `New-AzRoleAssignment` script; you already ran it in Exercise 04, so you can skip it.) Confirm the grant is in place if you want:
 
    ```powershell
-   az role assignment list --scope (az network vnet show -g rg-documentdb-lab -n vm-documentdb-labVNET --query id -o tsv) --query "[?roleDefinitionName=='Network Contributor'].{role:roleDefinitionName, principalType:principalType, principalId:principalId}" -o table
+   az role assignment list --scope (az network vnet show -g rg-documentdb-lab -n vm-docdb-labVNET --query id -o tsv) --query "[?roleDefinitionName=='Network Contributor'].{role:roleDefinitionName, principalType:principalType, principalId:principalId}" -o table
    ```
 
    One `ServicePrincipal` row with **Network Contributor** means it's set.
@@ -94,7 +94,7 @@ Review the **Confirm and start migration** summary and check it matches what you
 - **Source connection string** `mongodb://bookadmin:bookpass123@10.0.0.5:27017/?replicaSet=rs0&authSource=admin`
 - **Target account** — your subscription, `rg-documentdb-lab`, account name `contosobooks…`, the connection string, and the **Private endpoint** (`…/privateEndpoints/contosobooks…-pe`)
 - **DMS** `dms-documentdb-lab`
-- **Source** and **target virtual network** both `vm-documentdb-labVNET`
+- **Source** and **target virtual network** both `vm-docdb-labVNET`
 - **DMS CIDR range** `172.28.0.0/16`
 - **Collections to migrate** — Count **2**: `books` and `genres`
 - **Copy indexes from source: Yes — drop target first, then migrate** (the job recreates the source indexes on the target, dropping any existing target collection first)
@@ -107,7 +107,7 @@ Once the job is created you are redirected to the **View Existing Jobs** page, w
 ## Success criteria
 
 - A migration job exists in **Online** / **Private** mode, with the Exercise 01 Task 02 source connection (the VM private IP, replica set) and your Azure DocumentDB cluster (via its private endpoint) as target, scoped to the `books` and `genres` collections.
-- The Exercise 04 private-connectivity setup — the Network Contributor grant on `vm-documentdb-labVNET` and the `allow-dms-mongodb` NSG rule — is confirmed still in place.
+- The Exercise 04 private-connectivity setup — the Network Contributor grant on `vm-docdb-labVNET` and the `allow-dms-mongodb` NSG rule — is confirmed still in place.
 - The job has been started and now appears under **View Existing Jobs**, with the initial load running.
 
 ## Troubleshooting

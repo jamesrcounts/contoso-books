@@ -17,10 +17,10 @@ param adminPassword string
 param clientIpAddress string
 
 @description('Name of the existing virtual network (created with the lab VM) that the private endpoint joins.')
-param vnetName string = 'vm-documentdb-labVNET'
+param vnetName string = 'vm-docdb-labVNET'
 
 @description('Name of the existing subnet that hosts the private endpoint.')
-param subnetName string = 'vm-documentdb-labSubnet'
+param subnetName string = 'vm-docdb-labSubnet'
 
 @description('Compute tier. This production-grade POC uses M40 so the database-level request metrics Contoso relies on (used in Exercise 06) are emitted.')
 param tier string = 'M40'

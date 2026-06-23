@@ -65,7 +65,7 @@ Select **Next**.
 
 Because you chose **Private**, this step wires the migration service into your lab virtual network so it can reach both the source VM and the cluster's private endpoint.
 
-1. **Source virtual network** and **target virtual network** — select the **same** network, `vm-documentdb-labVNET`, for both. Your source VM and the cluster's private endpoint both live in it, so a single VNet covers both sides. After you pick the resource group, the network is selected automatically.
+1. **Source virtual network** and **target virtual network** — select the **same** network, `vm-docdb-labVNET`, for both. Your source VM and the cluster's private endpoint both live in it, so a single VNet covers both sides. After you pick the resource group, the network is selected automatically.
 2. **DMS CIDR range** — select **`172.28.0.0/16`** from the dropdown. The migration service builds its own temporary virtual network on this range and peers it to yours, so choose a range that does **not** overlap your VNet's `10.0.0.0/16`.
 3. **Run the generated script.** The wizard displays an **Az PowerShell** script (`New-AzRoleAssignment`) that grants the migration service's identity the **Network Contributor** role on your VNet so it can create the peering. Copy it and run it **as shown** in a terminal. The first time, run `Connect-AzAccount` and sign in (the sign-in window may open **behind** VS Code — Alt+Tab).
 4. **Add the required inbound firewall rule.** The migration service connects to your source on port **27017** from the DMS CIDR range, so add an explicit inbound rule allowing it (substitute your DMS CIDR and your VM's NSG name if they differ):
@@ -90,14 +90,14 @@ These are the two collections that hold Contoso's catalog (93,624 books and the 
 
 ## Step 6 — Confirm and start
 
-Review the job summary. Confirm it reflects the private setup — **Connectivity: Private**, both the source and target virtual network are `vm-documentdb-labVNET`, the **DMS CIDR** is the range you entered, and the target shows your cluster's **private endpoint**. If anything is wrong, use **Edit Details** to step back; otherwise select **Start Migration**.
+Review the job summary. Confirm it reflects the private setup — **Connectivity: Private**, both the source and target virtual network are `vm-docdb-labVNET`, the **DMS CIDR** is the range you entered, and the target shows your cluster's **private endpoint**. If anything is wrong, use **Edit Details** to step back; otherwise select **Start Migration**.
 
 Once the job is created you are automatically redirected to the **View Existing Jobs** page, where you will track progress in the next task.
 
 ## Success criteria
 
 - A migration job exists in **Offline** / **Private** mode, with the Exercise 01 Task 02 source connection (addressed by the VM private IP) and your Azure DocumentDB cluster (via its private endpoint) as target, scoped to the `books` and `genres` collections.
-- The migration service has Network Contributor on `vm-documentdb-labVNET`, and your VM's NSG allows the DMS CIDR inbound on 27017.
+- The migration service has Network Contributor on `vm-docdb-labVNET`, and your VM's NSG allows the DMS CIDR inbound on 27017.
 - The job has been started and now appears under **View Existing Jobs**.
 
 ## Troubleshooting
