@@ -9,9 +9,9 @@ has_children: true
 
 ## Scenario Overview
 
-Contoso's catalog now runs on Azure DocumentDB, but the development team still writes and tests code against a local **MongoDB** container. That is a consistency gap: MongoDB supports features DocumentDB does not, so a developer can write code that passes locally and only fails once it reaches Azure. Exercise 03 hit exactly this — a server-side-JavaScript `$function` aggregation that DocumentDB rejects had to be rewritten before the migration could proceed.
+Contoso's catalog now runs on Azure DocumentDB, and the lab application is currently connected to it through passwordless OIDC. The development team's local database, however, is still a **MongoDB** container. That is a consistency gap: the wire protocol is the same, but the application-facing feature sets differ, so a developer can write code that passes locally and only fails once it reaches Azure. Exercise 03 hit exactly this — a server-side-JavaScript `$function` aggregation that DocumentDB rejects had to be rewritten before the migration could proceed.
 
-In this exercise you close the gap by moving local development onto a **local DocumentDB container** — the same open-source engine that backs the Azure service, run in Docker. With both ends speaking DocumentDB, the only thing that differs between a developer's machine and production is the connection string, and an unsupported feature now fails fast — locally — instead of in Azure.
+In this exercise you close the gap by moving local development onto a **local DocumentDB container** — the same open-source engine that backs the Azure service, run in Docker. This provides engine-level parity, so unsupported engine features fail during development instead of in Azure. Azure-managed capabilities such as identity, networking, high availability, and service limits still require validation in Azure; the application switches database backends through its connection string.
 
 ## Learning Objectives
 

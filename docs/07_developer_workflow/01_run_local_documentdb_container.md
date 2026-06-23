@@ -94,4 +94,4 @@ It returns nothing — the container starts empty (the built-in sample database 
 | `mongosh` reports a connection error right after `docker run` | The engine is still initializing | Wait a few seconds and retry; `docker logs documentdb` shows when the gateway is ready. |
 | A **TLS / certificate** error on connect | The connection string is missing the TLS options | Include both `tls=true` **and** `tlsAllowInvalidCertificates=true` — the container's certificate is self-signed. |
 
-The catalog lives in the `documentdb-data` volume, so it survives `docker stop` / `docker start` and a host reboot — the container restarts on its own and reconnects to the same data. (It is removed only when you delete the volume in Exercise 08.) With the container running, continue to **Task 02** to move Contoso's catalog into it.
+The catalog lives in the `documentdb-data` volume, so it survives `docker stop` / `docker start` and a host reboot — the container restarts on its own and reconnects to the same data. With the container running, continue to **Task 02** to move Contoso's catalog into it.
