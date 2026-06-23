@@ -16,7 +16,7 @@ Your job is to plan and execute that migration without disrupting the developmen
 
 - Run the Contoso app locally against a MongoDB container and confirmed it works end-to-end
 - Stood up the target Azure DocumentDB environment using Azure CLI and Bicep/scripts
-- Used Azure Migrate to discover and assess the source MongoDB instance
+- Used the Azure DocumentDB Migration Extension for VS Code to assess the source MongoDB workload
 - Executed a live migration from MongoDB to Azure DocumentDB
 - Validated that the application connects and functions correctly against DocumentDB
 - Moved local development onto a local DocumentDB container, so developers run the same engine locally as in production
