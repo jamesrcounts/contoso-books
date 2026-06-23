@@ -69,7 +69,7 @@ Both sides must return the same numbers:
 
 | Collection | Expected |
 |------------|----------|
-| `books` | 93,624 (plus any new books added during the lab — must match source) |
+| `books` | 93,624 — comment writes update existing documents and do not change the count |
 | `genres` | 1 |
 
 > **Use `countDocuments()`, not `count()` or the cached `estimatedDocumentCount()`.** `countDocuments()` performs an actual count and reflects the true current state on each side, which is what a cutover decision requires.

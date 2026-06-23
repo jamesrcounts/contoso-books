@@ -103,7 +103,7 @@ Cross-check directly against DocumentDB using the **DocumentDB extension's query
    })
    ```
 
-   This returns `{ books: 93624, genres: 1 }` (plus any books added during the lab).
+   This returns `{ books: 93624, genres: 1 }`. Comments are stored as updates to existing book documents, so they do not change these counts.
 
 2. Retrieve every commented book and confirm your comment landed on the target:
 

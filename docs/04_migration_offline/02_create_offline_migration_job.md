@@ -47,9 +47,10 @@ Once sign-in completes, the wizard can populate the Azure dropdowns in the next 
 Point the job at the cluster you provisioned in Exercise 02. The fields are briefly disabled while the wizard loads your subscription data, and each dropdown enables a moment after you make the previous selection — give them a second to populate.
 
 1. Select your **subscription**, then the **`rg-documentdb-lab`** resource group, then your cluster from the **Account name** dropdown (if it is the only cluster in the subscription, it may already be selected).
-2. The **connection string** is required and is not filled in for you. Rather than retype it, get it from the connection you already created: in the **DocumentDB** extension, right-click your **Azure cluster connection** (the one from Exercise 02 Task 03) and choose **Copy Connection String** — it includes the password — then paste it into the field.
+2. **Choose the private endpoint** — select your cluster's private endpoint (`contosobooks…-pe`) as how the migration reaches the target.
+3. The **connection string** is required and is not filled in for you. Rather than retype it, get it from the connection you already created: in the **DocumentDB** extension, right-click your **Azure cluster connection** (the one from Exercise 02 Task 03) and choose **Copy Connection String** — it includes the password — then paste it into the field.
 
-The connection string only gives the extension the cluster's **server name**. The **private DNS zone** you created in Exercise 02 resolves that name to the cluster's **private endpoint**, which is how the migration reaches the target privately.
+The connection string gives the extension the cluster's **server name**. The **private DNS zone** you created in Exercise 02 resolves that name to the selected private endpoint, keeping target traffic on the virtual network.
 
 > **Handle this string like a secret.** It contains your administrator password in clear text — never commit it or paste it into shared chat.
 
