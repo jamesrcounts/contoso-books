@@ -76,8 +76,13 @@ With both your admin access and the app's managed identity proven on Entra, turn
 The portal can't do this: its **Authentication methods** are radio buttons offering only *Native* or *Native + Microsoft Entra ID* — there's no Entra-only choice. Switch the cluster's `authConfig.allowedModes` over REST instead (on the VM, in PowerShell):
 
 ```powershell
+$clusterResourceId = az resource list `
+  --resource-group rg-documentdb-lab `
+  --resource-type Microsoft.DocumentDB/mongoClusters `
+  --query "[0].id" -o tsv
+
 az rest --method patch `
-  --url "https://management.azure.com/subscriptions/<subscription-id>/resourceGroups/rg-documentdb-lab/providers/Microsoft.DocumentDB/mongoClusters/<cluster-name>?api-version=2026-02-01-preview" `
+  --url "https://management.azure.com${clusterResourceId}?api-version=2026-02-01-preview" `
   --body '{\"properties\": {\"authConfig\": {\"allowedModes\": [\"MicrosoftEntraID\"]}}}'
 ```
 
