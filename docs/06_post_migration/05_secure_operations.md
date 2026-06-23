@@ -28,7 +28,9 @@ Azure DocumentDB currently has no dedicated Microsoft Defender for Databases wor
 
 Open **Monitoring → Metrics** and glance over the core resource metrics — post-migration, at idle, they should all read calm:
 
-- **CPU**, **Memory**, **Storage**, **IOPS**, **Network** — none pinned near 100%; M40 is comfortably ahead of this workload.
+- **CPU percent**, **Memory percent**, and **Storage percent** report utilization as percentages. Interpret memory against the workload's normal behavior rather than treating high utilization alone as unhealthy.
+- **IOPS** reports disk operations per second; **Network ingress** and **Network egress** report bytes. Compare them with a normal workload baseline and the cluster's capacity rather than a percentage threshold.
+- Establish a baseline, then alert on sustained deviations and workload-specific thresholds. At idle, this M40 cluster should remain near its post-migration baseline.
 
 Then add the **Mongo request duration** metric (available because the cluster is **M40 or higher**) and use **Apply splitting** to split by:
 
@@ -38,6 +40,7 @@ Then add the **Mongo request duration** metric (available because the cluster is
 ## External resources
 
 - [Monitor Azure DocumentDB diagnostics logs](https://learn.microsoft.com/azure/documentdb/how-to-monitor-diagnostics-logs)
+- [Supported Azure Monitor metrics for Azure DocumentDB clusters](https://learn.microsoft.com/azure/azure-monitor/reference/supported-metrics/microsoft-documentdb-mongoclusters-metrics)
 - [Security in Azure DocumentDB](https://learn.microsoft.com/azure/documentdb/security)
 - [Microsoft Defender for Databases overview](https://learn.microsoft.com/azure/defender-for-cloud/defender-for-databases-overview)
 
