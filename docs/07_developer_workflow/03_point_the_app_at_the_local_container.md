@@ -11,7 +11,7 @@ The container holds the catalog you moved in Task 02. Now point the application 
 
 ## Swap the connection string
 
-Open `src/server/.env` and set `BOOKSTORE_DB_CONNECTION_STRING` to the local DocumentDB container string (it currently holds the Azure SRV string from the Exercise 05 cutover). Leave `PORT` unchanged:
+Open `src/server/.env` and replace the passwordless Azure OIDC connection string configured in Exercise 06 with the local DocumentDB container string. Leave `PORT` unchanged:
 
 ```
 BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@10.0.0.5:10260/?tls=true&tlsAllowInvalidCertificates=true
