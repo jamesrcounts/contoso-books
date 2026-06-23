@@ -18,7 +18,7 @@ cd ../..
 npm run develop
 ```
 
-The `develop` script uses `concurrently` to run two processes: the Express API server (via `nodemon`) on port `8080`, which reads `BOOKSTORE_DB_CONNECTION_STRING` from `.env` and connects to MongoDB; and the Vite dev server on port `3000`, which serves the React UI and proxies API calls (`/books`, `/genres`, `/comment`) to the server on 8080. You browse the app on port 3000.
+The `develop` script uses `concurrently` to run two processes: the Express API server (via `nodemon`) on port `8080`, which reads `BOOKSTORE_DB_CONNECTION_STRING` from `.env` and connects to MongoDB; and the Vite dev server on port `3000`, which serves the React UI and proxies `/books` — including comment routes under `/books/:id/comments` — and `/genres` to the server on 8080. You browse the app on port 3000.
 
 ### Expected output
 

@@ -17,9 +17,9 @@ The offline path has no continuous synchronization — it is a one-shot copy, no
 
 ## Stop the app
 
-Click into the VS Code integrated terminal that is running `npm run develop` (started in [Exercise 01 Task 05](../01_environment_setup/05_run_the_app.md)) and press `Ctrl+C`. On PowerShell, each tier prompts `Terminate batch job (Y/N)?` — answer `Y`. Both tiers (`concurrently` is running the Express API server on port 8080 and the Vite dev server on port 3000) exit and you are returned to the PowerShell prompt.
+Click into the VS Code integrated terminal that is running `npm run develop` (started in [Exercise 01 Task 05](../01_environment_setup/05_run_the_app.md)) and press `Ctrl+C`. If `Terminate batch job (Y/N)?` appears, answer `Y` for each process; Git Bash may exit without displaying this prompt. Both tiers (`concurrently` is running the Express API server on port 8080 and the Vite dev server on port 3000) exit and you are returned to the shell prompt.
 
-### Example output
+### Example output (PowerShell)
 
 ```
 [0] [nodemon] starting `node server.js`

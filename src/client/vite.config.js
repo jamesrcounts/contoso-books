@@ -11,7 +11,6 @@ export default defineConfig({
     proxy: {
       '/books': 'http://localhost:8080',
       '/genres': 'http://localhost:8080',
-      '/comment': 'http://localhost:8080',
     },
   },
 })

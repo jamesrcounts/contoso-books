@@ -67,7 +67,7 @@ The assessment learns feature usage from `serverStatus`, which accumulates **sin
    docker restart mongodb
    ```
 
-   The running app reconnects to the container automatically once it is back up — you don't need to restart the app.
+   The app normally reconnects once MongoDB is ready. If the first request fails, wait a few seconds and retry; restart `npm run develop` only if it still cannot connect.
 
 2. With the app running (`npm run develop` from `src/`), call the rewritten report:
 
