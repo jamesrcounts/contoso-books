@@ -44,7 +44,7 @@ Manual hardening drifts. Use **Azure Policy** to keep it in place:
 
 ## Secure by default — the hardened template
 
-The cleanest control is to deploy hardened from the start. Contoso's POC cluster was provisioned open; its **production** template would bake the hardened settings in — `publicNetworkAccess: 'Disabled'`, Entra-only `authConfig`, the CMK `encryption` block, a zone-redundant `highAvailability` mode, and a `Microsoft.Insights/diagnosticSettings` resource shipped alongside the cluster — so a cluster is never briefly unhardened during provisioning.
+The cleanest control is to deploy hardened from the start. Contoso's POC cluster was provisioned for migration POC testing rather than with its final security posture; its **production** template would bake the hardened settings in — `publicNetworkAccess: 'Disabled'`, Entra-only `authConfig`, the CMK `encryption` block, a zone-redundant `highAvailability` mode, and a `Microsoft.Insights/diagnosticSettings` resource shipped alongside the cluster — so a cluster is never briefly unhardened during provisioning.
 
 ## External resources
 

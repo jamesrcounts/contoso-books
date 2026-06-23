@@ -9,7 +9,7 @@ has_children: true
 
 ## Scenario Overview
 
-The catalog is migrated and the application works against DocumentDB — but the cluster was provisioned wide open so the migration and earlier exercises could reach it: public network access on, native username/password authentication, platform defaults for logging and encryption. Before Contoso would put this in production, it needs a hardening pass.
+The catalog is migrated and the application works against DocumentDB. Its initial posture supports the migration lab: TLS is enabled, public network access is limited to the lab client's IP by a firewall rule, native username/password authentication is in use, encryption at rest is service-managed, diagnostic log export is not yet configured, and high availability is disabled. Before Contoso would put this in production, it needs a hardening pass.
 
 In this exercise you harden the Azure DocumentDB cluster using **Azure DocumentDB's security guidance** and the **Secure Future Initiative (SFI)** principles — *secure by design, secure by default, secure operations*. You work area by area: network isolation, identity, data protection, logging and detection, and resilience and governance.
 
