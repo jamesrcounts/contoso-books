@@ -7,7 +7,7 @@ parent: "Exercise 02 - Target Environment Setup — Azure DocumentDB"
 
 # Task 03 — Configure the Connection String and Confirm Connectivity
 
-With the cluster provisioned and reachable, the goal of this task is to **assemble** the Azure DocumentDB connection string and prove you can connect to the cluster with it. You retrieve the string from the portal, substitute your credentials, and use it to connect the **DocumentDB VS Code extension**. You do **not** repoint the app yet — it keeps targeting the local source through the Exercise 03 assessment, and the switch to Azure is the cutover step in Exercise 04 / 05. You will reuse this same string then (and when seeding data into Azure).
+With the cluster provisioned and reachable, the goal of this task is to **assemble** the Azure DocumentDB connection string and prove you can connect to the cluster with it. You retrieve the string from the portal, substitute your credentials, and use it to connect the **DocumentDB VS Code extension**. You do **not** repoint the app yet — it keeps targeting the local source through the Exercise 03 assessment, and the switch to Azure is the cutover step in Exercise 04 / 05. You will reuse this same string then.
 
 ## Retrieve it from the portal
 
@@ -40,7 +40,7 @@ BOOKSTORE_DB_CONNECTION_STRING=mongodb://bookadmin:bookpass123@10.0.0.5:27017/?r
 PORT=8080
 ```
 
-This is deliberate. The whole point of Exercise 03 is to assess the **source** while the app is still running against it — and the assessment reads the local server's runtime metrics, so the app must keep exercising the local database, not the empty Azure cluster. You repoint `.env` to your Azure connection string at **cutover**, in Exercise 04 (offline) or Exercise 05 (online), and reuse it again as `BOOKSTORE_SEED_DB_CONNECTION_STRING` when seeding data into Azure. Keep the completed Azure string handy — the extension connection you create next also stores it.
+This is deliberate. The whole point of Exercise 03 is to assess the **source** while the app is still running against it — and the assessment reads the local server's runtime metrics, so the app must keep exercising the local database, not the empty Azure cluster. You repoint `.env` to your Azure connection string at **cutover**, in Exercise 04 (offline) or Exercise 05 (online). Keep the completed Azure string handy — the extension connection you create next also stores it.
 
 ## Confirm connectivity with the DocumentDB extension
 
