@@ -41,7 +41,7 @@ Open [readingInsights.js](../../src/server/src/db/readingInsights.js) and replac
     effortTier: {
         $switch: {
             branches: [
-                {case: {$eq: ["$pages", null]}, then: "Unknown"},
+                {case: {$eq: [{$ifNull: ["$pages", null]}, null]}, then: "Unknown"},
                 {case: {$lt: ["$pages", 250]}, then: "Quick Read"},
                 {case: {$lt: ["$pages", 500]}, then: "Standard"}
             ],
@@ -51,7 +51,7 @@ Open [readingInsights.js](../../src/server/src/db/readingInsights.js) and replac
 }},
 ```
 
-Leave the `$group` and `$sort` stages unchanged. The branches are evaluated in order, so the same boundaries (`null` → `Unknown`, `< 250` → `Quick Read`, `< 500` → `Standard`, else `Epic`) produce the same tier for every book.
+Leave the `$group` and `$sort` stages unchanged. The branches are evaluated in order, and `$ifNull` normalizes a missing `pages` field to `null`, so the same boundaries (`null` or missing → `Unknown`, `< 250` → `Quick Read`, `< 500` → `Standard`, else `Epic`) produce the same tier for every book.
 
 Save the file. The server runs under `nodemon`, so it reloads the change automatically — there is no need to restart it by hand.
 
@@ -91,7 +91,7 @@ When the new report opens, confirm the **Features** category no longer lists the
 
 | Symptom | Likely cause | Fix |
 |---------|--------------|-----|
-| The rewritten report errors or changes results | A `$switch` branch boundary doesn't match the original | Confirm the branch order and operators match the **After** block: `null` first, then `< 250`, then `< 500`, with `Epic` as the default. |
+| The rewritten report errors or changes results | A `$switch` branch boundary doesn't match the original | Confirm the branch order and operators match the **After** block: `null` or missing first, then `< 250`, then `< 500`, with `Epic` as the default. |
 | Re-assessment still shows `$function` | `serverStatus` still holds the old usage | Make sure you ran `docker restart mongodb` **before** re-running the report, and did not call the old code path afterward. |
 | The endpoint 404s after editing | Syntax error in `readingInsights.js` | Check the server terminal — `nodemon` prints the parse error; fix it and save to reload. |
 
