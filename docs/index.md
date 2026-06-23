@@ -45,6 +45,6 @@ Your job is to plan and execute that migration without disrupting the developmen
 | 03 | [Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code](03_migration_planning/migration_planning.md) | ~35 min |
 | 04 | [Migration Execution — Offline (Snapshot)](04_migration_offline/migration_offline.md) | ~45 min |
 | 05 | [Migration Execution — Online (Change Stream)](05_migration_online/migration_online.md) | ~50 min |
-| 06 | [Post-Migration — DocumentDB VS Code Extension & Azure Portal](06_post_migration/post_migration.md) | ~45 min |
+| 06 | [Post-Migration Hardening — Azure DocumentDB Security Guidance & SFI](06_post_migration/post_migration.md) | ~45 min |
 | 07 | [Developer Workflow — A Local DocumentDB Development Loop](07_developer_workflow/developer_workflow.md) | ~20 min |
 | 08 | [Cleanup](08_cleanup/cleanup.md) | ~5 min |

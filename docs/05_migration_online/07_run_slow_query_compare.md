@@ -83,7 +83,7 @@ Both sides return identical counts per format; `avgRating` agrees to roughly 12 
 
 ### Mitigations for long-running aggregations on DocumentDB
 
-- **Index to avoid full scans.** Add an index that covers the fields the query touches so it reads from the index instead of every full document — you do this hands-on in the next section. You will review indexes on the migrated collections in Exercise 06.
+- **Index to avoid full scans.** Add an index that covers the fields the query touches so it reads from the index instead of every full document — you do this hands-on in the next section.
 - **`allowDiskUse: true`** for aggregations whose grouping/sorting exceeds the in-memory limit, so stages can spill to disk instead of failing.
 - **Bound and shape the work** — push `$match` filters early to shrink the working set, project only needed fields, and paginate large result sets rather than materializing everything at once.
 - **Mind the timeouts** — keep individual operations within the platform's time limits; for genuinely heavy analytics, precompute/materialize results rather than running ad-hoc full scans against the operational store.
@@ -152,4 +152,4 @@ The catalog-statistics aggregation runs successfully against DocumentDB and retu
 
 ---
 
-This completes Exercise 05. Contoso's catalog was migrated **online**, with the application live and accepting writes throughout, and cut over to DocumentDB only after replication reached zero lag and counts matched. In Exercise 06 you explore the migrated data and operate the cluster day-to-day with the DocumentDB VS Code extension and the Azure portal.
+This completes Exercise 05. Contoso's catalog was migrated **online**, with the application live and accepting writes throughout, and cut over to DocumentDB only after replication reached zero lag and counts matched. In Exercise 06 you review the cluster's security posture and harden its network, identity, data protection, monitoring, resilience, and governance.

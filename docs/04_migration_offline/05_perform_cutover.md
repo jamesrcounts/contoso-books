@@ -65,4 +65,4 @@ The app is now reading all of this from Azure DocumentDB, not the local containe
 
 ---
 
-This completes the offline (snapshot) migration: Contoso's catalog is copied into Azure DocumentDB, verified, and the application is cut over and serving from the target. In **Exercise 05** you'll run the **online (change-stream)** path that avoids the maintenance window; in **Exercise 06** you'll explore the migrated data and the cluster's operational surfaces.
+This completes the offline (snapshot) migration: Contoso's catalog is copied into Azure DocumentDB, verified, and the application is cut over and serving from the target. In **Exercise 05** you'll run the **online (change-stream)** path that avoids the maintenance window; in **Exercise 06** you'll review the cluster's security posture and harden its network, identity, data protection, monitoring, resilience, and governance.

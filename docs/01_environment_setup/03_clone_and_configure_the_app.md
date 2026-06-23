@@ -29,7 +29,7 @@ code contoso-books
 
 VS Code launches with the project loaded. You will use the **integrated terminal** for the rest of this exercise — open it with `` Ctrl+` `` (control + backtick) or **View → Terminal**. The integrated terminal opens at the repository root in **Git Bash** (configured as the default profile in Task 00) — this is the same shell the seed script in Task 04 requires, so you can use one terminal end-to-end.
 
-> **Why VS Code from here on:** The rest of the lab — including the Azure DocumentDB Migration Extension (Exercise 03), the offline and online migration runs (Exercises 04–05), and the data exploration in Exercise 06 — all run inside VS Code. Establishing it as the working environment now keeps the developer experience consistent end-to-end.
+> **Why VS Code from here on:** The rest of the lab uses VS Code as its central workspace — including the Azure DocumentDB Migration Extension (Exercise 03), the offline and online migration runs (Exercises 04–05), and the post-migration hardening work in Exercise 06. Establishing it as the working environment now keeps the developer experience consistent end-to-end.
 
 ## Install dependencies
 

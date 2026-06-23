@@ -26,7 +26,7 @@ Contoso Books is the companion application for the **MongoDB to Azure DocumentDB
 | 03 | [Migration Planning — Assessment with the DocumentDB Migration Extension for VS Code](docs/03_migration_planning/migration_planning.md) |
 | 04 | [Migration Execution — Offline (Snapshot)](docs/04_migration_offline/migration_offline.md) |
 | 05 | [Migration Execution — Online (Change Stream)](docs/05_migration_online/migration_online.md) |
-| 06 | [Post-Migration — DocumentDB VS Code Extension & Azure Portal](docs/06_post_migration/post_migration.md) |
+| 06 | [Post-Migration Hardening — Azure DocumentDB Security Guidance & SFI](docs/06_post_migration/post_migration.md) |
 | 07 | [Developer Workflow — A Local DocumentDB Development Loop](docs/07_developer_workflow/developer_workflow.md) |
 | 08 | [Cleanup](docs/08_cleanup/cleanup.md) |
 
