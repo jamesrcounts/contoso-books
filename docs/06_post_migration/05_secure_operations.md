@@ -13,6 +13,8 @@ A hardened cluster you can't observe is only half-secured. This task turns on au
 
 ## Route diagnostic and audit logs to Log Analytics
 
+> **A diagnostic setting may already be here.** Diagnostic settings aren't deleted when their cluster is, so if you've run this lab before, a prior run's setting can re-attach to this same-named cluster. If **Diagnostic settings** already lists one sending to `<cluster>-logs`, **review it** and skip to step 4 (confirm logs flow); otherwise create one as below.
+
 1. On the cluster page, open **Monitoring → Diagnostic settings → Add diagnostic setting**.
 2. Name the setting — for example `cluster-audit-logs`.
 3. Tick the **audit** category group (it selects the cluster's **`VCoreMongoRequests`** log), choose **Send to Log Analytics workspace**, and pick **`<cluster>-logs`**. (Event Hub or Storage are also valid destinations for SIEM or long-term archival.)

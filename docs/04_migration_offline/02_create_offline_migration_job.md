@@ -66,6 +66,8 @@ Select **Next**.
 
 Because you chose **Private**, this step wires the migration service into your lab virtual network so it can reach both the source VM and the cluster's private endpoint.
 
+> **Two tools, two sign-ins.** This step uses **both** the **Az PowerShell** module (the wizard's `New-AzRoleAssignment` script in sub-step 3) and the **Azure CLI** (`az network nsg rule create` in sub-step 4). They authenticate **separately** — `Connect-AzAccount` signs you into PowerShell and `az login` signs you into the CLI, and **neither covers the other**. Sign in to **both** before running the sub-steps below, or the PowerShell script fails with confusing errors.
+
 1. **Source virtual network** and **target virtual network** — select the **same** network, `vm-docdb-labVNET`, for both. Your source VM and the cluster's private endpoint both live in it, so a single VNet covers both sides. After you pick the resource group, the network is selected automatically.
 2. **DMS CIDR range** — select **`172.28.0.0/16`** from the dropdown. The migration service builds its own temporary virtual network on this range and peers it to yours, so choose a range that does **not** overlap your VNet's `10.0.0.0/16`.
 3. **Run the generated script.** The wizard displays an **Az PowerShell** script (`New-AzRoleAssignment`) that grants the migration service's identity the **Network Contributor** role on your VNet so it can create the peering. Copy it and run it **as shown** in a terminal. The first time, run `Connect-AzAccount` and sign in (the sign-in window may open **behind** VS Code — Alt+Tab).

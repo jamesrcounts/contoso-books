@@ -37,6 +37,21 @@ The list includes the `mongoClusters` cluster and the lab VM `vm-docdb-lab`, alo
 
 > **Caution:** Deleting a resource group is irreversible and removes **every** resource it contains. Make sure `rg-documentdb-lab` holds only lab resources before continuing.
 
+## Remove the cluster's diagnostic setting first
+
+Diagnostic settings are **not** reliably removed when their target resource is deleted — and because this lab's cluster name is deterministic, a leftover setting would silently **re-attach to a future same-named cluster** (on your next run you'd find logging already configured before Exercise 06). Delete it explicitly while the cluster still exists, before deleting the group:
+
+```powershell
+$clusterId = az resource list --resource-group rg-documentdb-lab `
+  --resource-type Microsoft.DocumentDB/mongoClusters --query "[0].id" -o tsv
+if ($clusterId) {
+  az monitor diagnostic-settings list --resource $clusterId --query "value[].name" -o tsv |
+    ForEach-Object { az monitor diagnostic-settings delete --resource $clusterId --name $_ }
+}
+```
+
+This finds the cluster, lists any diagnostic settings on it, and removes each — regardless of the cluster's hashed name or what you named the setting.
+
 ## Delete the resource group
 
 ```powershell

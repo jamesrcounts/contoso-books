@@ -26,8 +26,11 @@ az vm create \
   --image MicrosoftWindowsDesktop:windows-11:win11-24h2-pro:latest \
   --size Standard_D4s_v3 \
   --admin-username labuser \
-  --public-ip-sku Standard
+  --public-ip-sku Standard \
+  --private-ip-address 10.0.0.5
 ```
+
+> **Why the static IP?** `--private-ip-address 10.0.0.5` pins the VM's private address so the connection strings used throughout the lab (`…@10.0.0.5:27017`) stay valid on every rebuild — without it the VM gets a dynamic address that can shift between runs (e.g. `10.0.0.4`) and break the hardcoded examples. Azure's default subnet (`10.0.0.0/24`) reserves `.1`–`.3`, so `.5` is free and stable; the cluster's private endpoint takes its own address later.
 
 Once the VM is provisioned, connect via RDP and continue to Install Prerequisites below.
 
