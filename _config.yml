@@ -13,7 +13,7 @@ baseurl: "/contoso-books"
 # Header links shown in the top-right of every page.
 aux_links:
   "View on GitHub":
-    - "https://github.com/"
+    - "https://github.com/jamesrcounts/contoso-books"
 aux_links_new_tab: true
 
 # Show the "next / previous" navigation between tasks.
