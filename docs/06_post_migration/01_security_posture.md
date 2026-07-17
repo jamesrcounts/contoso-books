@@ -14,7 +14,7 @@ Before changing anything, establish the baseline: what the cluster looks like to
 1. Sign in to the [Azure portal](https://portal.azure.com).
 2. Open the **`rg-documentdb-lab`** resource group and select your **Azure DocumentDB** cluster (resource type `Microsoft.DocumentDB/mongoClusters`).
 
-The **Overview** shows the cluster as deployed: **Status** Ready, **MongoDB version** 7.0, **M40** tier, **128 GiB** disk, a **single shard**, and **High availability** No.
+The **Overview** shows the cluster as deployed: **Status** Ready, **MongoDB version** 8.0, **M40** tier, **128 GiB** disk, a **single shard**, and **High availability** No.
 
 ## The current posture — and the gaps
 

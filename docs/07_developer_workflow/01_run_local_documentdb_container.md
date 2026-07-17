@@ -61,11 +61,11 @@ mongosh "mongodb://bookadmin:bookpass123@10.0.0.5:10260/?tls=true&tlsAllowInvali
 
 ```
 Connecting to:  mongodb://<credentials>@10.0.0.5:10260/?tls=true&tlsAllowInvalidCertificates=true&directConnection=true&appName=mongosh+2.8.3
-Using MongoDB:  7.0.0
+Using MongoDB:  8.0.0
 Using Mongosh:  2.8.3
 ```
 
-`mongosh` redacts the credentials in its echo, reports the wire-compatible server version (`7.0.0`), and adds `directConnection=true` itself. At the prompt, ping the server:
+`mongosh` redacts the credentials in its echo, reports the wire-compatible server version (`8.0.0`), and adds `directConnection=true` itself. At the prompt, ping the server:
 
 ```javascript
 db.runCommand({ ping: 1 })

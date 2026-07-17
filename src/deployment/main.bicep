@@ -29,7 +29,7 @@ param tier string = 'M40'
 param storageSizeGb int = 128
 
 @description('MongoDB server version.')
-param serverVersion string = '7.0'
+param serverVersion string = '8.0'
 
 resource cluster 'Microsoft.DocumentDB/mongoClusters@2024-07-01' = {
   name: clusterName
