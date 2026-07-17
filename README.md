@@ -47,10 +47,10 @@ The complete workshop also requires an Azure subscription, Azure CLI, VS Code, a
 
 ### 1. Start MongoDB
 
-Start MongoDB 7.0 in a local container with replica set mode enabled:
+Start MongoDB 8.0 in a local container with replica set mode enabled:
 
 ```sh
-docker run -d --name mongodb -p 27017:27017 mongo:7.0 --replSet rs0
+docker run -d --name mongodb -p 27017:27017 mongo:8.0 --replSet rs0
 ```
 
 After the container finishes starting, initialize the single-node replica set:

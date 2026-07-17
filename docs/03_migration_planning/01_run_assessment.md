@@ -55,7 +55,7 @@ Select **Start Assessment**. Against this dataset it finishes in **a few seconds
 Open the downloaded HTML report. It opens with several summary sections describing the source:
 
 - **General Information** — the assessment name, host, ID, start/end time, and the **Log Folder Path** (shows `NA` because you left it empty).
-- **Instance Summary** — source version (MongoDB `7.0.x`), license (`community`), and instance type (`mongod`).
+- **Instance Summary** — source version (MongoDB `8.0.x`), license (`community`), and instance type (`mongod`).
 - **RBAC Summary** — the source users and roles (your `bookadmin` / `root`).
 - **Database** and **Collection Summary** — the `bookstore` database with its two collections (`books` ≈ 93,624 docs, `genres` = 1).
 

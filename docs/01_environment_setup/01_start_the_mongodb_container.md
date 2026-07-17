@@ -7,7 +7,7 @@ parent: "Exercise 01 - Environment Setup — Containerized MongoDB & Client App"
 
 # Task 01 — Start the MongoDB Container
 
-You will start MongoDB 7.0 with **access control (authentication) enabled**. The Azure DocumentDB VS Code extension you installed in Task 00 connects with a username and password, so the container must require credentials — an unauthenticated instance is not a valid connection target for the extension.
+You will start MongoDB 8.0 with **access control (authentication) enabled**. The Azure DocumentDB VS Code extension you installed in Task 00 connects with a username and password, so the container must require credentials — an unauthenticated instance is not a valid connection target for the extension.
 
 Enabling authentication on a **replica set** has one extra requirement: MongoDB then also demands an internal-authentication **keyfile** shared by the replica set members (even for a single-node set). You generate that keyfile first, store it in a Docker named volume, then start the container.
 
@@ -22,10 +22,10 @@ Open a PowerShell terminal and run:
 docker volume create mongo-keyfile
 
 # 2. Generate the keyfile inside the volume, owned by the mongodb user (uid 999)
-docker run --rm -v mongo-keyfile:/keyfile --entrypoint bash mongo:7.0 -c "openssl rand -base64 756 > /keyfile/keyfile && chmod 400 /keyfile/keyfile && chown 999:999 /keyfile/keyfile"
+docker run --rm -v mongo-keyfile:/keyfile --entrypoint bash mongo:8.0 -c "openssl rand -base64 756 > /keyfile/keyfile && chmod 400 /keyfile/keyfile && chown 999:999 /keyfile/keyfile"
 ```
 
-The second command pulls the `mongo:7.0` image on first run — this may take a minute — then exits after writing the keyfile. There is no lasting container; only the `mongo-keyfile` volume remains.
+The second command pulls the `mongo:8.0` image on first run — this may take a minute — then exits after writing the keyfile. There is no lasting container; only the `mongo-keyfile` volume remains.
 
 ## Start the container
 
@@ -34,12 +34,12 @@ docker run -d --name mongodb -p 27017:27017 `
   -e MONGO_INITDB_ROOT_USERNAME=bookadmin `
   -e MONGO_INITDB_ROOT_PASSWORD=bookpass123 `
   -v mongo-keyfile:/keyfile `
-  mongo:7.0 --replSet rs0 --keyFile /keyfile/keyfile --bind_ip_all
+  mongo:8.0 --replSet rs0 --keyFile /keyfile/keyfile --bind_ip_all
 ```
 
 Once the container starts, Windows Firewall will prompt for network access. Allow access to both **private** and **public** networks.
 
-This starts MongoDB 7.0 as a background container, maps port 27017 to localhost, enables replica set mode with the name `rs0`, and turns on access control. The `MONGO_INITDB_ROOT_USERNAME` / `MONGO_INITDB_ROOT_PASSWORD` variables tell the container to create a root user **`bookadmin`** (password `bookpass123`) in the `admin` database on first boot; `--keyFile` enables the internal authentication the replica set requires. The replica set is not yet active — you will initialize it in Task 02.
+This starts MongoDB 8.0 as a background container, maps port 27017 to localhost, enables replica set mode with the name `rs0`, and turns on access control. The `MONGO_INITDB_ROOT_USERNAME` / `MONGO_INITDB_ROOT_PASSWORD` variables tell the container to create a root user **`bookadmin`** (password `bookpass123`) in the `admin` database on first boot; `--keyFile` enables the internal authentication the replica set requires. The replica set is not yet active — you will initialize it in Task 02.
 
 Verify the container started:
 
@@ -56,11 +56,11 @@ PS C:\Users\labuser> docker run -d --name mongodb -p 27017:27017 `
 >>   -e MONGO_INITDB_ROOT_USERNAME=bookadmin `
 >>   -e MONGO_INITDB_ROOT_PASSWORD=bookpass123 `
 >>   -v mongo-keyfile:/keyfile `
->>   mongo:7.0 --replSet rs0 --keyFile /keyfile/keyfile --bind_ip_all
+>>   mongo:8.0 --replSet rs0 --keyFile /keyfile/keyfile --bind_ip_all
 cc9d04ee609c39904412608892ab0925696ed001143f732c99ce12cf9643e217
 PS C:\Users\labuser> docker ps
 CONTAINER ID   IMAGE       COMMAND                  CREATED         STATUS         PORTS                                             NAMES
-cc9d04ee609c   mongo:7.0   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   mongodb
+cc9d04ee609c   mongo:8.0   "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   mongodb
 ```
 
 ## Connect with mongosh
@@ -85,7 +85,7 @@ You should land at a `test>` prompt. Leave `mongosh` open — you will use it in
 PS C:\Users\labuser> mongosh -u bookadmin -p bookpass123 --authenticationDatabase admin
 Current Mongosh Log ID: 6a19970073ce645383abc113
 Connecting to:          mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&authSource=admin&appName=mongosh+2.8.3
-Using MongoDB:          7.0.34
+Using MongoDB:          8.0.12
 Using Mongosh:          2.8.3
 
 For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/

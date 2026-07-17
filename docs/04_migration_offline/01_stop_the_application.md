@@ -49,7 +49,7 @@ docker ps
 
 ```
 CONTAINER ID   IMAGE       COMMAND                  CREATED       STATUS          PORTS                                             NAMES
-9d92681c74c9   mongo:7.0   "docker-entrypoint.s…"   9 hours ago   Up 53 minutes   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   mongodb
+9d92681c74c9   mongo:8.0   "docker-entrypoint.s…"   9 hours ago   Up 53 minutes   0.0.0.0:27017->27017/tcp, [::]:27017->27017/tcp   mongodb
 ```
 
 The `mongodb` container shows `Up`, and `http://localhost:3000` / `http://localhost:8080` no longer respond. Source data is intact and frozen; nothing is mutating it.
@@ -57,5 +57,5 @@ The `mongodb` container shows `Up`, and `http://localhost:3000` / `http://localh
 ## Success criteria
 
 - The `npm run develop` process is stopped — neither port 3000 nor 8080 is serving.
-- The `mongodb` container (`mongo:7.0`) is still `Up` in `docker ps`.
+- The `mongodb` container (`mongo:8.0`) is still `Up` in `docker ps`.
 - No application or client is writing to the `bookstore` database — the snapshot you take next will be a clean, consistent point in time.
