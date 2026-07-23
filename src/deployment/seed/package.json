@@ -13,8 +13,8 @@
     "license": "ISC",
     "bugs": {},
     "dependencies": {
-        "dotenv": "^10.0.0",
-        "mongodb": "^6"
+        "dotenv": "^17.4.2",
+        "mongodb": "^7"
     },
     "devDependencies": {
         "mongodb-memory-server": "^11.2.0",
